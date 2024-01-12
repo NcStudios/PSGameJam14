@@ -1,0 +1,44 @@
+{
+    "env": {
+        // Build paths need to exactly match the build kits being used.
+        "visualStudioBuildPath": "${workspaceFolder}/build/Visual Studio Community 2022 Release - amd64",
+        // Add project-specific paths here
+        "commonIncludePaths": [
+            "${workspaceFolder}/source",
+            "C:/VulkanSDK/1.3.250.0/Include"
+        ],
+        // Add project-specific definitions here
+        "commonDefinitions" : [
+            "_DEBUG",
+            "UNICODE",
+            "_UNICODE",
+            "NC_ASSERT_ENABLED",
+            "NC_EDITOR_ENABLED",
+            "IMGUI_USER_CONFIG=ui\\DearImGuiConversion.h"
+        ]
+    },
+    "configurations": [
+        {
+            "name": "VS-2022-amd64",
+            "includePath": [
+                "${commonIncludePaths}",
+                // Add includes from fetched dependencies here
+                "${visualStudioBuildPath}/_deps/directxmath-src/Inc",
+                "${visualStudioBuildPath}/_deps/googletest-src/googletest/include",
+                "${visualStudioBuildPath}/_deps/fmt-src/include",
+                "${visualStudioBuildPath}/_deps/ncengine-src/include",
+                "${visualStudioBuildPath}/_deps/nc-tools-src/include",
+                "${visualStudioBuildPath}/_deps/nccommon-src/include",
+                "${visualStudioBuildPath}/_deps/taskflow-src"
+            ],
+            "defines": [
+                "${commonDefinitions}"
+            ],
+            // For msvc, let "compilerPath" use default search
+            "cStandard": "c17",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}

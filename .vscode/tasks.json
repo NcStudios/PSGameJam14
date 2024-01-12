@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run-Game",
+            "type": "shell",
+            "command": "${workspaceFolder}/install/game/game.exe",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/install/game"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}

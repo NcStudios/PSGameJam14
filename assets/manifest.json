@@ -1,0 +1,11 @@
+{
+    "globalOptions": {
+        "outputDirectory": ".\\nca"
+    },
+    "audio-clip": [],
+    "concave-collider": [],
+    "cube-map": [],
+    "hull-collider": [],
+    "mesh": [],
+    "texture": []
+}
