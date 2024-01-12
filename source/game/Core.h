@@ -5,6 +5,8 @@
 #include "ncengine/asset/Assets.h"
 #include "ncengine/audio/AudioSource.h"
 #include "ncengine/audio/NcAudio.h"
+#include "ncengine/ecs/Logic.h"
+#include "ncengine/ecs/InvokeFreeComponent.h"
 #include "ncengine/ecs/Registry.h"
 #include "ncengine/graphics/Camera.h"
 #include "ncengine/graphics/MeshRenderer.h"
@@ -25,8 +27,24 @@
 
 namespace game
 {
-// Entity layer internally ignored by engine serialization
-constexpr auto DoNotSerialize = UINT8_MAX;
+struct Layer
+{
+    static constexpr uint8_t None = 0;
+    static constexpr uint8_t Character = 1;
+    static constexpr uint8_t Healthy = 2;
+    static constexpr uint8_t Sickly = 3;
+
+    // Entity layer internally ignored by engine serialization
+    // probably change engine-side
+    static constexpr uint8_t DoNotSerialize = UINT8_MAX;
+};
+
+
+
+// Always set main camera to this tag
+const auto MainCameraTag = std::string{"Camera"};
+const auto CharacterTag = std::string{"Character"};
+
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
 } // namespace game
