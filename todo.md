@@ -1,16 +1,17 @@
 
 # Must Do
 
+Infection particle spread effect
+
 Visual representation of healthy/infected tree count (UI, but...)
 
 Trigger win/lose condition
 
-Add character controller parts
-
-
 Improve movement/camera
-  jump isn't infinite
+  improve general feel and steering control
   make sure follow distance looks good (requires rough to-scale assets for testing)
+  X jump isn't infinite
+  X max velocity
 
 Keep vehicle upright, or force back somehow
 
@@ -33,7 +34,13 @@ Add some interaction between vehicle and infected trees
  - Ground
  - Poison particle
 
-  
+**Sound List**
+- Main Theme
+- Bus Engine
+- Assorted Collision
+- Infect/Tree Morph
+- Disinfect in progress
+- Disinfect complete
 
 # Nice to have
 Particle alpha blending?
@@ -62,6 +69,8 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Add character controller parts
+
 Menu with resume, restart, and quit options
 
 Tree tracking (how many infected/healthy)
