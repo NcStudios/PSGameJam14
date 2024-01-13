@@ -2,6 +2,7 @@
 #include "Assets.h"
 #include "Character.h"
 #include "Core.h"
+#include "GameplayOrchestrator.h"
 #include "Tree.h"
 
 namespace game
@@ -28,11 +29,13 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = "TreeSystem", .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::FrameLogic>(treeSystem, &ProcessTrees);
 
+    FireEvent(Event::Begin);
+
     // Debug environment - just to have stuff in the world
     const auto floor = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = nc::Vector3::Up() * -1.0f,
-        .scale = nc::Vector3{500.0f, 1.0f, 500.0f},
+        .scale = nc::Vector3{300.0f, 1.0f, 300.0f},
         .tag = "Floor",
         .flags = nc::Entity::Flags::NoSerialize
     });

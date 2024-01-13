@@ -1,11 +1,18 @@
 
 # Must Do
 
+Split tree and character creation into two steps
+  tree: base trees will be created from editor, with logic added after the fact
+  vehicle: probably want to create the camera separately for the intro, and create
+           the vehicle and update camera target after intro
+
 Infection particle spread effect
 
-Visual representation of healthy/infected tree count (UI, but...)
-
 Trigger win/lose condition
+  maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
+
+Add some interaction between vehicle and infected trees
+  like sit next to tree, hold button, wait for it to turn
 
 Improve movement/camera
   improve general feel and steering control
@@ -15,8 +22,8 @@ Improve movement/camera
 
 Keep vehicle upright, or force back somehow
 
-Add some interaction between vehicle and infected trees
-  like sit next to tree, hold button, wait for it to turn
+Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
+
 
 **Asset List**
 
@@ -43,6 +50,10 @@ Add some interaction between vehicle and infected trees
 - Disinfect complete
 
 # Nice to have
+Script intro cut scene in GameplayManager
+
+Dialog fwd/back buttons - might be annoying to have prev dialog removed on event
+
 Particle alpha blending?
   overlap of transparent particle textures is wonk
 
@@ -51,8 +62,6 @@ Main Menu Scene
 ImGui font
 
 UI styling (just using engine defaults now)
-
-Menu 'New Game' option
 
 
 **Asset List**
@@ -69,6 +78,8 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Menu 'New Game' option
+
 Add character controller parts
 
 Menu with resume, restart, and quit options
