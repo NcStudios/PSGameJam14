@@ -3,6 +3,7 @@ add_executable(${GAME}
         Assets.cpp
         Character.cpp
         Core.cpp
+        GameplayOrchestrator.cpp
         MainScene.cpp
         Tree.cpp
         UI.cpp

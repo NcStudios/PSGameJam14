@@ -6,6 +6,7 @@ namespace game
 {
 class MainScene : public nc::Scene
 {
-    void Load(nc::Registry* registry, nc::ModuleProvider modules) override;
+    public:
+        void Load(nc::Registry* registry, nc::ModuleProvider modules) override;
 };
 } // namespace game

@@ -1,4 +1,5 @@
 #include "UI.h"
+#include "GameplayOrchestrator.h"
 
 #include "ncengine/graphics/NcGraphics.h"
 #include "ncengine/input/Input.h"
@@ -49,7 +50,8 @@ void GameUI::Draw()
             }
             if (ImGui::Button("New Game", g_menuButtonSize))
             {
-                // todo
+                m_menuOpen = false;
+                FireEvent(Event::NewGame);
             }
             if (ImGui::Button("Quit", g_menuButtonSize))
             {
@@ -65,10 +67,10 @@ void GameUI::Draw()
     ImGui::SetNextWindowSize({ screenExtent.x, g_narrativeWindowHeight });
     if (ImGui::Begin("GameUI", nullptr, g_windowFlags))
     {
-        // Placeholder
-        ImGui::Text("%s", "Oh no!!! The big, bad meteor boys are back in town and they're infecting the sasquatch reserve.");
-        ImGui::Text("%s", "The poison will need to be cleared from the fruit trees before it spreads across the oasis.");
-        ImGui::Text("%s", "I better scoot! (like, with WASD)");
+        // fix? I think its rendering the current frame in a 'cleared' state, and doesn't get initial dialog until next frame
+        // NC_ASSERT(m_currentDialog < m_dialog.size(), "dialog out of sync");
+        if (m_currentDialog < m_dialog.size())
+            ImGui::Text("%s", m_dialog.at(m_currentDialog).c_str());
     }
 
     ImGui::End();
@@ -78,4 +80,18 @@ bool GameUI::IsHovered()
 {
     return ImGui::GetIO().WantCaptureMouse;
 }
+
+void GameUI::Clear()
+{
+    m_dialog.clear();
+    m_currentDialog = 0;
+    m_menuOpen = false;
+}
+
+void GameUI::AddNewDialog(std::string dialog)
+{
+    m_dialog.push_back(std::move(dialog));
+    m_currentDialog = m_dialog.size() - 1;
+}
+
 } // namespace game
