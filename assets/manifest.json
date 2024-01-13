@@ -9,7 +9,11 @@
     "mesh": [
         {
             "sourcePath": "raw/mesh/tree.fbx",
-            "assetName": "tree"
+            "assetName": "mesh/tree"
+        },
+        {
+            "sourcePath": "raw/mesh/bus.fbx",
+            "assetName": "mesh/bus_front"
         }
     ],
     "texture": []
