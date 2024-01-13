@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "Assets.h"
 #include "Core.h"
 
 namespace
@@ -8,6 +9,9 @@ using namespace nc;
 class FollowCamera : public graphics::Camera
 {
     public:
+        static constexpr auto FollowDistance = 10.0f;
+        static constexpr auto FollowHeight = 4.0f;
+
         FollowCamera(Entity self, Entity target)
             : graphics::Camera{self}, m_target{target}
         {
@@ -25,14 +29,9 @@ class FollowCamera : public graphics::Camera
             auto selfPos = self->Position();
             const auto targetPos = target->Position();
             const auto targetRotation = target->Rotation();
-
-            // make config..
-            constexpr auto followDistance = 10.0f;
-            constexpr auto followHeight = 6.0f; // Adjust the height offset as needed
-
-            const auto offset = [followDistance, targetRotation]()
+            const auto offset = [followDistance = FollowDistance, targetRotation]()
             {
-                auto v = Vector3::Back() * followDistance;
+                auto v = Vector3::Back() * FollowCamera::FollowDistance;
                 auto v_v = DirectX::XMLoadVector3(&v);
                 auto r_v = DirectX::XMLoadQuaternion(&targetRotation);
                 v_v = DirectX::XMVector3Rotate(v_v, r_v);
@@ -40,7 +39,7 @@ class FollowCamera : public graphics::Camera
                 return v;
             }();
 
-            const auto desiredPos = targetPos + offset + Vector3::Up() * followHeight;
+            const auto desiredPos = targetPos + offset + Vector3::Up() * FollowHeight;
             self->Translate((desiredPos - selfPos) * dt);
 
             const auto camToTarget = targetPos - selfPos;
@@ -57,35 +56,53 @@ class FollowCamera : public graphics::Camera
 
 void DirectionalForceBasedMovement(Entity self, Registry* registry)
 {
-    static constexpr auto moveForce = 0.7f;
+    static constexpr auto maxVelocitySqMagnitude = 50.0f;
+    static constexpr auto moveForce = 1.0f;
     static constexpr auto turnForce = 0.6f;
-    static constexpr auto jumpForce = 4.0f;
+    static constexpr auto jumpForce = 15.0f;
+    static constexpr auto jumpResetTime = 0.35f;
+    static auto jumping = false;
+    static auto timeUntilJumpReset = 0.0f;
     auto* body = registry->Get<physics::PhysicsBody>(self);
     auto* transform = registry->Get<Transform>(self);
 
     if(!body || !transform)
         return;
 
+    if (jumping)
+    {
+        timeUntilJumpReset -= 0.01667f;
+        if (timeUntilJumpReset <= 0.0f)
+        {
+            timeUntilJumpReset = 0.0f;
+            jumping = false;
+        }
+    }
+
     if(KeyHeld(input::KeyCode::W))
-        body->ApplyImpulse(transform->Forward() * moveForce);
+    {
+        auto velocity = body->GetVelocity();
+        velocity = DirectX::XMVector3LengthSq(velocity);
+        const auto currentSqMag = DirectX::XMVectorGetX(velocity);
+        if (currentSqMag < maxVelocitySqMagnitude)
+            body->ApplyImpulse(transform->Forward() * moveForce);
+    }
 
     if(KeyHeld(input::KeyCode::S))
         body->ApplyImpulse(-transform->Forward() * moveForce);
 
     if(KeyHeld(input::KeyCode::A))
-        body->ApplyImpulse(-transform->Right() * moveForce);
-
-    if(KeyHeld(input::KeyCode::D))
-        body->ApplyImpulse(transform->Right() * moveForce);
-
-    if(KeyHeld(input::KeyCode::Space))
-        body->ApplyImpulse(Vector3::Up() * jumpForce);
-
-    if(KeyHeld(input::KeyCode::Q))
         body->ApplyTorqueImpulse(-transform->Up() * turnForce);
 
-    if(KeyHeld(input::KeyCode::E))
+    if(KeyHeld(input::KeyCode::D))
         body->ApplyTorqueImpulse(transform->Up() * turnForce);
+
+    if(!jumping && KeyDown(input::KeyCode::Space))
+    {
+        jumping = true;
+        timeUntilJumpReset = jumpResetTime;
+        body->ApplyImpulse(Vector3::Up() * jumpForce);
+    }
 }
 
 auto CreateVehicleNode(nc::ecs::Ecs world,
@@ -98,31 +115,31 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
     const auto node = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = position,
-        .scale = scale,
+        .scale = scale * 0.5f,
         .tag = tag,
         .layer = game::Layer::Character,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
     world.Emplace<nc::graphics::MeshRenderer>(node, mesh); // prob add material too
-    world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{});
+    world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{.center = nc::Vector3{}, .extents = nc::Vector3{2.0f, 2.0f, 4.0f}});
     world.Emplace<nc::physics::PhysicsBody>(node, nc::physics::PhysicsProperties{.mass = mass});
     return node;
 }
 
 auto CreateVehicle(const nc::Vector3& position, nc::ecs::Ecs world, nc::ModuleProvider modules) -> nc::Entity
 {
-    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::CharacterTag, "DefaultCube.nca", 5.0f);
-    const auto second = CreateVehicleNode(world, position - nc::Vector3::Front() * 0.9f, nc::Vector3::Splat(0.8f), "BoxCar", "DefaultCube.nca", 3.0f);
-    const auto third = CreateVehicleNode(world, position - nc::Vector3::Front() * 1.6f, nc::Vector3::Splat(0.6f), "BoxCar", "DefaultCube.nca", 1.0f);
-    const auto fourth = CreateVehicleNode(world, position - nc::Vector3::Front() * 2.1f, nc::Vector3::Splat(0.4f), "BoxCar", "DefaultCube.nca", 0.2f);
+    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::CharacterTag, game::BusFrontMesh, 5.0f);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3::Front() * 1.62f, nc::Vector3::Splat(0.8f), "BoxCar", game::BusFrontMesh, 3.0f);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3::Front() * 2.88f, nc::Vector3::Splat(0.6f), "BoxCar", game::BusFrontMesh, 1.0f);
+    const auto fourth = CreateVehicleNode(world, position - nc::Vector3::Front() * 3.78f, nc::Vector3::Splat(0.4f), "BoxCar", game::BusFrontMesh, 0.2f);
 
     constexpr auto bias = 0.2f;
     constexpr auto softness = 0.1f;
     auto physicsModule = modules.Get<nc::physics::NcPhysics>();
-    physicsModule->AddJoint(head, second, Vector3{0.0f, 0.0f, -0.6f}, Vector3{0.0f, 0.0f, 0.5f}, bias, softness);
-    physicsModule->AddJoint(second, third, Vector3{0.0f, 0.0f, -0.5f}, Vector3{0.0f, 0.0f, 0.4f}, bias, softness);
-    physicsModule->AddJoint(third, fourth, Vector3{0.0f, 0.0f, -0.4f}, Vector3{0.0f, 0.0f, 0.3f}, bias, softness);
+    physicsModule->AddJoint(head, second, Vector3{0.0f, 0.0f, -1.08f}, Vector3{0.0f, 0.0f, 0.9f}, bias, softness);
+    physicsModule->AddJoint(second, third, Vector3{0.0f, 0.0f, -0.9f}, Vector3{0.0f, 0.0f, 0.72f}, bias, softness);
+    physicsModule->AddJoint(third, fourth, Vector3{0.0f, 0.0f, -0.72f}, Vector3{0.0f, 0.0f, 0.54f}, bias, softness);
 
     return head;
 }
