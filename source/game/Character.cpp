@@ -57,7 +57,9 @@ class FollowCamera : public graphics::Camera
 
 void DirectionalForceBasedMovement(Entity self, Registry* registry)
 {
-    static constexpr float force = 0.7f;
+    static constexpr auto moveForce = 0.7f;
+    static constexpr auto turnForce = 0.6f;
+    static constexpr auto jumpForce = 4.0f;
     auto* body = registry->Get<physics::PhysicsBody>(self);
     auto* transform = registry->Get<Transform>(self);
 
@@ -65,42 +67,64 @@ void DirectionalForceBasedMovement(Entity self, Registry* registry)
         return;
 
     if(KeyHeld(input::KeyCode::W))
-        body->ApplyImpulse(transform->Forward() * force);
+        body->ApplyImpulse(transform->Forward() * moveForce);
 
     if(KeyHeld(input::KeyCode::S))
-        body->ApplyImpulse(-transform->Forward() * force);
+        body->ApplyImpulse(-transform->Forward() * moveForce);
 
     if(KeyHeld(input::KeyCode::A))
-        body->ApplyImpulse(-transform->Right() * force);
-    
+        body->ApplyImpulse(-transform->Right() * moveForce);
+
     if(KeyHeld(input::KeyCode::D))
-        body->ApplyImpulse(transform->Right() * force);
+        body->ApplyImpulse(transform->Right() * moveForce);
 
     if(KeyHeld(input::KeyCode::Space))
-        body->ApplyImpulse(Vector3::Up() * 4.0f);
+        body->ApplyImpulse(Vector3::Up() * jumpForce);
 
     if(KeyHeld(input::KeyCode::Q))
-        body->ApplyTorqueImpulse(-transform->Up() * 0.6f);
+        body->ApplyTorqueImpulse(-transform->Up() * turnForce);
 
     if(KeyHeld(input::KeyCode::E))
-        body->ApplyTorqueImpulse(transform->Up() * 0.6f);
+        body->ApplyTorqueImpulse(transform->Up() * turnForce);
 }
 
-auto CreateCharacter(const nc::Vector3& position, nc::ecs::Ecs world, nc::ModuleProvider) -> nc::Entity
+auto CreateVehicleNode(nc::ecs::Ecs world,
+                       const nc::Vector3& position,
+                       const nc::Vector3& scale,
+                       const std::string& tag,
+                       const std::string& mesh,
+                       float mass) -> nc::Entity
 {
-    const auto character = world.Emplace<nc::Entity>(nc::EntityInfo
+    const auto node = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = position,
-        .tag = game::CharacterTag,
+        .scale = scale,
+        .tag = tag,
         .layer = game::Layer::Character,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
-    world.Emplace<nc::graphics::MeshRenderer>(character);
-    world.Emplace<nc::physics::Collider>(character, nc::physics::BoxProperties{});
-    world.Emplace<nc::physics::PhysicsBody>(character, nc::physics::PhysicsProperties{});
-    world.Emplace<nc::FixedLogic>(character, &DirectionalForceBasedMovement);
-    return character;
+    world.Emplace<nc::graphics::MeshRenderer>(node, mesh); // prob add material too
+    world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{});
+    world.Emplace<nc::physics::PhysicsBody>(node, nc::physics::PhysicsProperties{.mass = mass});
+    return node;
+}
+
+auto CreateVehicle(const nc::Vector3& position, nc::ecs::Ecs world, nc::ModuleProvider modules) -> nc::Entity
+{
+    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::CharacterTag, "DefaultCube.nca", 5.0f);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3::Front() * 0.9f, nc::Vector3::Splat(0.8f), "BoxCar", "DefaultCube.nca", 3.0f);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3::Front() * 1.6f, nc::Vector3::Splat(0.6f), "BoxCar", "DefaultCube.nca", 1.0f);
+    const auto fourth = CreateVehicleNode(world, position - nc::Vector3::Front() * 2.1f, nc::Vector3::Splat(0.4f), "BoxCar", "DefaultCube.nca", 0.2f);
+
+    constexpr auto bias = 0.2f;
+    constexpr auto softness = 0.1f;
+    auto physicsModule = modules.Get<nc::physics::NcPhysics>();
+    physicsModule->AddJoint(head, second, Vector3{0.0f, 0.0f, -0.6f}, Vector3{0.0f, 0.0f, 0.5f}, bias, softness);
+    physicsModule->AddJoint(second, third, Vector3{0.0f, 0.0f, -0.5f}, Vector3{0.0f, 0.0f, 0.4f}, bias, softness);
+    physicsModule->AddJoint(third, fourth, Vector3{0.0f, 0.0f, -0.4f}, Vector3{0.0f, 0.0f, 0.3f}, bias, softness);
+
+    return head;
 }
 } // namespace
 
@@ -109,7 +133,8 @@ namespace game
 auto CreateCharacter(const nc::Vector3& position, nc::Registry* registry, nc::ModuleProvider modules) -> nc::Entity
 {
     auto world = registry->GetEcs();
-    const auto character = ::CreateCharacter(position, world, modules);
+    const auto character = ::CreateVehicle(position, world, modules);
+    world.Emplace<nc::FixedLogic>(character, &DirectionalForceBasedMovement);
 
     ///
     const auto cameraHandle = world.Emplace<nc::Entity>(nc::EntityInfo
