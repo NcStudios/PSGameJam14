@@ -92,7 +92,8 @@ auto CreateCharacter(const nc::Vector3& position, nc::ecs::Ecs world, nc::Module
     {
         .position = position,
         .tag = game::CharacterTag,
-        .layer = game::Layer::DoNotSerialize
+        .layer = game::Layer::Character,
+        .flags = nc::Entity::Flags::NoSerialize
     });
 
     world.Emplace<nc::graphics::MeshRenderer>(character);
@@ -116,7 +117,7 @@ auto CreateCharacter(const nc::Vector3& position, nc::Registry* registry, nc::Mo
         .position = nc::Vector3{0.0f, 5.0f, -11.0f},
         .rotation = nc::Quaternion::FromEulerAngles(0.35f, 0.0f, 0.0f),
         .tag = MainCameraTag,
-        .layer = Layer::DoNotSerialize
+        .flags = nc::Entity::Flags::NoSerialize
     });
     const auto camera = world.Emplace<FollowCamera>(cameraHandle, character);
     world.Emplace<nc::FrameLogic>(cameraHandle, nc::InvokeFreeComponent<FollowCamera>());

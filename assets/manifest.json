@@ -6,6 +6,11 @@
     "concave-collider": [],
     "cube-map": [],
     "hull-collider": [],
-    "mesh": [],
+    "mesh": [
+        {
+            "sourcePath": "raw/mesh/tree.fbx",
+            "assetName": "tree"
+        }
+    ],
     "texture": []
 }

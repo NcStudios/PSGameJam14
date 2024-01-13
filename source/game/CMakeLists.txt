@@ -1,9 +1,10 @@
 add_executable(${GAME}
         GameMain.cpp
+        Assets.cpp
         Character.cpp
         Core.cpp
         MainScene.cpp
-        Node.cpp
+        Tree.cpp
 )
 
 target_compile_options(${GAME}
