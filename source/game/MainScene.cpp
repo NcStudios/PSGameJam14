@@ -9,6 +9,9 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 {
     auto world = registry->GetEcs();
 
+    // not sure where this lives
+    static auto treeTracker = TreeTracker(registry->GetImpl());
+
     const auto light = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = nc::Vector3{1.20484f, 9.4f, -8.48875f},
