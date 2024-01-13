@@ -5,6 +5,7 @@ add_executable(${GAME}
         Core.cpp
         MainScene.cpp
         Tree.cpp
+        UI.cpp
 )
 
 target_compile_options(${GAME}
