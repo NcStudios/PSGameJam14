@@ -1,8 +1,5 @@
 # Must Do
 
-update do not serialize layer to be a flag
-
-
 # Nice to have
 Particle alpha blending?
   overlap of transparent particle textures is wonk
@@ -13,6 +10,8 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+update do not serialize layer to be a flag
+
 won't fix: Enable SkeletalAnimator
 
 NcGraphics Registry fwd decl

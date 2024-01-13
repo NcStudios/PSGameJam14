@@ -3,6 +3,7 @@
 #include "ncengine/NcEngine.h"
 #include "ncengine/asset/NcAsset.h"
 #include "ncengine/asset/Assets.h"
+#include "ncengine/asset/DefaultAssets.h"
 #include "ncengine/audio/AudioSource.h"
 #include "ncengine/audio/NcAudio.h"
 #include "ncengine/ecs/Logic.h"
@@ -31,12 +32,9 @@ struct Layer
 {
     static constexpr uint8_t None = 0;
     static constexpr uint8_t Character = 1;
-    static constexpr uint8_t Healthy = 2;
-    static constexpr uint8_t Sickly = 3;
-
-    // Entity layer internally ignored by engine serialization
-    // probably change engine-side
-    static constexpr uint8_t DoNotSerialize = UINT8_MAX;
+    static constexpr uint8_t HealthyTree = 2;
+    static constexpr uint8_t InfectedTree = 3;
+    static constexpr uint8_t Spreader = 4;
 };
 
 
