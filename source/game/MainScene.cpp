@@ -1,4 +1,5 @@
 #include "MainScene.h"
+#include "Assets.h"
 #include "Character.h"
 #include "Core.h"
 #include "Tree.h"
@@ -39,6 +40,16 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::graphics::MeshRenderer>(floor);
     world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{});
     world.Emplace<nc::physics::PhysicsBody>(floor, nc::physics::PhysicsProperties{.isKinematic = true});
+
+    const auto bus = world.Emplace<nc::Entity>(nc::EntityInfo
+    {
+        .position = nc::Vector3::Zero(),
+        .scale = nc::Vector3{1.0f, 1.0f, 1.0f},
+        .tag = "Bus",
+        .flags = nc::Entity::Flags::NoSerialize
+    });
+
+    world.Emplace<nc::graphics::ToonRenderer>(bus, BusFrontMesh);
 
     const auto treeRotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0f, 0.0f);
     CreateHealthyTree(world, nc::Vector3{10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One());
