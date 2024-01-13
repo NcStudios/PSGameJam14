@@ -34,38 +34,6 @@ auto ToSphereProperties(const nc::physics::VolumeInfo& in) noexcept -> nc::physi
 
 namespace game
 {
-void RegisterTreeComponentes(nc::ecs::ComponentRegistry& registry)
-{
-    const auto maxEntities = registry.GetMaxEntities();
-    registry.RegisterType<game::HealthyTree>(maxEntities, nc::ComponentHandler<game::HealthyTree>{
-        .name = "HealthyTree",
-        .drawUI = [](HealthyTree&) {}
-    });
-
-    registry.RegisterType<game::InfectedTree>(maxEntities, nc::ComponentHandler<game::InfectedTree>{
-        .name = "InfectedTree",
-        .drawUI = [](InfectedTree&) {}
-    });
-}
-
-void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
-{
-    auto world = registry->GetEcs();
-    for (auto& infected : world.GetAll<InfectedTree>())
-    {
-        infected.Update(world, dt);
-    }
-
-    for (auto& healthy : world.GetAll<HealthyTree>())
-    {
-        healthy.Update(dt);
-        if (healthy.ShouldMorph())
-        {
-            UpdateTree(healthy.ParentEntity(), world);
-        }
-    }
-}
-
 void InfectedTree::Update(nc::ecs::Ecs world, float dt)
 {
     m_timeSinceLastSpread += dt;
@@ -175,5 +143,37 @@ void UpdateTree(nc::Entity target, nc::ecs::Ecs world) // don't need?
     const auto scl = transform->Scale();
     world.Remove<nc::Entity>(target);
     CreateSicklyTree(world, pos, rot, scl);
+}
+
+void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry)
+{
+    const auto maxEntities = registry.GetMaxEntities();
+    registry.RegisterType<game::HealthyTree>(maxEntities, nc::ComponentHandler<game::HealthyTree>{
+        .name = "HealthyTree",
+        .drawUI = [](HealthyTree&) {}
+    });
+
+    registry.RegisterType<game::InfectedTree>(maxEntities, nc::ComponentHandler<game::InfectedTree>{
+        .name = "InfectedTree",
+        .drawUI = [](InfectedTree&) {}
+    });
+}
+
+void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
+{
+    auto world = registry->GetEcs();
+    for (auto& infected : world.GetAll<InfectedTree>())
+    {
+        infected.Update(world, dt);
+    }
+
+    for (auto& healthy : world.GetAll<HealthyTree>())
+    {
+        healthy.Update(dt);
+        if (healthy.ShouldMorph())
+        {
+            UpdateTree(healthy.ParentEntity(), world);
+        }
+    }
 }
 } // namespace game

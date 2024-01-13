@@ -51,7 +51,7 @@ class InfectedTree : public nc::ComponentBase
         float m_timeSinceLastSpread = 0.0f;
 };
 
-void RegisterTreeComponentes(nc::ecs::ComponentRegistry& registry);
+void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry);
 void ProcessTrees(nc::Entity, nc::Registry* registry, float dt);
 
 auto CreateHealthyTree(nc::ecs::Ecs world,

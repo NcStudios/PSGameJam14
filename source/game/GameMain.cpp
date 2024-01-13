@@ -18,12 +18,8 @@ int main()
         engine = nc::InitializeNcEngine(config);
         nc::ui::SetDefaultUIStyle();
         game::LoadAssets(config.assetSettings);
-
-        auto& registry = engine->GetRegistry()->GetImpl();
-        game::RegisterTreeComponentes(registry);
-
-
-
+        auto& world = engine->GetRegistry()->GetImpl();
+        game::RegisterTreeComponents(world);
         engine->Start(std::make_unique<game::MainScene>());
     }
     catch (std::exception& e)
