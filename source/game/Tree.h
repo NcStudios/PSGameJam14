@@ -2,6 +2,10 @@
 
 #include "Core.h"
 
+#include "ncengine/utility/Signal.h"
+
+#include <iostream>
+
 namespace game
 {
 class HealthyTree : public nc::ComponentBase
@@ -49,6 +53,55 @@ class InfectedTree : public nc::ComponentBase
 
     private:
         float m_timeSinceLastSpread = 0.0f;
+};
+} // namespace game
+
+namespace nc
+{
+// Really annoying we have to put this in nc namespace, consider updating
+template<>
+struct StoragePolicy<game::HealthyTree> : DefaultStoragePolicy
+{
+    static constexpr bool EnableOnAddCallbacks = true;
+    static constexpr bool EnableOnRemoveCallbacks = true;
+};
+
+template<>
+struct StoragePolicy<game::InfectedTree> : DefaultStoragePolicy
+{
+    static constexpr bool EnableOnAddCallbacks = true;
+    static constexpr bool EnableOnRemoveCallbacks = true;
+};
+} // namespace nc
+
+namespace game
+{
+class TreeTracker
+{
+    public:
+        TreeTracker(nc::ecs::ComponentRegistry& registry)
+            : m_onAddHealthyConnection{registry.GetPool<HealthyTree>().OnAdd().Connect(this, &TreeTracker::AddHealthy)},
+              m_onRemoveHealthyConnection{registry.GetPool<HealthyTree>().OnRemove().Connect(this, &TreeTracker::RemoveHealthy)},
+              m_onAddInfectedConnection{registry.GetPool<InfectedTree>().OnAdd().Connect(this, &TreeTracker::AddInfected)},
+              m_onRemoveInfectedConnection{registry.GetPool<InfectedTree>().OnRemove().Connect(this, &TreeTracker::RemoveInfected)}
+        {
+        }
+
+        auto GetHealthyCount() const noexcept { return m_numHealthy; }
+        auto GetInfectedCount() const noexcept { return m_numInfected; }
+
+        void AddHealthy(HealthyTree&) { std::cerr << "add healthy\n"; ++m_numHealthy; }
+        void AddInfected(InfectedTree&) { std::cerr << "add infected\n"; ++m_numInfected; }
+        void RemoveHealthy(nc::Entity) { std::cerr << "remove healthy\n"; NC_ASSERT(m_numHealthy > 0, "invalid design"); --m_numHealthy; }
+        void RemoveInfected(nc::Entity) { std::cerr << "remove infefcted\n"; NC_ASSERT(m_numInfected > 0, "invalid design");--m_numInfected; }
+
+    private:
+        size_t m_numHealthy = 0;
+        size_t m_numInfected = 0;
+        nc::Connection<HealthyTree&> m_onAddHealthyConnection;
+        nc::Connection<nc::Entity> m_onRemoveHealthyConnection;
+        nc::Connection<InfectedTree&> m_onAddInfectedConnection;
+        nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
 };
 
 void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry);
