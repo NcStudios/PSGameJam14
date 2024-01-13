@@ -110,6 +110,7 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
                        const nc::Vector3& scale,
                        const std::string& tag,
                        const std::string& mesh,
+                       const nc::graphics::PbrMaterial& material, // We may want to keep this guy PBR rendered because toon shading doesn't play well with inorganic shapes
                        float mass) -> nc::Entity
 {
     const auto node = world.Emplace<nc::Entity>(nc::EntityInfo
@@ -121,7 +122,7 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
-    world.Emplace<nc::graphics::MeshRenderer>(node, mesh); // prob add material too
+    world.Emplace<nc::graphics::MeshRenderer>(node, mesh, material);
     world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{.center = nc::Vector3{}, .extents = nc::Vector3{2.0f, 2.0f, 4.0f}});
     world.Emplace<nc::physics::PhysicsBody>(node, nc::physics::PhysicsProperties{.mass = mass});
     return node;
@@ -129,10 +130,10 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
 
 auto CreateVehicle(const nc::Vector3& position, nc::ecs::Ecs world, nc::ModuleProvider modules) -> nc::Entity
 {
-    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::CharacterTag, game::BusFrontMesh, 5.0f);
-    const auto second = CreateVehicleNode(world, position - nc::Vector3::Front() * 1.62f, nc::Vector3::Splat(0.8f), "BoxCar", game::BusFrontMesh, 3.0f);
-    const auto third = CreateVehicleNode(world, position - nc::Vector3::Front() * 2.88f, nc::Vector3::Splat(0.6f), "BoxCar", game::BusFrontMesh, 1.0f);
-    const auto fourth = CreateVehicleNode(world, position - nc::Vector3::Front() * 3.78f, nc::Vector3::Splat(0.4f), "BoxCar", game::BusFrontMesh, 0.2f);
+    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::CharacterTag, game::BusFrontMesh, game::BusFrontMaterial, 5.0f);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3::Front() * 1.62f, nc::Vector3::Splat(0.8f), "BoxCar", game::BusCarMesh, game::BusCarMaterial, 3.0f);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3::Front() * 2.88f, nc::Vector3::Splat(0.6f), "BoxCar", game::BusCarMesh, game::BusCarMaterial, 1.0f);
+    const auto fourth = CreateVehicleNode(world, position - nc::Vector3::Front() * 3.78f, nc::Vector3::Splat(0.4f), "BoxCar", game::BusCarMesh, game::BusCarMaterial, 0.2f);
 
     constexpr auto bias = 0.2f;
     constexpr auto softness = 0.1f;

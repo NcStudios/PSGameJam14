@@ -14,7 +14,28 @@
         {
             "sourcePath": "raw/mesh/bus.fbx",
             "assetName": "mesh/bus_front"
+        },
+        {
+            "sourcePath": "raw/mesh/bus_car.fbx",
+            "assetName": "mesh/bus_car"
         }
     ],
-    "texture": []
+    "texture": [
+        {
+            "sourcePath": "raw/texture/bus_base_color.png",
+            "assetName": "texture/bus_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/bus_car_base_color.png",
+            "assetName": "texture/bus_car_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/hatch.jpg",
+            "assetName": "texture/hatch"
+        },
+        {
+            "sourcePath": "raw/texture/overlay.png",
+            "assetName": "texture/overlay"
+        }
+    ]
 }
