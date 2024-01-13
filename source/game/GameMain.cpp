@@ -1,9 +1,9 @@
 #include "MainScene.h"
 #include "Assets.h"
 #include "Tree.h"
+#include "UI.h"
 
 #include "ncengine/NcEngine.h"
-#include "ncengine/ui/ImGuiStyle.h"
 #include "ncengine/utility/Log.h"
 
 #include <iostream>
@@ -16,7 +16,7 @@ int main()
     {
         const auto config = nc::config::Load("config.ini");
         engine = nc::InitializeNcEngine(config);
-        nc::ui::SetDefaultUIStyle();
+        auto ui = game::GameUI{engine.get()};
         game::LoadAssets(config.assetSettings);
         auto& world = engine->GetRegistry()->GetImpl();
         game::RegisterTreeComponents(world);
