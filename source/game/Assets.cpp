@@ -39,5 +39,6 @@ namespace game
 void LoadAssets(const nc::config::AssetSettings& settings)
 {
     ::LoadAssets(settings.meshesPath, nc::AssetFlags::None, &nc::LoadMeshAssets);
+    ::LoadAssets(settings.texturesPath, nc::AssetFlags::None, &nc::LoadTextureAssets);
 }
 } // namespace game
