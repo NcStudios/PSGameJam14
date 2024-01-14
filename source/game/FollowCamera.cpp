@@ -41,7 +41,7 @@ auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, nc::Entity 
     {
         .position = nc::Vector3{0.0f, 5.0f, -11.0f},
         .rotation = nc::Quaternion::FromEulerAngles(0.35f, 0.0f, 0.0f),
-        .tag = MainCameraTag,
+        .tag = tag::MainCamera,
         .flags = nc::Entity::Flags::NoSerialize
     });
 

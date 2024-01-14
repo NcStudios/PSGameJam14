@@ -1,15 +1,13 @@
 #include "UI.h"
+#include "Core.h"
 #include "Event.h"
 
-#include "ncengine/graphics/NcGraphics.h"
-#include "ncengine/input/Input.h"
 #include "ncengine/ui/ImGuiStyle.h"
 #include "ncengine/ui/ImGuiUtility.h"
 #include "ncengine/window/Window.h"
 
 namespace
 {
-constexpr auto g_openMenuHotkey = nc::input::KeyCode::Escape;
 constexpr auto g_narrativeWindowHeight = 100.0f;
 constexpr auto g_menuSize = ImVec2{300.0f, 145.0f};
 constexpr auto g_menuButtonSize = ImVec2{285.0f, 40.0f};
@@ -32,7 +30,7 @@ void GameUI::Draw()
     const auto windowDimensions = nc::window::GetDimensions();
     const auto screenExtent = nc::window::GetScreenExtent();
 
-    if (nc::input::KeyDown(g_openMenuHotkey))
+    if (nc::input::KeyDown(hotkey::ToggleMenu))
     {
         m_menuOpen = !m_menuOpen;
     }

@@ -8,7 +8,7 @@ Trigger win/lose condition
   maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
 
 Add some interaction between vehicle and infected trees
-  like sit next to tree, hold button, wait for it to turn
+  controls + purifier spawning added, still need to change collision mechanic to time-based
 
 Improve movement/camera
   improve general feel and steering control

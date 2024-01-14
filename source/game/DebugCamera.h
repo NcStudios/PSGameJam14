@@ -1,10 +1,8 @@
 #pragma once
 
-#include "ncengine/ecs/Logic.h"
-#include "ncengine/ecs/Registry.h"
-#include "ncengine/graphics/NcGraphics.h"
+#include "Core.h"
+
 #include "ncengine/graphics/SceneNavigationCamera.h"
-#include "ncengine/input/Input.h"
 
 namespace game
 {
@@ -22,7 +20,7 @@ inline void CreateDebugCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx)
     nc::graphics::Camera* prevCam = nullptr;
     auto toggleFunc = [prevCam, gfx, enabled = false](nc::Entity self, nc::Registry* registry, float dt) mutable
     {
-        if (nc::input::KeyDown(nc::input::KeyCode::F5))
+        if (nc::input::KeyDown(hotkey::ToggleDebugCamera))
         {
             if (enabled)
             {
