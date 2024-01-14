@@ -43,11 +43,6 @@ class TreeTracker
         nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
 };
 
-void FireEvent(Event event)
-{
-    GameplayOrchestrator::Instance().FireEvent(event);
-}
-
 GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, GameUI* ui)
     : m_engine{engine},
       m_ui{ui},

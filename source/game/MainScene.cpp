@@ -3,8 +3,8 @@
 #include "Character.h"
 #include "Core.h"
 #include "DebugCamera.h"
+#include "Event.h"
 #include "FollowCamera.h"
-#include "GameplayOrchestrator.h"
 #include "Tree.h"
 
 namespace game
