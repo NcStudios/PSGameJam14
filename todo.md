@@ -1,12 +1,11 @@
 
 # Must Do
+Shadow wonkiness
 
 Split tree and character creation into two steps
   tree: base trees will be created from editor, with logic added after the fact
   vehicle: probably want to create the camera separately for the intro, and create
            the vehicle and update camera target after intro
-
-Infection particle spread effect
 
 Trigger win/lose condition
   maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
@@ -21,6 +20,8 @@ Improve movement/camera
   X max velocity
 
 Keep vehicle upright, or force back somehow
+  - can we restrict PhysicsBody freedom?
+    - is in world space, so must do x and z... its not the worst looking. could use as fallback, or maybe set to like 0.1f?
 
 Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
 
@@ -50,6 +51,9 @@ Visual representation of healthy/infected tree count (UI, but...) [not sure if '
 - Disinfect complete
 
 # Nice to have
+Window Icon
+  - need small + big, bring in stb to engine for loading
+
 Script intro cut scene in GameplayManager
 
 Dialog fwd/back buttons - might be annoying to have prev dialog removed on event
@@ -78,6 +82,8 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Infection particle spread effect
+
 Menu 'New Game' option
 
 Add character controller parts
