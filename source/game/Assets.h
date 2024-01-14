@@ -12,12 +12,14 @@ namespace game
 void LoadAssets(const nc::config::AssetSettings& settings);
 
 /** Meshes */
+constexpr auto Terrain01Mesh = "terrain01.nca";
 constexpr auto TreeMesh = "tree.nca";
 constexpr auto Tree01Mesh = "tree01.nca";
 constexpr auto BusFrontMesh = "bus_front.nca";
 constexpr auto BusCarMesh = "bus_car.nca";
 
 /** Textures */
+constexpr auto Terrain01Texture = "terrain01_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
 constexpr auto BusFrontTexture = "bus_base_color.nca";
 constexpr auto BusCarTexture = "bus_car_base_color.nca";

@@ -22,6 +22,10 @@
         {
             "sourcePath": "raw/mesh/bus_car.fbx",
             "assetName": "mesh/bus_car"
+        },
+        {
+            "sourcePath": "raw/mesh/terrain01.fbx",
+            "assetName": "mesh/terrain01"
         }
     ],
     "texture": [
@@ -44,6 +48,10 @@
         {
             "sourcePath": "raw/texture/tree01_base_color.png",
             "assetName": "texture/tree01_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/terrain01_base_color.png",
+            "assetName": "texture/terrain01_base_color"
         }
     ]
 }
