@@ -10,7 +10,34 @@
     ],
     "concave-collider": [],
     "cube-map": [],
-    "hull-collider": [],
+    "hull-collider": [
+        {
+            "sourcePath": "raw/mesh/terrain01_collider.fbx",
+            "assetName": "hull_collider/terrain01_collider"
+        }
+    ],
+    "mesh": [
+        {
+            "sourcePath": "raw/mesh/tree.fbx",
+            "assetName": "mesh/tree"
+        },
+        {
+            "sourcePath": "raw/mesh/tree01.fbx",
+            "assetName": "mesh/tree01"
+        },
+        {
+            "sourcePath": "raw/mesh/bus.fbx",
+            "assetName": "mesh/bus_front"
+        },
+        {
+            "sourcePath": "raw/mesh/bus_car.fbx",
+            "assetName": "mesh/bus_car"
+        },
+        {
+            "sourcePath": "raw/mesh/terrain01.fbx",
+            "assetName": "mesh/terrain01"
+        }
+    ],
     "texture": [
         {
             "sourcePath": "raw/texture/bus_base_color.png",
@@ -27,6 +54,14 @@
         {
             "sourcePath": "raw/texture/overlay.png",
             "assetName": "texture/overlay"
+        },
+        {
+            "sourcePath": "raw/texture/tree01_base_color.png",
+            "assetName": "texture/tree01_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/terrain01_base_color.png",
+            "assetName": "texture/terrain01_base_color"
         }
     ]
 }
