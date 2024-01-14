@@ -1,5 +1,7 @@
 
 # Must Do
+Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
+
 Shadow wonkiness
 
 Trigger win/lose condition
@@ -74,6 +76,9 @@ UI styling (just using engine defaults now)
   
 
 # Future Work
+Editor->AddEntity with layer/flag options
+
+Color utilities, espectially for setting point light props
 
 PhysicsBody::useGravity checkbox in editor broken
 default camera has funny aspect ratio problem?
