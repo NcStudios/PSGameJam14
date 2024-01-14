@@ -4,5 +4,5 @@
 
 namespace game
 {
-auto CreateCharacter(const nc::Vector3& position, nc::Registry* registry, nc::ModuleProvider modules) -> nc::Entity;
+auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::Vector3& position) -> nc::Entity;
 } // namespace game
