@@ -31,10 +31,11 @@ namespace game
 struct Layer
 {
     static constexpr uint8_t None = 0;
-    static constexpr uint8_t Character = 1;
-    static constexpr uint8_t HealthyTree = 2;
-    static constexpr uint8_t InfectedTree = 3;
-    static constexpr uint8_t Spreader = 4;
+    static constexpr uint8_t Default = 1;
+    static constexpr uint8_t Character = 2;
+    static constexpr uint8_t HealthyTree = 3;
+    static constexpr uint8_t InfectedTree = 4;
+    static constexpr uint8_t Spreader = 5;
 };
 
 constexpr auto MapExtent = 300.0f;

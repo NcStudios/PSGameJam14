@@ -2,24 +2,15 @@
     "globalOptions": {
         "outputDirectory": ".\\nca"
     },
-    "audio-clip": [],
+    "audio-clip": [
+        {
+            "sourcePath": "raw/audio_clip/forest.wav",
+            "assetName": "audio_clip/forest"
+        }
+    ],
     "concave-collider": [],
     "cube-map": [],
     "hull-collider": [],
-    "mesh": [
-        {
-            "sourcePath": "raw/mesh/tree.fbx",
-            "assetName": "mesh/tree"
-        },
-        {
-            "sourcePath": "raw/mesh/bus.fbx",
-            "assetName": "mesh/bus_front"
-        },
-        {
-            "sourcePath": "raw/mesh/bus_car.fbx",
-            "assetName": "mesh/bus_car"
-        }
-    ],
     "texture": [
         {
             "sourcePath": "raw/texture/bus_base_color.png",
