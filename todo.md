@@ -2,11 +2,6 @@
 # Must Do
 Shadow wonkiness
 
-Split tree and character creation into two steps
-  tree: base trees will be created from editor, with logic added after the fact
-  vehicle: probably want to create the camera separately for the intro, and create
-           the vehicle and update camera target after intro
-
 Trigger win/lose condition
   maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
 
@@ -15,6 +10,9 @@ Add some interaction between vehicle and infected trees
 
 Improve movement/camera
   improve general feel and steering control
+    - tough stuff without proper vehicle physics; kind of interesting to use capsule colliders for back cars.
+      need to restrict PB freedom though. this gives a sort of springy effect that's pretty worm-like, but
+      would need more fiddling to make fun rather than annoying
   make sure follow distance looks good (requires rough to-scale assets for testing)
   X jump isn't infinite
   X max velocity
@@ -82,6 +80,11 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Split tree and character creation into two steps
+  tree: base trees will be created from editor, with logic added after the fact
+  vehicle: probably want to create the camera separately for the intro, and create
+           the vehicle and update camera target after intro
+
 Infection particle spread effect
 
 Menu 'New Game' option

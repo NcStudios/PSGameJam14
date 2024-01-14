@@ -105,18 +105,26 @@ class TreeTracker
         nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
 };
 
+// Create entity with renderer + collider
+auto CreateTreeBase(nc::ecs::Ecs world,
+                    const nc::Vector3& position,
+                    const nc::Quaternion& rotation,
+                    const nc::Vector3& scale,
+                    const std::string& tag,
+                    nc::Entity::layer_type layer,
+                    const std::string& mesh) -> nc::Entity;
+
+// Attach logic to anything with HealthyTree/InfectedTree layers
+void FinalizeTrees(nc::ecs::Ecs world);
+
+// Replace target with a healthy tree
+void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target);
+
+// Replace target with an infected tree
+void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target);
+
 void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry);
+
+// System for tree update loop
 void ProcessTrees(nc::Entity, nc::Registry* registry, float dt);
-
-auto CreateHealthyTree(nc::ecs::Ecs world,
-                       const nc::Vector3& position,
-                       const nc::Quaternion& rotation,
-                       const nc::Vector3& scale) -> nc::Entity;
-
-auto CreateSicklyTree(nc::ecs::Ecs world,
-                      const nc::Vector3& position,
-                      const nc::Quaternion& rotation,
-                      const nc::Vector3& scale) -> nc::Entity;
-
-void UpdateTree(nc::Entity target, nc::ecs::Ecs world);
 } // namespace game
