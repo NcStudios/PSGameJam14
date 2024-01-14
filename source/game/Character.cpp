@@ -110,7 +110,7 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
                        const nc::Vector3& scale,
                        const std::string& tag,
                        const std::string& mesh,
-                       const nc::graphics::PbrMaterial& material, // We may want to keep this guy PBR rendered because toon shading doesn't play well with inorganic shapes
+                       const nc::graphics::ToonMaterial& material, 
                        float mass) -> nc::Entity
 {
     const auto node = world.Emplace<nc::Entity>(nc::EntityInfo
@@ -122,7 +122,7 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
-    world.Emplace<nc::graphics::MeshRenderer>(node, mesh, material);
+    world.Emplace<nc::graphics::ToonRenderer>(node, mesh, material);
     world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{.center = nc::Vector3{}, .extents = nc::Vector3{2.0f, 2.0f, 4.0f}});
     world.Emplace<nc::physics::PhysicsBody>(node, nc::physics::PhysicsProperties{.mass = mass});
     return node;

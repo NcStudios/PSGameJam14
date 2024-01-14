@@ -12,6 +12,10 @@
             "assetName": "mesh/tree"
         },
         {
+            "sourcePath": "raw/mesh/tree01.fbx",
+            "assetName": "mesh/tree01"
+        },
+        {
             "sourcePath": "raw/mesh/bus.fbx",
             "assetName": "mesh/bus_front"
         },
@@ -36,6 +40,10 @@
         {
             "sourcePath": "raw/texture/overlay.png",
             "assetName": "texture/overlay"
+        },
+        {
+            "sourcePath": "raw/texture/tree01_base_color.png",
+            "assetName": "texture/tree01_base_color"
         }
     ]
 }

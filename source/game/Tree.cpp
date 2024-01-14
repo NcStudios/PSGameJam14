@@ -67,7 +67,7 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     }
 
     emitter->SetInfo(particleInfo);
-}
+}5
 
 auto CreateHealthyTree(nc::ecs::Ecs world,
                        const nc::Vector3& position,
