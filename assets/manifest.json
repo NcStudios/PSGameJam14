@@ -10,7 +10,12 @@
     ],
     "concave-collider": [],
     "cube-map": [],
-    "hull-collider": [],
+    "hull-collider": [
+        {
+            "sourcePath": "raw/mesh/terrain01_collider.fbx",
+            "assetName": "hull_collider/terrain01_collider"
+        }
+    ],
     "mesh": [
         {
             "sourcePath": "raw/mesh/tree.fbx",

@@ -11,6 +11,9 @@ namespace game
 {
 void LoadAssets(const nc::config::AssetSettings& settings);
 
+/** Colliders */
+constexpr auto Terrain01Collider = "terrain01_collider.nca";
+
 /** SFX */
 constexpr auto ForestAmbience = "forest.nca";
 
