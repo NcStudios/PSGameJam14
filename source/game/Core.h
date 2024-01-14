@@ -43,7 +43,10 @@ const auto MapRadius = std::sqrt(2.0f * (MapHalfExtent * MapHalfExtent));
 
 // Always set main camera to this tag
 const auto MainCameraTag = std::string{"Camera"};
-const auto CharacterTag = std::string{"Character"};
+const auto VehicleFrontTag = std::string{"VehicleFront"};
+const auto VehicleCarTag = std::string{"BoxCar"};
+const auto HealthyTreeTag = std::string{"HealthyTree"};
+const auto InfectedTreeTag = std::string{"InfectedTree"};
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
 } // namespace game

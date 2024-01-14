@@ -1,30 +1,11 @@
 #include "Tree.h"
 #include "Assets.h"
 
+#include <algorithm>
+#include <ranges>
+
 namespace
 {
-auto CreateTreeBase(nc::ecs::Ecs world,
-                    const nc::Vector3& position,
-                    const nc::Quaternion& rotation,
-                    const nc::Vector3& scale,
-                    nc::Entity::layer_type layer,
-                    const std::string& mesh) -> nc::Entity
-{
-    const auto tree = world.Emplace<nc::Entity>(nc::EntityInfo{
-        .position = position,
-        .rotation = rotation,
-        .scale = scale,
-        .tag = "Tree",
-        .layer = layer,
-        .flags = nc::Entity::Flags::NoSerialize
-    });
-
-    world.Emplace<nc::graphics::ToonRenderer>(tree, mesh);
-    world.Emplace<nc::physics::Collider>(tree, nc::physics::BoxProperties{});
-    world.Emplace<nc::physics::PhysicsBody>(tree, nc::physics::PhysicsProperties{.isKinematic = true});
-    return tree;
-}
-
 // Copied from engine, consider exposing this somehow
 auto ToSphereProperties(const nc::physics::VolumeInfo& in) noexcept -> nc::physics::SphereProperties
 {
@@ -69,14 +50,32 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     emitter->SetInfo(particleInfo);
 }5
 
-auto CreateHealthyTree(nc::ecs::Ecs world,
-                       const nc::Vector3& position,
-                       const nc::Quaternion& rotation,
-                       const nc::Vector3& scale) -> nc::Entity
+auto CreateTreeBase(nc::ecs::Ecs world,
+                    const nc::Vector3& position,
+                    const nc::Quaternion& rotation,
+                    const nc::Vector3& scale,
+                    const std::string& tag,
+                    nc::Entity::layer_type layer,
+                    const std::string& mesh) -> nc::Entity
 {
-    const auto tree = ::CreateTreeBase(world, position, rotation, scale, Layer::HealthyTree, TreeMesh);
-    world.Emplace<HealthyTree>(tree);
+    const auto tree = world.Emplace<nc::Entity>(nc::EntityInfo{
+        .position = position,
+        .rotation = rotation,
+        .scale = scale,
+        .tag = tag,
+        .layer = layer,
+        .flags = nc::Entity::Flags::NoSerialize
+    });
 
+    world.Emplace<nc::graphics::ToonRenderer>(tree, mesh);
+    world.Emplace<nc::physics::Collider>(tree, nc::physics::BoxProperties{});
+    world.Emplace<nc::physics::PhysicsBody>(tree, nc::physics::PhysicsProperties{.isKinematic = true});
+    return tree;
+}
+
+void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
+{
+    world.Emplace<HealthyTree>(tree);
     auto onTriggerEnter = [](nc::Entity self, nc::Entity other, nc::Registry* registry)
     {
         if (other.Layer() != Layer::Spreader)
@@ -98,17 +97,11 @@ auto CreateHealthyTree(nc::ecs::Ecs world,
     };
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, onTriggerExit);
-    return tree;
 }
 
-auto CreateSicklyTree(nc::ecs::Ecs world,
-                      const nc::Vector3& position,
-                      const nc::Quaternion& rotation,
-                      const nc::Vector3& scale) -> nc::Entity
+void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
 {
-    const auto tree = ::CreateTreeBase(world, position, rotation, scale, Layer::InfectedTree, nc::asset::SphereMesh);
     world.Emplace<InfectedTree>(tree);
-
     // may want two emitters with different particles, like an orb and smoke/haze
     world.Emplace<nc::graphics::ParticleEmitter>(tree, nc::graphics::ParticleInfo{
         .emission = nc::graphics::ParticleEmissionInfo{
@@ -137,12 +130,7 @@ auto CreateSicklyTree(nc::ecs::Ecs world,
             return;
 
         // maybe want this to be time-related as well. if so, will have to be moved to system
-        const auto transform = registry->Get<nc::Transform>(self);
-        const auto pos = transform->Position();
-        const auto rot = transform->Rotation();
-        const auto scl = transform->Scale();
-        registry->Remove<nc::Entity>(self);
-        CreateHealthyTree(registry->GetEcs(), pos, rot, scl);
+        MorphTreeToHealthy(registry->GetEcs(), self);
     };
 
     world.Emplace<nc::CollisionLogic>(tree, onCollisionEnter, nullptr, nullptr, nullptr);
@@ -155,10 +143,31 @@ auto CreateSicklyTree(nc::ecs::Ecs world,
     });
 
     world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
-    return tree;
 }
 
-void UpdateTree(nc::Entity target, nc::ecs::Ecs world) // don't need?
+void FinalizeTrees(nc::ecs::Ecs world)
+{
+    for (auto entity : world.GetAll<nc::Entity>())
+    {
+        if (entity.Layer() == Layer::HealthyTree)
+            AttachHealthyTree(world, entity);
+        else if (entity.Layer() == Layer::InfectedTree)
+            AttachInfectedTree(world, entity);
+    }
+}
+
+void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target)
+{
+    const auto transform = world.Get<nc::Transform>(target);
+    const auto pos = transform->Position();
+    const auto rot = transform->Rotation();
+    const auto scl = transform->Scale();
+    world.Remove<nc::Entity>(target);
+    auto tree = CreateTreeBase(world, pos, rot, scl, HealthyTreeTag, Layer::HealthyTree, TreeMesh);
+    AttachHealthyTree(world, tree);
+}
+
+void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target)
 {
     const auto transform = world.Get<nc::Transform>(target);
     NC_ASSERT(transform, "expected transform");
@@ -166,7 +175,8 @@ void UpdateTree(nc::Entity target, nc::ecs::Ecs world) // don't need?
     const auto rot = transform->Rotation();
     const auto scl = transform->Scale();
     world.Remove<nc::Entity>(target);
-    CreateSicklyTree(world, pos, rot, scl);
+    auto tree = CreateTreeBase(world, pos, rot, scl, InfectedTreeTag, Layer::InfectedTree, nc::asset::SphereMesh);
+    AttachInfectedTree(world, tree);
 }
 
 void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry)
@@ -196,7 +206,7 @@ void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
         healthy.Update(dt);
         if (healthy.ShouldMorph())
         {
-            UpdateTree(healthy.ParentEntity(), world);
+            MorphTreeToInfected(world, healthy.ParentEntity());
         }
     }
 }

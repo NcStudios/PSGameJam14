@@ -77,46 +77,26 @@ struct StoragePolicy<game::InfectedTree> : DefaultStoragePolicy
 
 namespace game
 {
-class TreeTracker
-{
-    public:
-        TreeTracker(nc::ecs::ComponentRegistry& registry)
-            : m_onAddHealthyConnection{registry.GetPool<HealthyTree>().OnAdd().Connect(this, &TreeTracker::AddHealthy)},
-              m_onRemoveHealthyConnection{registry.GetPool<HealthyTree>().OnRemove().Connect(this, &TreeTracker::RemoveHealthy)},
-              m_onAddInfectedConnection{registry.GetPool<InfectedTree>().OnAdd().Connect(this, &TreeTracker::AddInfected)},
-              m_onRemoveInfectedConnection{registry.GetPool<InfectedTree>().OnRemove().Connect(this, &TreeTracker::RemoveInfected)}
-        {
-        }
+// Create entity with renderer + collider
+auto CreateTreeBase(nc::ecs::Ecs world,
+                    const nc::Vector3& position,
+                    const nc::Quaternion& rotation,
+                    const nc::Vector3& scale,
+                    const std::string& tag,
+                    nc::Entity::layer_type layer,
+                    const std::string& mesh) -> nc::Entity;
 
-        auto GetHealthyCount() const noexcept { return m_numHealthy; }
-        auto GetInfectedCount() const noexcept { return m_numInfected; }
+// Attach logic to anything with HealthyTree/InfectedTree layers
+void FinalizeTrees(nc::ecs::Ecs world);
 
-        void AddHealthy(HealthyTree&) { std::cerr << "add healthy\n"; ++m_numHealthy; }
-        void AddInfected(InfectedTree&) { std::cerr << "add infected\n"; ++m_numInfected; }
-        void RemoveHealthy(nc::Entity) { std::cerr << "remove healthy\n"; NC_ASSERT(m_numHealthy > 0, "invalid design"); --m_numHealthy; }
-        void RemoveInfected(nc::Entity) { std::cerr << "remove infefcted\n"; NC_ASSERT(m_numInfected > 0, "invalid design");--m_numInfected; }
+// Replace target with a healthy tree
+void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target);
 
-    private:
-        size_t m_numHealthy = 0;
-        size_t m_numInfected = 0;
-        nc::Connection<HealthyTree&> m_onAddHealthyConnection;
-        nc::Connection<nc::Entity> m_onRemoveHealthyConnection;
-        nc::Connection<InfectedTree&> m_onAddInfectedConnection;
-        nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
-};
+// Replace target with an infected tree
+void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target);
 
 void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry);
+
+// System for tree update loop
 void ProcessTrees(nc::Entity, nc::Registry* registry, float dt);
-
-auto CreateHealthyTree(nc::ecs::Ecs world,
-                       const nc::Vector3& position,
-                       const nc::Quaternion& rotation,
-                       const nc::Vector3& scale) -> nc::Entity;
-
-auto CreateSicklyTree(nc::ecs::Ecs world,
-                      const nc::Vector3& position,
-                      const nc::Quaternion& rotation,
-                      const nc::Vector3& scale) -> nc::Entity;
-
-void UpdateTree(nc::Entity target, nc::ecs::Ecs world);
 } // namespace game
