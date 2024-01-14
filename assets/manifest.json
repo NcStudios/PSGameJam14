@@ -2,7 +2,12 @@
     "globalOptions": {
         "outputDirectory": ".\\nca"
     },
-    "audio-clip": [],
+    "audio-clip": [
+        {
+            "sourcePath": "raw/audio_clip/forest.wav",
+            "assetName": "audio_clip/forest"
+        }
+    ],
     "concave-collider": [],
     "cube-map": [],
     "hull-collider": [],

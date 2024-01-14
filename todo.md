@@ -1,12 +1,14 @@
 
 # Must Do
+Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
+
 Shadow wonkiness
 
 Trigger win/lose condition
   maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
 
 Add some interaction between vehicle and infected trees
-  like sit next to tree, hold button, wait for it to turn
+  controls + purifier spawning added, still need to change collision mechanic to time-based
 
 Improve movement/camera
   improve general feel and steering control
@@ -74,6 +76,9 @@ UI styling (just using engine defaults now)
   
 
 # Future Work
+Editor->AddEntity with layer/flag options
+
+Color utilities, espectially for setting point light props
 
 PhysicsBody::useGravity checkbox in editor broken
 default camera has funny aspect ratio problem?

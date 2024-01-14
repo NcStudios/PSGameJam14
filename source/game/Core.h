@@ -28,25 +28,54 @@
 
 namespace game
 {
-struct Layer
+namespace layer
 {
-    static constexpr uint8_t None = 0;
-    static constexpr uint8_t Character = 1;
-    static constexpr uint8_t HealthyTree = 2;
-    static constexpr uint8_t InfectedTree = 3;
-    static constexpr uint8_t Spreader = 4;
-};
+// IMPORTANT! Do not change layer values, else serialized work will be garbage!
+constexpr uint8_t None = 0;
+constexpr uint8_t Default = 1;
+constexpr uint8_t Character = 2;
+constexpr uint8_t HealthyTree = 3;
+constexpr uint8_t InfectedTree = 4;
+constexpr uint8_t Spreader = 5;
+constexpr uint8_t Purifier = 6;
+} // namespace layer
 
-constexpr auto MapExtent = 300.0f;
-constexpr auto MapHalfExtent = MapExtent * 0.5f;
-const auto MapRadius = std::sqrt(2.0f * (MapHalfExtent * MapHalfExtent));
+namespace hotkey
+{
+// Character Controls
+constexpr auto Forward = nc::input::KeyCode::W;
+constexpr auto Back = nc::input::KeyCode::S;
+constexpr auto Left = nc::input::KeyCode::A;
+constexpr auto Right = nc::input::KeyCode::D;
+constexpr auto Jump = nc::input::KeyCode::Space;
+constexpr auto Purify = nc::input::KeyCode::LeftShift;
+
+// General Controls
+constexpr auto ToggleMenu = nc::input::KeyCode::Escape;
+
+// Debug Controls
+constexpr auto ToggleDebugCamera = nc::input::KeyCode::F5;
+} // namespace hotkey
+
+namespace map
+{
+constexpr auto Extent = 300.0f;
+constexpr auto HalfExtent = Extent * 0.5f;
+const auto Radius = std::sqrt(2.0f * (HalfExtent * HalfExtent));
+} // namespace map
 
 // Always set main camera to this tag
-const auto MainCameraTag = std::string{"Camera"};
-const auto VehicleFrontTag = std::string{"VehicleFront"};
-const auto VehicleCarTag = std::string{"BoxCar"};
-const auto HealthyTreeTag = std::string{"HealthyTree"};
-const auto InfectedTreeTag = std::string{"InfectedTree"};
+namespace tag
+{
+// IMPORTANT! Do not change tag values, else serialized work will be garbage!
+const auto MainCamera = std::string{"Camera"};
+const auto VehicleFront = std::string{"VehicleFront"};
+const auto VehicleCar = std::string{"BoxCar"};
+const auto HealthyTree = std::string{"HealthyTree"};
+const auto InfectedTree = std::string{"InfectedTree"};
+const auto Spreader = std::string{"Spreader"};
+const auto Purifier = std::string{"Purifier"};
+} // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
 } // namespace game

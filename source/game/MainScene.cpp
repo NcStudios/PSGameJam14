@@ -7,6 +7,17 @@
 #include "FollowCamera.h"
 #include "Tree.h"
 
+#include "ncengine/serialize/SceneSerialization.h"
+
+#include <fstream>
+
+void LoadBaseScene(nc::ecs::Ecs world, nc::asset::NcAsset* ncAsset, const std::string& path)
+{
+    auto file = std::ifstream{path, std::ios::binary};
+    NC_ASSERT(file.is_open(), fmt::format("Scene fragment '{}' not found.", path));
+    nc::LoadSceneFragment(file, world, *ncAsset);
+}
+
 namespace game
 {
 void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
@@ -14,12 +25,23 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto world = registry->GetEcs();
     auto gfx = modules.Get<nc::graphics::NcGraphics>();
     auto phys = modules.Get<nc::physics::NcPhysics>();
+    auto ncAudio = modules.Get<nc::audio::NcAudio>();
+
+    // To overlay a saved scene: copy from fragment from install/game to workspace/scene/your_file and change the path below
+    // auto ncAsset = modules.Get<nc::asset::NcAsset>();
+    // ::LoadBaseScene(world, ncAsset, "scene/test_scene");
 
     const auto character = CreateCharacter(world, phys, nc::Vector3::Up());
-    CreateCamera(world, gfx, character);
+    const auto camera = CreateCamera(world, gfx, character);
+    ncAudio->RegisterListener(camera);
 
     const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = "TreeSystem", .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::FrameLogic>(treeSystem, &ProcessTrees);
+
+    // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
+    const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
+    const auto ambience = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = "Ambience", .flags = nc::Entity::Flags::NoSerialize});
+    world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbience, nc::audio::AudioSourceProperties{.gain = 0.5f, .loop = true})->Play();
 
     // Init GameplayManager sequence
     FireEvent(Event::Begin);
@@ -52,10 +74,10 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::physics::PhysicsBody>(floor, nc::physics::PhysicsProperties{.isKinematic = true});
 
     const auto treeRotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0f, 0.0f);
-    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), HealthyTreeTag, Layer::HealthyTree, TreeMesh);
-    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), HealthyTreeTag, Layer::HealthyTree, TreeMesh);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, treeRotation, nc::Vector3::One(), InfectedTreeTag, Layer::InfectedTree, nc::asset::SphereMesh);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, treeRotation, nc::Vector3::One(), InfectedTreeTag, Layer::InfectedTree, nc::asset::SphereMesh);
+    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, TreeMesh);
+    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, TreeMesh);
+    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, treeRotation, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
+    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, treeRotation, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
 
     // Not part of debug env, just needs to happen last
     FinalizeTrees(world);

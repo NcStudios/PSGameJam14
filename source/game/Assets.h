@@ -11,6 +11,9 @@ namespace game
 {
 void LoadAssets(const nc::config::AssetSettings& settings);
 
+/** SFX */
+constexpr auto ForestAmbience = "forest.nca";
+
 /** Meshes */
 constexpr auto Terrain01Mesh = "terrain01.nca";
 constexpr auto TreeMesh = "tree.nca";

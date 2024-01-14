@@ -41,6 +41,14 @@ install(DIRECTORY   "${PROJECT_SOURCE_DIR}/assets/nca"
         DESTINATION "game/assets"
 )
 
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/scene"
+        DESTINATION "game"
+)
+
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/prefab"
+        DESTINATION "game"
+)
+
 install(FILES       "${PROJECT_SOURCE_DIR}/config.ini"
         DESTINATION "game"
 )
@@ -57,5 +65,3 @@ install(DIRECTORY      "${PROJECT_BINARY_DIR}/_deps/ncengine-src/resources/shade
         DESTINATION    "game/assets/shaders"
         FILES_MATCHING REGEX ".*\.(spv)"
 )
-
-install(DIRECTORY DESTINATION "game/scenes")
