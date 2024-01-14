@@ -37,12 +37,13 @@ struct Layer
     static constexpr uint8_t Spreader = 4;
 };
 
-
+constexpr auto MapExtent = 300.0f;
+constexpr auto MapHalfExtent = MapExtent * 0.5f;
+const auto MapRadius = std::sqrt(2.0f * (MapHalfExtent * MapHalfExtent));
 
 // Always set main camera to this tag
 const auto MainCameraTag = std::string{"Camera"};
 const auto CharacterTag = std::string{"Character"};
-
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
 } // namespace game

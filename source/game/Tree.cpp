@@ -47,8 +47,26 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto collider = world.Get<nc::physics::Collider>(children[0]);
     NC_ASSERT(collider, "expected a collider");
     auto props = ::ToSphereProperties(collider->GetInfo());
-    props.radius += RadiusGrowthAmount;
-    collider->SetProperties(props);
+    if (props.radius < MapRadius)
+    {
+        props.radius += RadiusGrowthAmount;
+        collider->SetProperties(props);
+    }
+
+    auto emitter = world.Get<nc::graphics::ParticleEmitter>(ParentEntity());
+    NC_ASSERT(emitter, "expected a particle emitter");
+    auto particleInfo = emitter->GetInfo();
+    if (particleInfo.init.positionMax.x < MapExtent / 2.0f)
+    {
+        particleInfo.init.positionMin -= nc::Vector3::Splat(RadiusGrowthAmount);
+        particleInfo.init.positionMax += nc::Vector3::Splat(RadiusGrowthAmount);
+    }
+    if (particleInfo.emission.periodicEmissionCount < MaxEmissionCount) // nc::Clamp needs template adjustment
+    {
+        particleInfo.emission.periodicEmissionCount += 1;
+    }
+
+    emitter->SetInfo(particleInfo);
 }
 
 auto CreateHealthyTree(nc::ecs::Ecs world,
@@ -91,18 +109,24 @@ auto CreateSicklyTree(nc::ecs::Ecs world,
     const auto tree = ::CreateTreeBase(world, position, rotation, scale, Layer::InfectedTree, nc::asset::SphereMesh);
     world.Emplace<InfectedTree>(tree);
 
+    // may want two emitters with different particles, like an orb and smoke/haze
     world.Emplace<nc::graphics::ParticleEmitter>(tree, nc::graphics::ParticleInfo{
         .emission = nc::graphics::ParticleEmissionInfo{
-            .periodicEmissionCount = 3,
+            .periodicEmissionCount = 1,
             .periodicEmissionFrequency = 0.1f
         },
         .init = nc::graphics::ParticleInitInfo{
-            .scaleMin = 0.1f,
-            .scaleMax = 1.0f
+            .lifetime = 3.0f,
+            .positionMin = nc::Vector3::Splat(-0.5f), // keep in sync with init collider size
+            .positionMax = nc::Vector3::Splat(0.5f),
+            .rotationMin = -0.157f,
+            .rotationMax = 0.157f,
+            .scaleMin = 0.01f,
+            .scaleMax = 0.8f,
         },
         .kinematic = nc::graphics::ParticleKinematicInfo{
-            .velocityMin = nc::Vector3::One() * -1.0f,
-            .velocityMax = nc::Vector3::One(),
+            .velocityMin = nc::Vector3::One() * -0.25f,
+            .velocityMax = nc::Vector3::One() * 0.25f,
             .scaleOverTimeFactor = -20.0f
         }
     });
