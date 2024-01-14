@@ -28,6 +28,7 @@ enum class Event
 void FireEvent(Event event);
 
 class GameUI;
+class TreeTracker;
 
 // Manager for scripting major game events
 class GameplayOrchestrator : public nc::StableAddress
@@ -46,6 +47,7 @@ class GameplayOrchestrator : public nc::StableAddress
         inline static GameplayOrchestrator* m_instance = nullptr;
         nc::NcEngine* m_engine;
         GameUI* m_ui;
+        std::unique_ptr<TreeTracker> m_treeTracker;
 
         void HandleBegin();
         void HandleNewGame();

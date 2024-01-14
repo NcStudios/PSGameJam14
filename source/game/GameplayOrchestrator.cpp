@@ -1,6 +1,7 @@
 #include "GameplayOrchestrator.h"
 #include "Core.h"
 #include "MainScene.h"
+#include "Tree.h"
 #include "UI.h"
 
 namespace
@@ -14,6 +15,34 @@ I better scoot! (like, with WASD))";
 
 namespace game
 {
+// Keeps track of healthy/infected tree count
+class TreeTracker
+{
+    public:
+        TreeTracker(nc::ecs::ComponentRegistry& registry)
+            : m_onAddHealthyConnection{registry.GetPool<HealthyTree>().OnAdd().Connect(this, &TreeTracker::AddHealthy)},
+              m_onRemoveHealthyConnection{registry.GetPool<HealthyTree>().OnRemove().Connect(this, &TreeTracker::RemoveHealthy)},
+              m_onAddInfectedConnection{registry.GetPool<InfectedTree>().OnAdd().Connect(this, &TreeTracker::AddInfected)},
+              m_onRemoveInfectedConnection{registry.GetPool<InfectedTree>().OnRemove().Connect(this, &TreeTracker::RemoveInfected)}
+        {
+        }
+
+        auto GetHealthyCount() const noexcept { return m_numHealthy; }
+        auto GetInfectedCount() const noexcept { return m_numInfected; }
+        void AddHealthy(HealthyTree&) { ++m_numHealthy; }
+        void AddInfected(InfectedTree&) { ++m_numInfected; }
+        void RemoveHealthy(nc::Entity) { NC_ASSERT(m_numHealthy > 0, "invalid design"); --m_numHealthy; }
+        void RemoveInfected(nc::Entity) { NC_ASSERT(m_numInfected > 0, "invalid design");--m_numInfected; }
+
+    private:
+        size_t m_numHealthy = 0;
+        size_t m_numInfected = 0;
+        nc::Connection<HealthyTree&> m_onAddHealthyConnection;
+        nc::Connection<nc::Entity> m_onRemoveHealthyConnection;
+        nc::Connection<InfectedTree&> m_onAddInfectedConnection;
+        nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
+};
+
 void FireEvent(Event event)
 {
     GameplayOrchestrator::Instance().FireEvent(event);
@@ -21,7 +50,8 @@ void FireEvent(Event event)
 
 GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, GameUI* ui)
     : m_engine{engine},
-      m_ui{ui}
+      m_ui{ui},
+      m_treeTracker{std::make_unique<TreeTracker>(engine->GetRegistry()->GetImpl())}
 {
     NC_ASSERT(!GameplayOrchestrator::m_instance, "Already a GameplayOrchestrator instance");
     GameplayOrchestrator::m_instance = this;

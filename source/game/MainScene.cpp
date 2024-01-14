@@ -15,9 +15,6 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto gfx = modules.Get<nc::graphics::NcGraphics>();
     auto phys = modules.Get<nc::physics::NcPhysics>();
 
-    // probably move to GameplayManger
-    static auto treeTracker = TreeTracker(registry->GetImpl());
-
     const auto character = CreateCharacter(world, phys, nc::Vector3::Up());
     CreateCamera(world, gfx, character);
 
