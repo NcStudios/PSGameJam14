@@ -28,7 +28,7 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto collider = world.Get<nc::physics::Collider>(children[0]);
     NC_ASSERT(collider, "expected a collider");
     auto props = ::ToSphereProperties(collider->GetInfo());
-    if (props.radius < MapRadius)
+    if (props.radius < map::Radius)
     {
         props.radius += RadiusGrowthAmount;
         collider->SetProperties(props);
@@ -37,7 +37,7 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto emitter = world.Get<nc::graphics::ParticleEmitter>(ParentEntity());
     NC_ASSERT(emitter, "expected a particle emitter");
     auto particleInfo = emitter->GetInfo();
-    if (particleInfo.init.positionMax.x < MapExtent / 2.0f)
+    if (particleInfo.init.positionMax.x < map::Extent / 2.0f)
     {
         particleInfo.init.positionMin -= nc::Vector3::Splat(RadiusGrowthAmount);
         particleInfo.init.positionMax += nc::Vector3::Splat(RadiusGrowthAmount);
@@ -78,7 +78,7 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
     world.Emplace<HealthyTree>(tree);
     auto onTriggerEnter = [](nc::Entity self, nc::Entity other, nc::Registry* registry)
     {
-        if (other.Layer() != Layer::Spreader)
+        if (other.Layer() != layer::Spreader)
             return;
 
         auto tree = registry->Get<HealthyTree>(self);
@@ -88,7 +88,7 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
 
     auto onTriggerExit = [](nc::Entity self, nc::Entity other, nc::Registry* registry)
     {
-        if (other.Layer() != Layer::Spreader)
+        if (other.Layer() != layer::Spreader)
             return;
 
         auto tree = registry->Get<HealthyTree>(self);
@@ -126,7 +126,7 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
 
     auto onCollisionEnter = [](nc::Entity self, nc::Entity other, nc::Registry* registry)
     {
-        if (other.Layer() != Layer::Character)
+        if (other.Layer() != layer::Character)
             return;
 
         // maybe want this to be time-related as well. if so, will have to be moved to system
@@ -138,8 +138,8 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
     const auto spreader = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .parent = tree,
-        .tag = "Spreader",
-        .layer = Layer::Spreader // prob don't need layer on both, but...
+        .tag = tag::Spreader,
+        .layer = layer::Spreader // prob don't need layer on both, but...
     });
 
     world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
@@ -149,9 +149,9 @@ void FinalizeTrees(nc::ecs::Ecs world)
 {
     for (auto entity : world.GetAll<nc::Entity>())
     {
-        if (entity.Layer() == Layer::HealthyTree)
+        if (entity.Layer() == layer::HealthyTree)
             AttachHealthyTree(world, entity);
-        else if (entity.Layer() == Layer::InfectedTree)
+        else if (entity.Layer() == layer::InfectedTree)
             AttachInfectedTree(world, entity);
     }
 }
@@ -163,7 +163,7 @@ void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target)
     const auto rot = transform->Rotation();
     const auto scl = transform->Scale();
     world.Remove<nc::Entity>(target);
-    auto tree = CreateTreeBase(world, pos, rot, scl, HealthyTreeTag, Layer::HealthyTree, TreeMesh);
+    auto tree = CreateTreeBase(world, pos, rot, scl, tag::HealthyTree, layer::HealthyTree, TreeMesh);
     AttachHealthyTree(world, tree);
 }
 
@@ -175,7 +175,7 @@ void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target)
     const auto rot = transform->Rotation();
     const auto scl = transform->Scale();
     world.Remove<nc::Entity>(target);
-    auto tree = CreateTreeBase(world, pos, rot, scl, InfectedTreeTag, Layer::InfectedTree, nc::asset::SphereMesh);
+    auto tree = CreateTreeBase(world, pos, rot, scl, tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
     AttachInfectedTree(world, tree);
 }
 
