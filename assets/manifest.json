@@ -36,6 +36,10 @@
         {
             "sourcePath": "raw/mesh/terrain01.fbx",
             "assetName": "mesh/terrain01"
+        },
+        {
+            "sourcePath": "raw/mesh/terrain02.fbx",
+            "assetName": "mesh/terrain02"
         }
     ],
     "texture": [
@@ -62,6 +66,10 @@
         {
             "sourcePath": "raw/texture/terrain01_base_color.png",
             "assetName": "texture/terrain01_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/terrain02_base_color.png",
+            "assetName": "texture/terrain02_base_color"
         }
     ]
 }
