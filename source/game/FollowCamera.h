@@ -7,9 +7,9 @@ namespace game
 class FollowCamera : public nc::graphics::Camera
 {
     public:
-        static constexpr auto FollowDistance = 10.0f;
-        static constexpr auto FollowHeight = 4.0f;
-        static constexpr auto FollowSpeed = 3.0f;
+        static constexpr auto FollowDistance = 12.0f;
+        static constexpr auto FollowHeight = 6.0f;
+        static constexpr auto FollowSpeed = 4.0f;
 
         FollowCamera(nc::Entity self, nc::Entity target)
             : nc::graphics::Camera{self}, m_target{target} {}

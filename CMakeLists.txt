@@ -25,6 +25,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
                             /WX
                             /MP
     )
+
+    set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded)
 endif()
 
 include(FetchContent)
