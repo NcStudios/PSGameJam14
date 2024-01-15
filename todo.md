@@ -1,5 +1,7 @@
 
 # Must Do
+VSC++ runtime/static link
+
 Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
 
 Shadow wonkiness
@@ -11,13 +13,10 @@ Add some interaction between vehicle and infected trees
   controls + purifier spawning added, still need to change collision mechanic to time-based
 
 Improve movement/camera
+  not perfect, but in a 'tweakable' state
   improve general feel and steering control
-    - tough stuff without proper vehicle physics; kind of interesting to use capsule colliders for back cars.
-      need to restrict PB freedom though. this gives a sort of springy effect that's pretty worm-like, but
-      would need more fiddling to make fun rather than annoying
   make sure follow distance looks good (requires rough to-scale assets for testing)
   X jump isn't infinite
-  X max velocity
 
 Keep vehicle upright, or force back somehow
   - can we restrict PhysicsBody freedom?
