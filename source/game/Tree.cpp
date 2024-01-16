@@ -1,5 +1,6 @@
 #include "Tree.h"
 #include "Assets.h"
+#include "Event.h"
 
 #include <algorithm>
 #include <ranges>
@@ -196,12 +197,26 @@ void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry)
 void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
 {
     auto world = registry->GetEcs();
-    for (auto& infected : world.GetAll<InfectedTree>())
+    auto infectedTrees = world.GetAll<InfectedTree>();
+    if (infectedTrees.empty())
+    {
+        FireEvent(Event::Win);
+        return;
+    }
+
+    for (auto& infected : infectedTrees)
     {
         infected.Update(world, dt);
     }
 
-    for (auto& healthy : world.GetAll<HealthyTree>())
+    auto healthyTrees = world.GetAll<HealthyTree>();
+    if (healthyTrees.empty())
+    {
+        FireEvent(Event::Lose);
+        return;
+    }
+
+    for (auto& healthy : healthyTrees)
     {
         healthy.Update(dt);
         if (healthy.ShouldMorph())

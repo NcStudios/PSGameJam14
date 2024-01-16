@@ -35,7 +35,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto camera = CreateCamera(world, gfx, character);
     ncAudio->RegisterListener(camera);
 
-    const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = "TreeSystem", .flags = nc::Entity::Flags::NoSerialize});
+    const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = tag::TreeSystem, .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::FrameLogic>(treeSystem, &ProcessTrees);
 
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
