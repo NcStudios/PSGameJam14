@@ -9,6 +9,7 @@
 namespace
 {
 constexpr auto g_narrativeWindowHeight = 100.0f;
+constexpr auto g_dialogButtonSize = ImVec2{40.0f, g_narrativeWindowHeight - 20.0f};
 constexpr auto g_menuSize = ImVec2{300.0f, 145.0f};
 constexpr auto g_menuButtonSize = ImVec2{285.0f, 40.0f};
 constexpr auto g_windowFlags = ImGuiWindowFlags_NoCollapse |
@@ -55,14 +56,25 @@ bool GameUI::IsHovered()
 void GameUI::Clear()
 {
     m_dialog.clear();
-    m_currentDialog = 0;
+    m_currentDialogIndex = 0;
+    SetDialogPosition(0);
     m_menuOpen = false;
 }
 
 void GameUI::AddNewDialog(std::string dialog)
 {
     m_dialog.push_back(std::move(dialog));
-    m_currentDialog = m_dialog.size() - 1;
+    SetDialogPosition(m_dialog.size() - 1);
+}
+
+void GameUI::SetDialogPosition(size_t pos)
+{
+    if (pos >= m_dialog.size())
+        return;
+
+    m_currentDialogIndex = pos;
+    m_currentDialogNextCharacter = 0;
+    m_currentDialog = "";
 }
 
 void GameUI::DrawMainMenu()
@@ -91,10 +103,37 @@ void GameUI::DrawDialogWindow()
 {
     if (ImGui::Begin("GameUI", nullptr, g_windowFlags))
     {
+        ImGui::BeginDisabled(m_currentDialogIndex == 0);
+        if (ImGui::Button("<", g_dialogButtonSize))
+        {
+            if (m_currentDialogIndex != 0)
+                SetDialogPosition(m_currentDialogIndex - 1);
+        }
+        ImGui::EndDisabled();
+
+        ImGui::SameLine();
+
+        ImGui::BeginDisabled(m_currentDialogIndex + 1 == m_dialog.size());
+        if (ImGui::Button(">", g_dialogButtonSize))
+        {
+            SetDialogPosition(m_currentDialogIndex + 1);
+        }
+        ImGui::EndDisabled();
+
+        ImGui::SameLine();
+
         // fix? I think its rendering the current frame in a 'cleared' state, and doesn't get initial dialog until next frame
         // NC_ASSERT(m_currentDialog < m_dialog.size(), "dialog out of sync");
-        if (m_currentDialog < m_dialog.size())
-            ImGui::Text("%s", m_dialog.at(m_currentDialog).c_str());
+        if (m_currentDialogIndex < m_dialog.size())
+        {
+            const auto& fullDialog = m_dialog.at(m_currentDialogIndex);
+            if (m_currentDialogNextCharacter < fullDialog.size())
+            {
+                m_currentDialog.push_back(fullDialog.at(m_currentDialogNextCharacter++));
+            }
+
+            ImGui::Text("%s", m_currentDialog.c_str());
+        }
     }
 
     ImGui::End();

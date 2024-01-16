@@ -198,10 +198,14 @@ void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
 {
     auto world = registry->GetEcs();
     auto infectedTrees = world.GetAll<InfectedTree>();
-    if (infectedTrees.empty())
+
+    if constexpr (!DisableEndGame)
     {
-        FireEvent(Event::Win);
-        return;
+        if (infectedTrees.empty())
+        {
+            FireEvent(Event::Win);
+            return;
+        }
     }
 
     for (auto& infected : infectedTrees)
@@ -210,10 +214,14 @@ void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
     }
 
     auto healthyTrees = world.GetAll<HealthyTree>();
-    if (healthyTrees.empty())
+
+    if constexpr (!DisableEndGame)
     {
-        FireEvent(Event::Lose);
-        return;
+        if (healthyTrees.empty())
+        {
+            FireEvent(Event::Lose);
+            return;
+        }
     }
 
     for (auto& healthy : healthyTrees)

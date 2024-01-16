@@ -1,5 +1,7 @@
 
 # Must Do
+Fix moving static, but non-kinematic physics bodies in engine (or just don't have PB?)
+
 Level design
 
 Dialog
@@ -53,10 +55,6 @@ Window Icon
 
 Script intro cut scene in GameplayManager
 
-Dialog fwd/back buttons - might be annoying to have prev dialog removed on event
-
-Animated dialog, should be fairly simple to 'type' out one character/word at time
-
 Particle alpha blending?
   overlap of transparent particle textures is wonk
 
@@ -87,6 +85,10 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Dialog fwd/back buttons - might be annoying to have prev dialog removed on event
+
+Animated dialog, should be fairly simple to 'type' out one character/word at time
+
 Trigger win/lose condition
   maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
 
