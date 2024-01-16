@@ -39,39 +39,12 @@ void GameUI::Draw()
     {
         ImGui::SetNextWindowPos({ windowDimensions.x / 2, windowDimensions.y / 2 }, ImGuiCond_Always, {0.5f, 0.5f});
         ImGui::SetNextWindowSize(g_menuSize);
-
-        if (ImGui::Begin("GameMenu", nullptr, g_windowFlags))
-        {
-            if (ImGui::Button("Resume", g_menuButtonSize))
-            {
-                m_menuOpen = false;
-            }
-            if (ImGui::Button("New Game", g_menuButtonSize))
-            {
-                m_menuOpen = false;
-                FireEvent(Event::NewGame);
-            }
-            if (ImGui::Button("Quit", g_menuButtonSize))
-            {
-                m_stopEngine();
-            }
-        }
-
-        ImGui::End();
+        DrawMainMenu();
     }
-
 
     ImGui::SetNextWindowPos({ (windowDimensions.x - screenExtent.x) / 2, windowDimensions.y - g_narrativeWindowHeight });
     ImGui::SetNextWindowSize({ screenExtent.x, g_narrativeWindowHeight });
-    if (ImGui::Begin("GameUI", nullptr, g_windowFlags))
-    {
-        // fix? I think its rendering the current frame in a 'cleared' state, and doesn't get initial dialog until next frame
-        // NC_ASSERT(m_currentDialog < m_dialog.size(), "dialog out of sync");
-        if (m_currentDialog < m_dialog.size())
-            ImGui::Text("%s", m_dialog.at(m_currentDialog).c_str());
-    }
-
-    ImGui::End();
+    DrawDialogWindow();
 }
 
 bool GameUI::IsHovered()
@@ -92,4 +65,38 @@ void GameUI::AddNewDialog(std::string dialog)
     m_currentDialog = m_dialog.size() - 1;
 }
 
+void GameUI::DrawMainMenu()
+{
+    if (ImGui::Begin("GameMenu", nullptr, g_windowFlags))
+    {
+        if (ImGui::Button("Resume", g_menuButtonSize))
+        {
+            m_menuOpen = false;
+        }
+        if (ImGui::Button("New Game", g_menuButtonSize))
+        {
+            m_menuOpen = false;
+            FireEvent(Event::NewGame);
+        }
+        if (ImGui::Button("Quit", g_menuButtonSize))
+        {
+            m_stopEngine();
+        }
+    }
+
+    ImGui::End();
+}
+
+void GameUI::DrawDialogWindow()
+{
+    if (ImGui::Begin("GameUI", nullptr, g_windowFlags))
+    {
+        // fix? I think its rendering the current frame in a 'cleared' state, and doesn't get initial dialog until next frame
+        // NC_ASSERT(m_currentDialog < m_dialog.size(), "dialog out of sync");
+        if (m_currentDialog < m_dialog.size())
+            ImGui::Text("%s", m_dialog.at(m_currentDialog).c_str());
+    }
+
+    ImGui::End();
+}
 } // namespace game

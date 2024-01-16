@@ -28,14 +28,14 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto ncAudio = modules.Get<nc::audio::NcAudio>();
 
     // To overlay a saved scene: copy from fragment from install/game to workspace/scene/your_file and change the path below
-    auto ncAsset = modules.Get<nc::asset::NcAsset>();
-    ::LoadBaseScene(world, ncAsset, "scene/terrain");
+    // auto ncAsset = modules.Get<nc::asset::NcAsset>();
+    // ::LoadBaseScene(world, ncAsset, "scene/terrain");
 
     const auto character = CreateCharacter(world, phys, nc::Vector3{0.0f, 0.5f, 0.0f});
     const auto camera = CreateCamera(world, gfx, character);
     ncAudio->RegisterListener(camera);
 
-    const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = "TreeSystem", .flags = nc::Entity::Flags::NoSerialize});
+    const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = tag::TreeSystem, .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::FrameLogic>(treeSystem, &ProcessTrees);
 
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
@@ -66,6 +66,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .position = nc::Vector3::Up() * -1.0f,
         .scale = nc::Vector3{300.0f, 1.0f, 300.0f},
         .tag = "Floor",
+        .layer = layer::Floor,
         .flags = nc::Entity::Flags::NoSerialize
     });
 

@@ -1,13 +1,12 @@
 
 # Must Do
-VSC++ runtime/static link
+Level design
+
+Dialog
 
 Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
 
 Shadow wonkiness
-
-Trigger win/lose condition
-  maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
 
 Add some interaction between vehicle and infected trees
   controls + purifier spawning added, still need to change collision mechanic to time-based
@@ -43,8 +42,7 @@ Visual representation of healthy/infected tree count (UI, but...) [not sure if '
 
 **Sound List**
 - Main Theme
-- Bus Engine
-- Assorted Collision
+- Win/lose
 - Infect/Tree Morph
 - Disinfect in progress
 - Disinfect complete
@@ -56,6 +54,8 @@ Window Icon
 Script intro cut scene in GameplayManager
 
 Dialog fwd/back buttons - might be annoying to have prev dialog removed on event
+
+Animated dialog, should be fairly simple to 'type' out one character/word at time
 
 Particle alpha blending?
   overlap of transparent particle textures is wonk
@@ -73,6 +73,9 @@ UI styling (just using engine defaults now)
  - Worm Close up
  - Worm Scoot animation
   
+**Sound List**
+- Bus Engine
+- Assorted Collision (requires a several sounds + velocity checking so it isn't obnoxious every time you touch anything)
 
 # Future Work
 Editor->AddEntity with layer/flag options
@@ -84,6 +87,11 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Trigger win/lose condition
+  maybe remove movement controller and just pop a window (with Win/Lose & NewGame/Quit) for mvp
+
+VSC++ runtime/static link
+
 Split tree and character creation into two steps
   tree: base trees will be created from editor, with logic added after the fact
   vehicle: probably want to create the camera separately for the intro, and create
