@@ -28,6 +28,8 @@
 
 namespace game
 {
+constexpr auto DisableEndGame = true;
+
 namespace layer
 {
 // IMPORTANT! Do not change layer values, else serialized work will be garbage!
@@ -38,8 +40,9 @@ constexpr uint8_t HealthyTree = 3;
 constexpr uint8_t InfectedTree = 4;
 constexpr uint8_t Spreader = 5;
 constexpr uint8_t Purifier = 6;
-constexpr uint8_t Floor = 7;
+constexpr uint8_t Ground = 7;
 constexpr uint8_t BoxCar = 8;
+constexpr uint8_t Terrain = 9;
 } // namespace layer
 
 namespace hotkey
@@ -79,6 +82,8 @@ const auto InfectedTree = std::string{"InfectedTree"};
 const auto Spreader = std::string{"Spreader"};
 const auto Purifier = std::string{"Purifier"};
 const auto TreeSystem = std::string{"TreeSystem"};
+const auto Ground = std::string{"Ground"};
+const auto Terrain = std::string{"Terrain"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);

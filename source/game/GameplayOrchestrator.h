@@ -20,7 +20,7 @@ class GameplayOrchestrator : public nc::StableAddress
         static auto Instance() -> GameplayOrchestrator&;
 
         void FireEvent(Event event);
-        void Run();
+        void Run(float dt);
         void Clear();
 
     private:
@@ -28,7 +28,10 @@ class GameplayOrchestrator : public nc::StableAddress
         nc::NcEngine* m_engine;
         GameUI* m_ui;
         std::unique_ptr<TreeTracker> m_treeTracker;
+        Event m_currentEvent = Event::Intro;
+        float m_timeInCurrentEvent = 0.0f;
 
+        void HandleIntro();
         void HandleBegin();
         void HandleNewGame();
         void HandleWin();
