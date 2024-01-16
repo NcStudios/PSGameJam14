@@ -23,6 +23,8 @@ constexpr auto EngineStop = "engine_stop.nca";
 /** Meshes */
 constexpr auto FloorMesh = "floor.nca";
 constexpr auto Terrain01Mesh = "terrain01.nca";
+constexpr auto TerrainCurve01Mesh = "terrain_curve01.nca";
+constexpr auto TerrainCurve02Mesh = "terrain_curve02.nca";
 constexpr auto Terrain02Mesh = "terrain02.nca";
 constexpr auto TerrainInletMesh = "terrain_inlet.nca";
 constexpr auto TreeMesh = "tree.nca";
@@ -34,6 +36,8 @@ constexpr auto BusCarMesh = "bus_car.nca";
 constexpr auto FloorTexture = "floor_base_color.nca";
 constexpr auto Terrain01Texture = "terrain01_base_color.nca";
 constexpr auto Terrain02Texture = "terrain02_base_color.nca";
+constexpr auto TerrainCurve01Texture = "terrain_curve_01_base_color.nca";
+constexpr auto TerrainCurve02Texture = "terrain_curve_02_base_color.nca";
 constexpr auto TerrainInletTexture = "terrain_inlet_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
 constexpr auto BusFrontTexture = "bus_base_color.nca";
