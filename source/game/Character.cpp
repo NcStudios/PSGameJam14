@@ -8,20 +8,18 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
                        const nc::Vector3& position,
                        const nc::Vector3& scale,
                        const std::string& tag,
+                       uint8_t layer,
                        const std::string& mesh,
                        const nc::graphics::ToonMaterial& material,
                        float mass,
                        float friction = 0.5f) -> nc::Entity
 {
-    // cleanup
-    const auto realLayer = tag == game::tag::VehicleFront ? game::layer::Character : game::layer::BoxCar;
-
     const auto node = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = position,
         .scale = scale * 0.5f,
         .tag = tag,
-        .layer = realLayer,
+        .layer = layer,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
@@ -44,10 +42,10 @@ auto CreateVehicle(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::V
 {
     // TODO: play with mass/friction/restitution values
     //       also consider tweaking PhysicsConstants
-    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::BusFrontMesh, game::BusFrontMaterial, 15.0f, 0.8f);
-    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.5f);
-    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.5f);
-    const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::BusCarMesh, game::BusCarMaterial, 0.2f, 0.5f);
+    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::layer::Character, game::BusFrontMesh, game::BusFrontMaterial, 15.0f, 0.8f);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.5f);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.5f);
+    const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 0.2f, 0.5f);
 
     // TODO: play with these values
     constexpr auto bias = 0.3f; // lower has more 'spring', too high propagates too much force to front car
@@ -68,14 +66,7 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
     world.Emplace<CharacterController>(character);
     world.Emplace<nc::FixedLogic>(character, nc::InvokeFreeComponent<CharacterController>{});
 
-    auto props = nc::audio::AudioSourceProperties
-    {
-        .innerRadius = 1.0f,
-        .outerRadius = 20.0f,
-        .spatialize = true
-    };
-
-    const auto characterAudio = world.Emplace<nc::Entity>({.parent = character, .tag = "CharacterAudio"}); // todo:: set in core
+    const auto characterAudio = world.Emplace<nc::Entity>({.parent = character, .tag = tag::VehicleAudio});
     auto p = world.Emplace<CharacterAudio>(characterAudio, character);
     p->Init(world);
     world.Emplace<nc::FrameLogic>(characterAudio, nc::InvokeFreeComponent<CharacterAudio>{});
@@ -114,16 +105,13 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
     if (KeyDown(game::hotkey::Forward))
     {
-        auto e = registry->GetEcs().GetEntityByTag("CharacterAudio");
-        NC_ASSERT(e.Valid(), "entity not found");
-        auto player = registry->Get<CharacterAudio>(e);
-        NC_ASSERT(player, "no CharacterAudio");
-        player->SetState(VehicleState::StartForward);
+        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
+        characterAudio->SetState(VehicleState::StartForward);
     }
     else if (KeyUp(game::hotkey::Forward))
     {
-        auto e = registry->GetEcs().GetEntityByTag("CharacterAudio");
-        registry->Get<CharacterAudio>(e)->SetState(VehicleState::StopForward);
+        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
+        characterAudio->SetState(VehicleState::StopForward);
     }
 
     if (KeyHeld(game::hotkey::Forward))
@@ -261,10 +249,6 @@ void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
 
         switch (m_nextState)
         {
-            case VehicleState::Idle:
-            {
-                break;
-            }
             case VehicleState::StartForward:
             {
                 m_currentEnginePlayer = m_engineStartPlayer;
@@ -286,14 +270,7 @@ void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
                 player->Play();
                 break;
             }
-            case VehicleState::Back:
-            {
-                break;
-            }
-            case VehicleState::Turning:
-            {
-                break;
-            }
+            default: break;
         }
 
         m_currentState = m_nextState;
@@ -302,18 +279,10 @@ void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
 
     switch (m_currentState)
     {
-        case VehicleState::Idle:
-        {
-            break;
-        }
         case VehicleState::StartForward:
         {
             auto player = registry->Get<nc::audio::AudioSource>(m_engineStartPlayer);
             if (!player->IsPlaying()) SetState(VehicleState::Forward);
-            break;
-        }
-        case VehicleState::Forward:
-        {
             break;
         }
         case VehicleState::StopForward:
@@ -322,14 +291,7 @@ void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
             if (!player->IsPlaying()) SetState(VehicleState::Idle);
             break;
         }
-        case VehicleState::Back:
-        {
-            break;
-        }
-        case VehicleState::Turning:
-        {
-            break;
-        }
+        default: break;
     }
 }
 
