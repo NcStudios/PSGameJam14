@@ -38,10 +38,10 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto emitter = world.Get<nc::graphics::ParticleEmitter>(ParentEntity());
     NC_ASSERT(emitter, "expected a particle emitter");
     auto particleInfo = emitter->GetInfo();
-    if (particleInfo.init.positionMax.x < map::Extent / 2.0f)
+    if (particleInfo.kinematic.velocityMax.y < 5.0f)
     {
-        particleInfo.init.positionMin -= nc::Vector3::Splat(RadiusGrowthAmount);
-        particleInfo.init.positionMax += nc::Vector3::Splat(RadiusGrowthAmount);
+        particleInfo.kinematic.velocityMin -= nc::Vector3{0.03f, 0.0f, 0.03f};
+        particleInfo.kinematic.velocityMax += nc::Vector3{0.03f, 0.1f, 0.03f};
     }
     if (particleInfo.emission.periodicEmissionCount < MaxEmissionCount) // nc::Clamp needs template adjustment
     {
@@ -57,7 +57,8 @@ auto CreateTreeBase(nc::ecs::Ecs world,
                     const nc::Vector3& scale,
                     const std::string& tag,
                     nc::Entity::layer_type layer,
-                    const std::string& mesh) -> nc::Entity
+                    const std::string& mesh,
+                    const nc::graphics::ToonMaterial& material) -> nc::Entity
 {
     const auto tree = world.Emplace<nc::Entity>(nc::EntityInfo{
         .position = position,
@@ -68,7 +69,7 @@ auto CreateTreeBase(nc::ecs::Ecs world,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
-    world.Emplace<nc::graphics::ToonRenderer>(tree, mesh);
+    world.Emplace<nc::graphics::ToonRenderer>(tree, mesh, material);
     world.Emplace<nc::physics::Collider>(tree, nc::physics::BoxProperties{});
     world.Emplace<nc::physics::PhysicsBody>(tree, nc::physics::PhysicsProperties{.isKinematic = true});
     return tree;
@@ -103,24 +104,23 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
 void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
 {
     world.Emplace<InfectedTree>(tree);
-    // may want two emitters with different particles, like an orb and smoke/haze
     world.Emplace<nc::graphics::ParticleEmitter>(tree, nc::graphics::ParticleInfo{
         .emission = nc::graphics::ParticleEmissionInfo{
             .periodicEmissionCount = 1,
-            .periodicEmissionFrequency = 0.1f
+            .periodicEmissionFrequency = 0.5f
         },
         .init = nc::graphics::ParticleInitInfo{
-            .lifetime = 3.0f,
-            .positionMin = nc::Vector3::Splat(-0.5f), // keep in sync with init collider size
-            .positionMax = nc::Vector3::Splat(0.5f),
+            .lifetime = 4.0f,
+            .positionMin = nc::Vector3{0.0f, 0.0f, 0.0f}, // spawn inside tree so can't see them blink in
+            .positionMax = nc::Vector3{0.0f, 5.0f, 0.0f},
             .rotationMin = -0.157f,
             .rotationMax = 0.157f,
-            .scaleMin = 0.01f,
-            .scaleMax = 0.8f,
+            .scaleMin = 0.005f,
+            .scaleMax = 0.6f,
         },
         .kinematic = nc::graphics::ParticleKinematicInfo{
-            .velocityMin = nc::Vector3::One() * -0.25f,
-            .velocityMax = nc::Vector3::One() * 0.25f,
+            .velocityMin = nc::Vector3{-0.35f, 0.05f, -0.35f},
+            .velocityMax = nc::Vector3{0.35f, 0.5f, 0.35f},
             .scaleOverTimeFactor = -20.0f
         }
     });
@@ -164,7 +164,7 @@ void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target)
     const auto rot = transform->Rotation();
     const auto scl = transform->Scale();
     world.Remove<nc::Entity>(target);
-    auto tree = CreateTreeBase(world, pos, rot, scl, tag::HealthyTree, layer::HealthyTree, TreeMesh);
+    auto tree = CreateTreeBase(world, pos, rot, scl, tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
     AttachHealthyTree(world, tree);
 }
 
@@ -176,7 +176,7 @@ void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target)
     const auto rot = transform->Rotation();
     const auto scl = transform->Scale();
     world.Remove<nc::Entity>(target);
-    auto tree = CreateTreeBase(world, pos, rot, scl, tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
+    auto tree = CreateTreeBase(world, pos, rot, scl, tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
     AttachInfectedTree(world, tree);
 }
 
@@ -198,10 +198,14 @@ void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
 {
     auto world = registry->GetEcs();
     auto infectedTrees = world.GetAll<InfectedTree>();
-    if (infectedTrees.empty())
+
+    if constexpr (!DisableEndGame)
     {
-        FireEvent(Event::Win);
-        return;
+        if (infectedTrees.empty())
+        {
+            FireEvent(Event::Win);
+            return;
+        }
     }
 
     for (auto& infected : infectedTrees)
@@ -210,10 +214,14 @@ void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
     }
 
     auto healthyTrees = world.GetAll<HealthyTree>();
-    if (healthyTrees.empty())
+
+    if constexpr (!DisableEndGame)
     {
-        FireEvent(Event::Lose);
-        return;
+        if (healthyTrees.empty())
+        {
+            FireEvent(Event::Lose);
+            return;
+        }
     }
 
     for (auto& healthy : healthyTrees)

@@ -27,6 +27,12 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto phys = modules.Get<nc::physics::NcPhysics>();
     auto ncAudio = modules.Get<nc::audio::NcAudio>();
 
+    auto storyRunner = world.Emplace<nc::Entity>({.tag = "StoryRunner"});
+    world.Emplace<nc::FrameLogic>(storyRunner, [this](nc::Entity, nc::Registry*, float dt)
+    {
+        m_runOrchestrator(dt);
+    });
+
     // To overlay a saved scene: copy from fragment from install/game to workspace/scene/your_file and change the path below
     // auto ncAsset = modules.Get<nc::asset::NcAsset>();
     // ::LoadBaseScene(world, ncAsset, "scene/terrain");
@@ -44,7 +50,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbience, nc::audio::AudioSourceProperties{.gain = 0.5f, .loop = true})->Play();
 
     // Init GameplayManager sequence
-    FireEvent(Event::Begin);
+    FireEvent(Event::Intro);
 
     //////////////////////////////////////////////////////
     // Debug environment - just to have stuff in the world
@@ -65,20 +71,19 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     {
         .position = nc::Vector3::Up() * -1.0f,
         .scale = nc::Vector3{300.0f, 1.0f, 300.0f},
-        .tag = "Floor",
-        .layer = layer::Floor,
-        .flags = nc::Entity::Flags::NoSerialize
+        .tag = tag::Ground,
+        .layer = layer::Ground,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     world.Emplace<nc::graphics::MeshRenderer>(floor);
     world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{});
     world.Emplace<nc::physics::PhysicsBody>(floor, nc::physics::PhysicsProperties{.isKinematic = true});
 
-    const auto treeRotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0f, 0.0f);
-    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, TreeMesh);
-    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, TreeMesh);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, treeRotation, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, treeRotation, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
+    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
+    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
 
     // Not part of debug env, just needs to happen last
     FinalizeTrees(world);

@@ -42,7 +42,7 @@ constexpr auto HatchTexture = "hatch.nca";
 constexpr auto OverlayTexture = "overlay.nca";
 
 /** Materials */
-inline static auto BusFrontMaterial = nc::graphics::ToonMaterial
+inline auto BusFrontMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = BusFrontTexture,
     .overlay = nc::asset::DefaultBaseColor,
@@ -50,7 +50,7 @@ inline static auto BusFrontMaterial = nc::graphics::ToonMaterial
     .hatchingTiling = 6
 };
 
-inline static auto BusCarMaterial = nc::graphics::ToonMaterial
+inline auto BusCarMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = BusCarTexture,
     .overlay = nc::asset::DefaultBaseColor,
@@ -58,4 +58,19 @@ inline static auto BusCarMaterial = nc::graphics::ToonMaterial
     .hatchingTiling = 6
 };
 
+inline auto HealthyTree01Material = nc::graphics::ToonMaterial
+{
+    .baseColor = Tree01Texture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 6
+};
+
+inline auto InfectedTree01Material = nc::graphics::ToonMaterial
+{
+    .baseColor = nc::asset::DefaultBaseColor,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 6
+};
 } // namespace game
