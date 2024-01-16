@@ -38,6 +38,8 @@ constexpr uint8_t HealthyTree = 3;
 constexpr uint8_t InfectedTree = 4;
 constexpr uint8_t Spreader = 5;
 constexpr uint8_t Purifier = 6;
+constexpr uint8_t Floor = 7;
+constexpr uint8_t BoxCar = 8;
 } // namespace layer
 
 namespace hotkey
@@ -71,6 +73,7 @@ namespace tag
 const auto MainCamera = std::string{"Camera"};
 const auto VehicleFront = std::string{"VehicleFront"};
 const auto VehicleCar = std::string{"BoxCar"};
+const auto VehicleAudio = std::string{"VehicleAudio"};
 const auto HealthyTree = std::string{"HealthyTree"};
 const auto InfectedTree = std::string{"InfectedTree"};
 const auto Spreader = std::string{"Spreader"};
@@ -78,4 +81,20 @@ const auto Purifier = std::string{"Purifier"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
+
+template<class T>
+auto GetComponentByEntityTag(nc::ecs::Ecs world, const std::string& tag) -> T*
+{
+    auto entity = world.GetEntityByTag(tag::VehicleAudio);
+    NC_ASSERT(entity.Valid(), "Entity not found");
+    auto component = world.Get<T>(entity);
+    NC_ASSERT(component, fmt::format("No component found for Entity with tag '{}'", tag));
+    return component;
+}
+
+template<class T>
+auto GetComponentByEntityTag(nc::Registry* registry, const std::string& tag) -> T*
+{
+    return GetComponentByEntityTag<T>(registry->GetEcs(), tag);
+}
 } // namespace game

@@ -44,7 +44,7 @@ Visual representation of healthy/infected tree count (UI, but...) [not sure if '
 **Sound List**
 - Main Theme
 - Bus Engine
-- Assorted Collision
+- Assorted Collision (may be a nice to have - requires a several sounds + velocity checking so it isn't obnoxious every time you touch anything)
 - Infect/Tree Morph
 - Disinfect in progress
 - Disinfect complete

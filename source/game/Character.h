@@ -34,4 +34,32 @@ class CharacterController : public nc::FreeComponent
 
         void CreatePurifier(nc::Registry* registry);
 };
+
+enum class VehicleState
+{
+    Idle,
+    StartForward,
+    Forward,
+    StopForward,
+    Back,
+    Turning
+};
+
+class CharacterAudio : public nc::FreeComponent
+{
+    public:
+        CharacterAudio(nc::Entity self, nc::Entity character);
+
+        void Init(nc::ecs::Ecs world);
+        void Run(nc::Entity self, nc::Registry* registry, float);
+        void SetState(VehicleState state);
+
+    private:
+        VehicleState m_currentState = VehicleState::Idle;
+        VehicleState m_nextState = VehicleState::Idle;
+        nc::Entity m_engineStartPlayer;
+        nc::Entity m_engineRunningPlayer;
+        nc::Entity m_engineStopPlayer;
+        nc::Entity m_currentEnginePlayer = nc::Entity::Null();
+};
 } // namespace game

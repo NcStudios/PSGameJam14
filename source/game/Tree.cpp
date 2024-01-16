@@ -124,16 +124,16 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
         }
     });
 
-    auto onCollisionEnter = [](nc::Entity self, nc::Entity other, nc::Registry* registry)
+    auto onTriggerEnter = [](nc::Entity self, nc::Entity other, nc::Registry* registry)
     {
-        if (other.Layer() != layer::Character)
+        if (other.Layer() != layer::Purifier)
             return;
 
         // maybe want this to be time-related as well. if so, will have to be moved to system
         MorphTreeToHealthy(registry->GetEcs(), self);
     };
 
-    world.Emplace<nc::CollisionLogic>(tree, onCollisionEnter, nullptr, nullptr, nullptr);
+    world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, nullptr);
 
     const auto spreader = world.Emplace<nc::Entity>(nc::EntityInfo
     {

@@ -16,6 +16,9 @@ constexpr auto Terrain01Collider = "terrain01_collider.nca";
 
 /** SFX */
 constexpr auto ForestAmbience = "forest.nca";
+constexpr auto EngineStart = "engine_start.nca";
+constexpr auto EngineRunning = "engine_running.nca";
+constexpr auto EngineStop = "engine_stop.nca";
 
 /** Meshes */
 constexpr auto Terrain01Mesh = "terrain01.nca";

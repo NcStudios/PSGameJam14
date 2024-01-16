@@ -8,6 +8,7 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
                        const nc::Vector3& position,
                        const nc::Vector3& scale,
                        const std::string& tag,
+                       uint8_t layer,
                        const std::string& mesh,
                        const nc::graphics::ToonMaterial& material,
                        float mass,
@@ -18,7 +19,7 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
         .position = position,
         .scale = scale * 0.5f,
         .tag = tag,
-        .layer = game::layer::Character,
+        .layer = layer,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
@@ -41,10 +42,10 @@ auto CreateVehicle(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::V
 {
     // TODO: play with mass/friction/restitution values
     //       also consider tweaking PhysicsConstants
-    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::BusFrontMesh, game::BusFrontMaterial, 15.0f, 0.8f);
-    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.5f);
-    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.5f);
-    const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::BusCarMesh, game::BusCarMaterial, 0.2f, 0.5f);
+    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::layer::Character, game::BusFrontMesh, game::BusFrontMaterial, 15.0f, 0.8f);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.5f);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.5f);
+    const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 0.2f, 0.5f);
 
     // TODO: play with these values
     constexpr auto bias = 0.3f; // lower has more 'spring', too high propagates too much force to front car
@@ -64,6 +65,11 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
     const auto character = ::CreateVehicle(world, phys, position);
     world.Emplace<CharacterController>(character);
     world.Emplace<nc::FixedLogic>(character, nc::InvokeFreeComponent<CharacterController>{});
+
+    const auto characterAudio = world.Emplace<nc::Entity>({.parent = character, .tag = tag::VehicleAudio});
+    auto p = world.Emplace<CharacterAudio>(characterAudio, character);
+    p->Init(world);
+    world.Emplace<nc::FrameLogic>(characterAudio, nc::InvokeFreeComponent<CharacterAudio>{});
     return character;
 }
 
@@ -95,6 +101,17 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
             registry->Remove<nc::Entity>(m_purifier);
             m_purifier = nc::Entity::Null();
         }
+    }
+
+    if (KeyDown(game::hotkey::Forward))
+    {
+        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
+        characterAudio->SetState(VehicleState::StartForward);
+    }
+    else if (KeyUp(game::hotkey::Forward))
+    {
+        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
+        characterAudio->SetState(VehicleState::StopForward);
     }
 
     if (KeyHeld(game::hotkey::Forward))
@@ -196,5 +213,90 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
             .scaleOverTimeFactor = -20.0f
         }
     });
+}
+
+CharacterAudio::CharacterAudio(nc::Entity self, nc::Entity)
+    : nc::FreeComponent(self)
+{
+}
+
+void CharacterAudio::Init(nc::ecs::Ecs world)
+{
+    const auto self = ParentEntity();
+    // gain temp set to 0, don't like placeholder sound
+    auto defaultProps = nc::audio::AudioSourceProperties{ .gain = 0.0f, .innerRadius = 1.0f, .outerRadius = 20.0f, .spatialize = true };
+    auto loopProps = nc::audio::AudioSourceProperties{ .gain = 0.0f, .innerRadius = 1.0f, .outerRadius = 20.0f, .spatialize = true, .loop = true };
+
+    m_engineStartPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStart, defaultProps);
+
+    m_engineRunningPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunning, loopProps);
+
+    m_engineStopPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStop, defaultProps);
+}
+
+void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
+{
+    if (m_currentState != m_nextState)
+    {
+        if (m_currentEnginePlayer.Valid())
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+            if (player->IsPlaying()) player->Stop();
+        }
+
+        switch (m_nextState)
+        {
+            case VehicleState::StartForward:
+            {
+                m_currentEnginePlayer = m_engineStartPlayer;
+                auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+                player->Play();
+                break;
+            }
+            case VehicleState::Forward:
+            {
+                m_currentEnginePlayer = m_engineRunningPlayer;
+                auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+                player->Play();
+                break;
+            }
+            case VehicleState::StopForward:
+            {
+                m_currentEnginePlayer = m_engineStopPlayer;
+                auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+                player->Play();
+                break;
+            }
+            default: break;
+        }
+
+        m_currentState = m_nextState;
+        return;
+    }
+
+    switch (m_currentState)
+    {
+        case VehicleState::StartForward:
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_engineStartPlayer);
+            if (!player->IsPlaying()) SetState(VehicleState::Forward);
+            break;
+        }
+        case VehicleState::StopForward:
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_engineStopPlayer);
+            if (!player->IsPlaying()) SetState(VehicleState::Idle);
+            break;
+        }
+        default: break;
+    }
+}
+
+void CharacterAudio::SetState(VehicleState state)
+{
+    m_nextState = state;
 }
 } // namespace game

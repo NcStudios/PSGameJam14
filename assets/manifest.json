@@ -6,6 +6,18 @@
         {
             "sourcePath": "raw/audio_clip/forest.wav",
             "assetName": "audio_clip/forest"
+        },
+        {
+            "sourcePath": "raw/audio_clip/engine_start.wav",
+            "assetName": "audio_clip/engine_start"
+        },
+        {
+            "sourcePath": "raw/audio_clip/engine_stop.wav",
+            "assetName": "audio_clip/engine_stop"
+        },
+        {
+            "sourcePath": "raw/audio_clip/engine_running.wav",
+            "assetName": "audio_clip/engine_running"
         }
     ],
     "concave-collider": [],
