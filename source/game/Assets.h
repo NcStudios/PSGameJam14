@@ -18,16 +18,20 @@ constexpr auto Terrain01Collider = "terrain01_collider.nca";
 constexpr auto ForestAmbience = "forest.nca";
 
 /** Meshes */
+constexpr auto FloorMesh = "floor.nca";
 constexpr auto Terrain01Mesh = "terrain01.nca";
 constexpr auto Terrain02Mesh = "terrain02.nca";
+constexpr auto TerrainInletMesh = "terrain_inlet.nca";
 constexpr auto TreeMesh = "tree.nca";
 constexpr auto Tree01Mesh = "tree01.nca";
 constexpr auto BusFrontMesh = "bus_front.nca";
 constexpr auto BusCarMesh = "bus_car.nca";
 
 /** Textures */
+constexpr auto FloorTexture = "floor_base_color.nca";
 constexpr auto Terrain01Texture = "terrain01_base_color.nca";
 constexpr auto Terrain02Texture = "terrain02_base_color.nca";
+constexpr auto TerrainInletTexture = "terrain_inlet_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
 constexpr auto BusFrontTexture = "bus_base_color.nca";
 constexpr auto BusCarTexture = "bus_car_base_color.nca";

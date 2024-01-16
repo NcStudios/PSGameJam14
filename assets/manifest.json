@@ -34,12 +34,20 @@
             "assetName": "mesh/bus_car"
         },
         {
+            "sourcePath": "raw/mesh/floor.fbx",
+            "assetName": "mesh/floor"
+        },
+        {
             "sourcePath": "raw/mesh/terrain01.fbx",
             "assetName": "mesh/terrain01"
         },
         {
             "sourcePath": "raw/mesh/terrain02.fbx",
             "assetName": "mesh/terrain02"
+        },
+        {
+            "sourcePath": "raw/mesh/terrain_inlet.fbx",
+            "assetName": "mesh/terrain_inlet"
         }
     ],
     "texture": [
@@ -50,6 +58,10 @@
         {
             "sourcePath": "raw/texture/bus_car_base_color.png",
             "assetName": "texture/bus_car_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/floor_base_color.png",
+            "assetName": "texture/floor_base_color"
         },
         {
             "sourcePath": "raw/texture/hatch.jpg",
@@ -70,6 +82,10 @@
         {
             "sourcePath": "raw/texture/terrain02_base_color.png",
             "assetName": "texture/terrain02_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/terrain_inlet_base_color.png",
+            "assetName": "texture/terrain_inlet_base_color"
         }
     ]
 }
