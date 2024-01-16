@@ -80,11 +80,10 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{});
     world.Emplace<nc::physics::PhysicsBody>(floor, nc::physics::PhysicsProperties{.isKinematic = true});
 
-    const auto treeRotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0f, 0.0f);
-    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, TreeMesh);
-    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, treeRotation, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, TreeMesh);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, treeRotation, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, treeRotation, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, nc::asset::SphereMesh);
+    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
+    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
 
     // Not part of debug env, just needs to happen last
     FinalizeTrees(world);

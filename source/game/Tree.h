@@ -84,7 +84,8 @@ auto CreateTreeBase(nc::ecs::Ecs world,
                     const nc::Vector3& scale,
                     const std::string& tag,
                     nc::Entity::layer_type layer,
-                    const std::string& mesh) -> nc::Entity;
+                    const std::string& mesh,
+                    const nc::graphics::ToonMaterial& material) -> nc::Entity;
 
 // Attach logic to anything with HealthyTree/InfectedTree layers
 void FinalizeTrees(nc::ecs::Ecs world);
