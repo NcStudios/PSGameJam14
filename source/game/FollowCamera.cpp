@@ -14,9 +14,9 @@ void FollowCamera::Run(nc::Entity entity, nc::Registry* registry, float dt)
     auto selfPos = self->Position();
     const auto targetPos = target->Position();
     const auto targetRotation = target->Rotation();
-    const auto offset = [followDistance = FollowDistance, targetRotation]()
+    const auto offset = [followDistance = m_followDistance, targetRotation]()
     {
-        auto v = nc::Vector3::Back() * FollowCamera::FollowDistance;
+        auto v = nc::Vector3::Back() * followDistance;
         auto v_v = DirectX::XMLoadVector3(&v);
         auto r_v = DirectX::XMLoadQuaternion(&targetRotation);
         v_v = DirectX::XMVector3Rotate(v_v, r_v);
@@ -24,8 +24,8 @@ void FollowCamera::Run(nc::Entity entity, nc::Registry* registry, float dt)
         return v;
     }();
 
-    const auto desiredPos = targetPos + offset + nc::Vector3::Up() * FollowHeight;
-    self->Translate((desiredPos - selfPos) * dt * FollowSpeed);
+    const auto desiredPos = targetPos + offset + nc::Vector3::Up() * m_followHeight;
+    self->Translate((desiredPos - selfPos) * dt * m_followSpeed);
 
     const auto camToTarget = targetPos - selfPos;
     const auto forward = nc::Normalize(camToTarget);

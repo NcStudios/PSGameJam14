@@ -31,5 +31,7 @@ class GameplayOrchestrator : public nc::StableAddress
 
         void HandleBegin();
         void HandleNewGame();
+        void HandleWin();
+        void HandleLose();
 };
 } // namespace game

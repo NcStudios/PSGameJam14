@@ -78,6 +78,7 @@ const auto HealthyTree = std::string{"HealthyTree"};
 const auto InfectedTree = std::string{"InfectedTree"};
 const auto Spreader = std::string{"Spreader"};
 const auto Purifier = std::string{"Purifier"};
+const auto TreeSystem = std::string{"TreeSystem"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
@@ -85,8 +86,8 @@ void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvi
 template<class T>
 auto GetComponentByEntityTag(nc::ecs::Ecs world, const std::string& tag) -> T*
 {
-    auto entity = world.GetEntityByTag(tag::VehicleAudio);
-    NC_ASSERT(entity.Valid(), "Entity not found");
+    auto entity = world.GetEntityByTag(tag);
+    NC_ASSERT(entity.Valid(), fmt::format("Entity with tag '{}' not found", tag));
     auto component = world.Get<T>(entity);
     NC_ASSERT(component, fmt::format("No component found for Entity with tag '{}'", tag));
     return component;

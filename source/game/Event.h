@@ -15,8 +15,8 @@ enum class Event
 {
     Intro, // unhandled
     Begin, // signals end of intro
-    Win, // unhandled
-    Lose, // unhandled
+    Win,
+    Lose,
     NewGame
 };
 
