@@ -222,19 +222,33 @@ CharacterAudio::CharacterAudio(nc::Entity self, nc::Entity)
 
 void CharacterAudio::Init(nc::ecs::Ecs world)
 {
+    constexpr auto innerRadius = 1.0f;
+    constexpr auto outerRadius = 20.0f;
     const auto self = ParentEntity();
-    // gain temp set to 0, don't like placeholder sound
-    auto defaultProps = nc::audio::AudioSourceProperties{ .gain = 0.0f, .innerRadius = 1.0f, .outerRadius = 20.0f, .spatialize = true };
-    auto loopProps = nc::audio::AudioSourceProperties{ .gain = 0.0f, .innerRadius = 1.0f, .outerRadius = 20.0f, .spatialize = true, .loop = true };
 
     m_engineStartPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStart, defaultProps);
+    world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStart, nc::audio::AudioSourceProperties{
+        .gain = 0.8f,
+        .innerRadius = innerRadius,
+        .outerRadius = outerRadius,
+        .spatialize = true
+    });
 
     m_engineRunningPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunning, loopProps);
+    world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunning, nc::audio::AudioSourceProperties{
+        .gain = 0.5f,
+        .innerRadius = innerRadius,
+        .outerRadius = outerRadius,
+        .spatialize = true
+    });
 
     m_engineStopPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStop, defaultProps);
+    world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStop, nc::audio::AudioSourceProperties{
+        .gain = 0.6f,
+        .innerRadius = innerRadius,
+        .outerRadius = outerRadius,
+        .spatialize = true
+    });
 }
 
 void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
