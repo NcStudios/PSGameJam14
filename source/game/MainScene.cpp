@@ -28,8 +28,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto ncAudio = modules.Get<nc::audio::NcAudio>();
 
     // To overlay a saved scene: copy from fragment from install/game to workspace/scene/your_file and change the path below
-    auto ncAsset = modules.Get<nc::asset::NcAsset>();
-    ::LoadBaseScene(world, ncAsset, "scene/terrain");
+    // auto ncAsset = modules.Get<nc::asset::NcAsset>();
+    // ::LoadBaseScene(world, ncAsset, "scene/terrain");
 
     const auto character = CreateCharacter(world, phys, nc::Vector3{0.0f, 0.5f, 0.0f});
     const auto camera = CreateCamera(world, gfx, character);

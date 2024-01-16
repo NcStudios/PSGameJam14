@@ -18,18 +18,6 @@
         {
             "sourcePath": "raw/audio_clip/engine_running.wav",
             "assetName": "audio_clip/engine_running"
-        },
-        {
-            "sourcePath": "raw/audio_clip/vehicle_crash01.wav",
-            "assetName": "audio_clip/vehicle_crash01"
-        },
-        {
-            "sourcePath": "raw/audio_clip/vehicle_crash02.wav",
-            "assetName": "audio_clip/vehicle_crash02"
-        },
-        {
-            "sourcePath": "raw/audio_clip/vehicle_crash03.wav",
-            "assetName": "audio_clip/vehicle_crash03"
         }
     ],
     "concave-collider": [],
