@@ -13,12 +13,15 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
                        float mass,
                        float friction = 0.5f) -> nc::Entity
 {
+    // cleanup
+    const auto realLayer = tag == game::tag::VehicleFront ? game::layer::Character : game::layer::BoxCar;
+
     const auto node = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = position,
         .scale = scale * 0.5f,
         .tag = tag,
-        .layer = game::layer::Character,
+        .layer = realLayer,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
@@ -64,6 +67,18 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
     const auto character = ::CreateVehicle(world, phys, position);
     world.Emplace<CharacterController>(character);
     world.Emplace<nc::FixedLogic>(character, nc::InvokeFreeComponent<CharacterController>{});
+
+    auto props = nc::audio::AudioSourceProperties
+    {
+        .innerRadius = 1.0f,
+        .outerRadius = 20.0f,
+        .spatialize = true
+    };
+
+    const auto characterAudio = world.Emplace<nc::Entity>({.parent = character, .tag = "CharacterAudio"}); // todo:: set in core
+    auto p = world.Emplace<CharacterAudio>(characterAudio, character);
+    p->Init(world);
+    world.Emplace<nc::FrameLogic>(characterAudio, nc::InvokeFreeComponent<CharacterAudio>{});
     return character;
 }
 
@@ -95,6 +110,20 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
             registry->Remove<nc::Entity>(m_purifier);
             m_purifier = nc::Entity::Null();
         }
+    }
+
+    if (KeyDown(game::hotkey::Forward))
+    {
+        auto e = registry->GetEcs().GetEntityByTag("CharacterAudio");
+        NC_ASSERT(e.Valid(), "entity not found");
+        auto player = registry->Get<CharacterAudio>(e);
+        NC_ASSERT(player, "no CharacterAudio");
+        player->SetState(VehicleState::StartForward);
+    }
+    else if (KeyUp(game::hotkey::Forward))
+    {
+        auto e = registry->GetEcs().GetEntityByTag("CharacterAudio");
+        registry->Get<CharacterAudio>(e)->SetState(VehicleState::StopForward);
     }
 
     if (KeyHeld(game::hotkey::Forward))
@@ -196,5 +225,121 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
             .scaleOverTimeFactor = -20.0f
         }
     });
+}
+
+CharacterAudio::CharacterAudio(nc::Entity self, nc::Entity)
+    : nc::FreeComponent(self)
+{
+}
+
+void CharacterAudio::Init(nc::ecs::Ecs world)
+{
+    const auto self = ParentEntity();
+    auto props = nc::audio::AudioSourceProperties
+    {
+        .innerRadius = 1.0f,
+        .outerRadius = 20.0f,
+        .spatialize = true
+    };
+
+    m_engineStartPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStart, props);
+
+    m_engineRunningPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunning, props); // todo: loop
+
+    m_engineStopPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStop, props);
+}
+
+void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)
+{
+    if (m_currentState != m_nextState)
+    {
+        if (m_currentEnginePlayer.Valid())
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+            if (player->IsPlaying()) player->Stop();
+        }
+
+        switch (m_nextState)
+        {
+            case VehicleState::Idle:
+            {
+                break;
+            }
+            case VehicleState::StartForward:
+            {
+                m_currentEnginePlayer = m_engineStartPlayer;
+                auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+                player->Play();
+                break;
+            }
+            case VehicleState::Forward:
+            {
+                m_currentEnginePlayer = m_engineRunningPlayer;
+                auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+                player->Play();
+                break;
+            }
+            case VehicleState::StopForward:
+            {
+                m_currentEnginePlayer = m_engineStopPlayer;
+                auto player = registry->Get<nc::audio::AudioSource>(m_currentEnginePlayer);
+                player->Play();
+                break;
+            }
+            case VehicleState::Back:
+            {
+                break;
+            }
+            case VehicleState::Turning:
+            {
+                break;
+            }
+        }
+
+        m_currentState = m_nextState;
+        return;
+    }
+
+    switch (m_currentState)
+    {
+        case VehicleState::Idle:
+        {
+            break;
+        }
+        case VehicleState::StartForward:
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_engineStartPlayer);
+            if (!player->IsPlaying()) SetState(VehicleState::Forward);
+            break;
+        }
+        case VehicleState::Forward:
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_engineRunningPlayer);
+            if (!player->IsPlaying()) player->Play(); // could just loop
+            break;
+        }
+        case VehicleState::StopForward:
+        {
+            auto player = registry->Get<nc::audio::AudioSource>(m_engineStopPlayer);
+            if (!player->IsPlaying()) SetState(VehicleState::Idle);
+            break;
+        }
+        case VehicleState::Back:
+        {
+            break;
+        }
+        case VehicleState::Turning:
+        {
+            break;
+        }
+    }
+}
+
+void CharacterAudio::SetState(VehicleState state)
+{
+    m_nextState = state;
 }
 } // namespace game

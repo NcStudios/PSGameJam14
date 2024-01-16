@@ -38,6 +38,8 @@ constexpr uint8_t HealthyTree = 3;
 constexpr uint8_t InfectedTree = 4;
 constexpr uint8_t Spreader = 5;
 constexpr uint8_t Purifier = 6;
+constexpr uint8_t Floor = 7;
+constexpr uint8_t BoxCar = 8;
 } // namespace layer
 
 namespace hotkey

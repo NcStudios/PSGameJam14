@@ -6,6 +6,30 @@
         {
             "sourcePath": "raw/audio_clip/forest.wav",
             "assetName": "audio_clip/forest"
+        },
+        {
+            "sourcePath": "raw/audio_clip/engine_start.wav",
+            "assetName": "audio_clip/engine_start"
+        },
+        {
+            "sourcePath": "raw/audio_clip/engine_stop.wav",
+            "assetName": "audio_clip/engine_stop"
+        },
+        {
+            "sourcePath": "raw/audio_clip/engine_running.wav",
+            "assetName": "audio_clip/engine_running"
+        },
+        {
+            "sourcePath": "raw/audio_clip/vehicle_crash01.wav",
+            "assetName": "audio_clip/vehicle_crash01"
+        },
+        {
+            "sourcePath": "raw/audio_clip/vehicle_crash02.wav",
+            "assetName": "audio_clip/vehicle_crash02"
+        },
+        {
+            "sourcePath": "raw/audio_clip/vehicle_crash03.wav",
+            "assetName": "audio_clip/vehicle_crash03"
         }
     ],
     "concave-collider": [],

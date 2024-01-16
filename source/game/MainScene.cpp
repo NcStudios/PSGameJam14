@@ -66,6 +66,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .position = nc::Vector3::Up() * -1.0f,
         .scale = nc::Vector3{300.0f, 1.0f, 300.0f},
         .tag = "Floor",
+        .layer = layer::Floor,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
