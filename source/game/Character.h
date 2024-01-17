@@ -16,7 +16,7 @@ class CharacterController : public nc::FreeComponent
         static constexpr auto maxTurnVelocity = 2.0f;
         static constexpr auto jumpForce = 30.0f;
         static constexpr auto jumpCooldown = 0.35f;
-        static constexpr auto purifyCooldown = 3.0f;
+        static constexpr auto purifyCooldown = 1.0f;
 
         CharacterController(nc::Entity self)
             : nc::FreeComponent{self} {}
@@ -53,6 +53,7 @@ class CharacterAudio : public nc::FreeComponent
         void Init(nc::ecs::Ecs world);
         void Run(nc::Entity self, nc::Registry* registry, float);
         void SetState(VehicleState state);
+        void PlayPurifySfx(nc::ecs::Ecs world);
 
     private:
         VehicleState m_currentState = VehicleState::Idle;
@@ -61,5 +62,6 @@ class CharacterAudio : public nc::FreeComponent
         nc::Entity m_engineRunningPlayer;
         nc::Entity m_engineStopPlayer;
         nc::Entity m_currentEnginePlayer = nc::Entity::Null();
+        nc::Entity m_purifyPlayer;
 };
 } // namespace game

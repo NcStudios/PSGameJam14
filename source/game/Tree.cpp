@@ -66,12 +66,11 @@ auto CreateTreeBase(nc::ecs::Ecs world,
         .scale = scale,
         .tag = tag,
         .layer = layer,
-        .flags = nc::Entity::Flags::NoSerialize
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(tree, mesh, material);
     world.Emplace<nc::physics::Collider>(tree, nc::physics::BoxProperties{});
-    world.Emplace<nc::physics::PhysicsBody>(tree, nc::physics::PhysicsProperties{.isKinematic = true});
     return tree;
 }
 
@@ -99,6 +98,11 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
     };
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, onTriggerExit);
+
+    world.Emplace<nc::audio::AudioSource>(tree, MorphHealthySfx, nc::audio::AudioSourceProperties{
+        .outerRadius = 30.0f,
+        .spatialize = true
+    })->Play();
 }
 
 void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
@@ -136,6 +140,12 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, nullptr);
 
+    world.Emplace<nc::audio::AudioSource>(tree, MorphInfectedSfx, nc::audio::AudioSourceProperties{
+        .gain = 0.6f,
+        .outerRadius = 30.0f,
+        .spatialize = true
+    })->Play();
+
     const auto spreader = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .parent = tree,
@@ -144,6 +154,7 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
     });
 
     world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
+    world.Emplace<nc::physics::PhysicsBody>(spreader, nc::physics::PhysicsProperties{.isKinematic = true});
 }
 
 void FinalizeTrees(nc::ecs::Ecs world)

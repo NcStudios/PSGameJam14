@@ -18,6 +18,18 @@
         {
             "sourcePath": "raw/audio_clip/engine_running.wav",
             "assetName": "audio_clip/engine_running"
+        },
+        {
+            "sourcePath": "raw/audio_clip/purify.wav",
+            "assetName": "audio_clip/purify"
+        },
+        {
+            "sourcePath": "raw/audio_clip/morph_healthy.wav",
+            "assetName": "audio_clip/morph_healthy"
+        },
+        {
+            "sourcePath": "raw/audio_clip/morph_infected.wav",
+            "assetName": "audio_clip/morph_infected"
         }
     ],
     "concave-collider": 

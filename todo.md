@@ -25,6 +25,18 @@ Keep vehicle upright, or force back somehow
 
 Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
 
+Purify
+  update to only emit when key held, shape is probably a long box instead
+  make particle
+  X make sfx
+
+Healthy -> Infected
+  make particle
+  X make sfx
+
+Infected -> Healthy
+  make sfx
+  X make particle
 
 **Asset List**
 
@@ -54,6 +66,8 @@ Window Icon
 
 Script intro cut scene in GameplayManager
 
+Particle color transition, or at least fade out
+
 Particle alpha blending?
   overlap of transparent particle textures is wonk
 
@@ -75,6 +89,9 @@ UI styling (just using engine defaults now)
 - Assorted Collision (requires a several sounds + velocity checking so it isn't obnoxious every time you touch anything)
 
 # Future Work
+Concave colliders initially interact with other static colliders
+  we just put an `if static -> continue` check at the top of BspTree::FindPairs
+
 Editor->AddEntity with layer/flag options
 
 Color utilities, espectially for setting point light props

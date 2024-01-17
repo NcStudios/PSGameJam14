@@ -28,5 +28,5 @@ class FollowCamera : public nc::graphics::Camera
         float m_followSpeed = DefaultFollowSpeed;
 };
 
-auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, nc::Entity initialTarget) -> nc::Entity;
+auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, const nc::Vector3& initialPosition, nc::Entity initialTarget) -> nc::Entity;
 } // namespace game
