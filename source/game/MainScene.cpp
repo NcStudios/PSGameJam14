@@ -27,6 +27,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto phys = modules.Get<nc::physics::NcPhysics>();
     auto ncAudio = modules.Get<nc::audio::NcAudio>();
 
+    // Runs the GameplayOrchestrator loop
     auto storyRunner = world.Emplace<nc::Entity>({.tag = "StoryRunner"});
     world.Emplace<nc::FrameLogic>(storyRunner, [this](nc::Entity, nc::Registry*, float dt)
     {
@@ -37,8 +38,9 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // auto ncAsset = modules.Get<nc::asset::NcAsset>();
     // ::LoadBaseScene(world, ncAsset, "scene/terrain");
 
-    const auto character = CreateCharacter(world, phys, nc::Vector3{0.0f, 0.5f, 0.0f});
-    const auto camera = CreateCamera(world, gfx, character);
+    const auto characterSpawnPos = nc::Vector3{0.0f, 0.0f, -map::HalfExtent + 10.0f};
+    const auto character = CreateCharacter(world, phys, characterSpawnPos);
+    const auto camera = CreateCamera(world, gfx, characterSpawnPos, character);
     ncAudio->RegisterListener(camera);
 
     const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = tag::TreeSystem, .flags = nc::Entity::Flags::NoSerialize});
@@ -47,7 +49,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
     const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
     const auto ambience = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = "Ambience", .flags = nc::Entity::Flags::NoSerialize});
-    world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbience, nc::audio::AudioSourceProperties{.gain = 0.5f, .loop = true})->Play();
+    world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbienceSfx, nc::audio::AudioSourceProperties{.gain = 0.5f, .loop = true})->Play();
 
     // Init GameplayManager sequence
     FireEvent(Event::Intro);
@@ -60,7 +62,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     const auto light = world.Emplace<nc::Entity>(nc::EntityInfo
     {
-        .position = nc::Vector3{1.20484f, 9.4f, -8.48875f},
+        .position = characterSpawnPos + nc::Vector3{1.0f, 9.4f, 8.0f},
         .tag = "Light",
         .flags = nc::Entity::Flags::NoSerialize
     });
@@ -80,10 +82,10 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{});
     world.Emplace<nc::physics::PhysicsBody>(floor, nc::physics::PhysicsProperties{.isKinematic = true});
 
-    CreateTreeBase(world, nc::Vector3{10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
-    CreateTreeBase(world, nc::Vector3{-10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, 10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
-    CreateTreeBase(world, nc::Vector3{0.0f, 0.0f, -10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
+    CreateTreeBase(world, characterSpawnPos + nc::Vector3{10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, characterSpawnPos + nc::Vector3{-10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, characterSpawnPos + nc::Vector3{0.0f, 0.0f, 10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
+    CreateTreeBase(world, characterSpawnPos + nc::Vector3{10.0f, 0.0f, 20.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
 
     // Not part of debug env, just needs to happen last
     FinalizeTrees(world);

@@ -70,6 +70,32 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
     auto p = world.Emplace<CharacterAudio>(characterAudio, character);
     p->Init(world);
     world.Emplace<nc::FrameLogic>(characterAudio, nc::InvokeFreeComponent<CharacterAudio>{});
+
+    const auto transform = world.Get<nc::Transform>(character);
+    const auto forward = transform->Forward();
+    const auto forwardMin = transform->ToLocalSpace(nc::Vector3{-1.0f, -1.0f, 5.0f}) * 5.0f;
+    const auto forwardMax = transform->ToLocalSpace(nc::Vector3{-1.0f, -1.0f, 10.0f}) * 10.0f;
+
+    const auto purifyParticles = world.Emplace<nc::Entity>({.parent = character, .tag = "PurifyParticles"});
+    world.Emplace<nc::graphics::ParticleEmitter>(purifyParticles, nc::graphics::ParticleInfo{
+        .init = nc::graphics::ParticleInitInfo{
+            .lifetime = 1.0f,
+            .positionMin = nc::Vector3::Splat(-0.1f),
+            .positionMax = nc::Vector3::Splat(0.1f),
+            .rotationMin = -0.157f,
+            .rotationMax = 0.157f,
+            .scaleMin = 0.05f,
+            .scaleMax = 0.5f
+        },
+        .kinematic = nc::graphics::ParticleKinematicInfo{
+            .velocityMin = forwardMin,
+            .velocityMax = forwardMax,
+            .rotationMin = -1.0f,
+            .rotationMax = 1.0f,
+            .scaleOverTimeFactor = -30.0f
+        }
+    });
+
     return character;
 }
 
@@ -174,6 +200,19 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
     if (!m_purifyOnCooldown && KeyDown(game::hotkey::Purify))
     {
+        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
+        characterAudio->PlayPurifySfx(registry->GetEcs());
+
+        auto purifyParticles = GetComponentByEntityTag<nc::graphics::ParticleEmitter>(registry, "PurifyParticles");
+        auto props = purifyParticles->GetInfo();
+        const auto moveVel = transform->ToLocalSpace(nc::Vector3::Front()) * m_currentMoveVelocity;
+        const auto baseVelMin = transform->ToLocalSpace(nc::Vector3{-1.0f, -1.0f, 5.0f}) * 5.0f;
+        const auto baseVelMax = transform->ToLocalSpace(nc::Vector3{1.0f, 1.0f, 10.0f}) * 10.0f;
+
+        props.kinematic.velocityMin = moveVel + baseVelMin;
+        props.kinematic.velocityMax = moveVel + baseVelMax;
+        purifyParticles->SetInfo(props);
+        purifyParticles->Emit(30);
         CreatePurifier(registry);
     }
 }
@@ -192,27 +231,10 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
         .layer = layer::Purifier
     });
 
+    const auto transform = registry->Get<nc::Transform>(ParentEntity());
+    const auto forward = transform->Forward();
+
     registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{}, true);
-    registry->Add<nc::graphics::ParticleEmitter>(m_purifier, nc::graphics::ParticleInfo{
-        .emission = nc::graphics::ParticleEmissionInfo{
-            .periodicEmissionCount = 10,
-            .periodicEmissionFrequency = 0.1f
-        },
-        .init = nc::graphics::ParticleInitInfo{
-            .lifetime = 1.0f,
-            .positionMin = nc::Vector3::Splat(-0.5f), // keep in sync with init collider size
-            .positionMax = nc::Vector3::Splat(0.5f),
-            .rotationMin = -0.157f,
-            .rotationMax = 0.157f,
-            .scaleMin = 0.005f,
-            .scaleMax = 0.05f,
-        },
-        .kinematic = nc::graphics::ParticleKinematicInfo{
-            .velocityMin = nc::Vector3::One() * -2.0f,
-            .velocityMax = nc::Vector3::One() * 2.0f,
-            .scaleOverTimeFactor = -20.0f
-        }
-    });
 }
 
 CharacterAudio::CharacterAudio(nc::Entity self, nc::Entity)
@@ -227,7 +249,7 @@ void CharacterAudio::Init(nc::ecs::Ecs world)
     const auto self = ParentEntity();
 
     m_engineStartPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStart, nc::audio::AudioSourceProperties{
+    world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStartSfx, nc::audio::AudioSourceProperties{
         .gain = 0.8f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
@@ -235,7 +257,7 @@ void CharacterAudio::Init(nc::ecs::Ecs world)
     });
 
     m_engineRunningPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunning, nc::audio::AudioSourceProperties{
+    world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunningSfx, nc::audio::AudioSourceProperties{
         .gain = 0.5f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
@@ -243,12 +265,27 @@ void CharacterAudio::Init(nc::ecs::Ecs world)
     });
 
     m_engineStopPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStop, nc::audio::AudioSourceProperties{
+    world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStopSfx, nc::audio::AudioSourceProperties{
         .gain = 0.6f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
         .spatialize = true
     });
+
+    m_purifyPlayer = world.Emplace<nc::Entity>({.parent = self});
+    world.Emplace<nc::audio::AudioSource>(m_purifyPlayer, PurifySfx, nc::audio::AudioSourceProperties{
+        .gain = 1.0f,
+        .innerRadius = innerRadius,
+        .outerRadius = outerRadius,
+        .spatialize = true
+    });
+}
+
+void CharacterAudio::PlayPurifySfx(nc::ecs::Ecs world)
+{
+    auto player = world.Get<nc::audio::AudioSource>(m_purifyPlayer);
+    NC_ASSERT(player, "No AudioSource");
+    player->Play();
 }
 
 void CharacterAudio::Run(nc::Entity, nc::Registry* registry, float)

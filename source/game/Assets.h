@@ -15,10 +15,13 @@ void LoadAssets(const nc::config::AssetSettings& settings);
 constexpr auto Terrain01Collider = "terrain01_collider.nca";
 
 /** SFX */
-constexpr auto ForestAmbience = "forest.nca";
-constexpr auto EngineStart = "engine_start.nca";
-constexpr auto EngineRunning = "engine_running.nca";
-constexpr auto EngineStop = "engine_stop.nca";
+constexpr auto ForestAmbienceSfx = "forest.nca";
+constexpr auto EngineStartSfx = "engine_start.nca";
+constexpr auto EngineRunningSfx = "engine_running.nca";
+constexpr auto EngineStopSfx = "engine_stop.nca";
+constexpr auto PurifySfx = "purify.nca";
+constexpr auto MorphHealthySfx = "morph_healthy.nca";
+constexpr auto MorphInfectedSfx = "morph_infected.nca";
 
 /** Meshes */
 constexpr auto FloorMesh = "floor.nca";

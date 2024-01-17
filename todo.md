@@ -25,6 +25,18 @@ Keep vehicle upright, or force back somehow
 
 Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
 
+Purify
+  update to only emit when key held, shape is probably a long box instead
+  make particle
+  X make sfx
+
+Healthy -> Infected
+  make particle
+  X make sfx
+
+Infected -> Healthy
+  make sfx
+  X make particle
 
 **Asset List**
 
@@ -54,6 +66,8 @@ Window Icon
   - need small + big, bring in stb to engine for loading
 
 Script intro cut scene in GameplayManager
+
+Particle color transition, or at least fade out
 
 Particle alpha blending?
   overlap of transparent particle textures is wonk

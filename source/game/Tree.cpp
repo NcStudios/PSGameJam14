@@ -99,6 +99,11 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
     };
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, onTriggerExit);
+
+    world.Emplace<nc::audio::AudioSource>(tree, MorphHealthySfx, nc::audio::AudioSourceProperties{
+        .outerRadius = 30.0f,
+        .spatialize = true
+    })->Play();
 }
 
 void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
@@ -135,6 +140,12 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
     };
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, nullptr);
+
+    world.Emplace<nc::audio::AudioSource>(tree, MorphInfectedSfx, nc::audio::AudioSourceProperties{
+        .gain = 0.6f,
+        .outerRadius = 30.0f,
+        .spatialize = true
+    })->Play();
 
     const auto spreader = world.Emplace<nc::Entity>(nc::EntityInfo
     {
