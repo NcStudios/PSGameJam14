@@ -51,7 +51,6 @@ Infected -> Healthy
  - Sick Tree 1
  - Sick Tree 2
  - Sick Tree 3
- - Ground
  - Poison particle
 
 **Sound List**
@@ -133,3 +132,6 @@ improve ParticleEmitter widget
   will need set funcs
 do we have default particle? ParticleInfo should use it
 
+Terrain
+
+Ground

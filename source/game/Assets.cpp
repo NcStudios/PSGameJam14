@@ -41,6 +41,6 @@ void LoadAssets(const nc::config::AssetSettings& settings)
     ::LoadAssets(settings.audioClipsPath, nc::AssetFlags::None, &nc::LoadAudioClipAssets);
     ::LoadAssets(settings.meshesPath, nc::AssetFlags::None, &nc::LoadMeshAssets);
     ::LoadAssets(settings.texturesPath, nc::AssetFlags::None, &nc::LoadTextureAssets);
-    ::LoadAssets(settings.hullCollidersPath, nc::AssetFlags::None, &nc::LoadConvexHullAssets);
+    ::LoadAssets(settings.concaveCollidersPath, nc::AssetFlags::None, &nc::LoadConcaveColliderAssets);
 }
 } // namespace game
