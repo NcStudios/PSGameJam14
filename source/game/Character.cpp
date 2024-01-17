@@ -235,6 +235,7 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
     const auto forward = transform->Forward();
 
     registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{}, true);
+    registry->Add<nc::physics::PhysicsBody>(m_purifier, nc::physics::PhysicsProperties{.isKinematic = true});
 }
 
 CharacterAudio::CharacterAudio(nc::Entity self, nc::Entity)

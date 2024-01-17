@@ -80,7 +80,6 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     world.Emplace<nc::graphics::MeshRenderer>(floor);
     world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{});
-    world.Emplace<nc::physics::PhysicsBody>(floor, nc::physics::PhysicsProperties{.isKinematic = true});
 
     CreateTreeBase(world, characterSpawnPos + nc::Vector3{10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
     CreateTreeBase(world, characterSpawnPos + nc::Vector3{-10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);

@@ -66,12 +66,11 @@ auto CreateTreeBase(nc::ecs::Ecs world,
         .scale = scale,
         .tag = tag,
         .layer = layer,
-        .flags = nc::Entity::Flags::NoSerialize
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(tree, mesh, material);
     world.Emplace<nc::physics::Collider>(tree, nc::physics::BoxProperties{});
-    world.Emplace<nc::physics::PhysicsBody>(tree, nc::physics::PhysicsProperties{.isKinematic = true});
     return tree;
 }
 
@@ -155,6 +154,7 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
     });
 
     world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
+    world.Emplace<nc::physics::PhysicsBody>(spreader, nc::physics::PhysicsProperties{.isKinematic = true});
 }
 
 void FinalizeTrees(nc::ecs::Ecs world)

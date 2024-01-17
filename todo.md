@@ -89,6 +89,9 @@ UI styling (just using engine defaults now)
 - Assorted Collision (requires a several sounds + velocity checking so it isn't obnoxious every time you touch anything)
 
 # Future Work
+Concave colliders initially interact with other static colliders
+  we just put an `if static -> continue` check at the top of BspTree::FindPairs
+
 Editor->AddEntity with layer/flag options
 
 Color utilities, espectially for setting point light props
