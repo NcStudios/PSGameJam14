@@ -109,6 +109,10 @@
         {
             "sourcePath": "raw/mesh/tree01.fbx",
             "assetName": "mesh/tree01"
+        },
+        {
+            "sourcePath": "raw/mesh/tree02.fbx",
+            "assetName": "mesh/tree02"
         }
     ],
     "texture": [
@@ -147,6 +151,10 @@
         {
             "sourcePath": "raw/texture/tree01_base_color.png",
             "assetName": "texture/tree01_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/tree02_base_color.png",
+            "assetName": "texture/tree02_base_color"
         },
         {
             "sourcePath": "raw/texture/terrain01_base_color.png",
