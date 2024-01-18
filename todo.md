@@ -10,6 +10,8 @@ Test audio on other devices, bumping buffer to 512 fixed my machine - may just b
 
 Shadow wonkiness
 
+Bug on Surface - crash in igvk64.dll when running installed build against MSVC 17.5.0. Fixed by updating to MSVC 17.8.5.0.
+Frame rate drop investigations?
 
 
 Keep vehicle upright, or force back somehow
