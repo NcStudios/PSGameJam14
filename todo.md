@@ -10,14 +10,7 @@ Test audio on other devices, bumping buffer to 512 fixed my machine - may just b
 
 Shadow wonkiness
 
-Add some interaction between vehicle and infected trees
-  controls + purifier spawning added, still need to change collision mechanic to time-based
 
-Improve movement/camera
-  not perfect, but in a 'tweakable' state
-  improve general feel and steering control
-  make sure follow distance looks good (requires rough to-scale assets for testing)
-  X jump isn't infinite
 
 Keep vehicle upright, or force back somehow
   - can we restrict PhysicsBody freedom?
@@ -26,17 +19,17 @@ Keep vehicle upright, or force back somehow
 Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
 
 Purify
-  update to only emit when key held, shape is probably a long box instead
-  make particle
+  X update to only emit when key held, shape is probably a long box instead
   X make sfx
+  make particle
 
 Healthy -> Infected
-  make particle
   X make sfx
+  make particle
 
 Infected -> Healthy
-  make sfx
-  X make particle
+  X make sfx
+  make particle
 
 **Asset List**
 
@@ -61,6 +54,8 @@ Infected -> Healthy
 - Disinfect complete
 
 # Nice to have
+Jump no longer really useful, could be a speed boost
+
 Window Icon
   - need small + big, bring in stb to engine for loading
 
@@ -103,6 +98,16 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Improve movement/camera
+  not perfect, but in a 'tweakable' state
+  X improve general feel and steering control
+  make sure follow distance looks good (requires rough to-scale assets for testing)
+  X jump isn't infinite
+
+Add some interaction between vehicle and infected trees
+  X update collision volume (maybe projetile?) and particle position/velocity
+  X controls + purifier spawning added
+
 Dialog fwd/back buttons - might be annoying to have prev dialog removed on event
 
 Animated dialog, should be fairly simple to 'type' out one character/word at time

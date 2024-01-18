@@ -43,8 +43,8 @@ auto CreateVehicle(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::V
     // TODO: play with mass/friction/restitution values
     //       also consider tweaking PhysicsConstants
     const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::layer::Character, game::BusFrontMesh, game::BusFrontMaterial, 15.0f, 0.8f);
-    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.5f);
-    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.5f);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.7f);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.6f);
     const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 0.2f, 0.5f);
 
     // TODO: play with these values
@@ -142,10 +142,39 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
     if (KeyHeld(game::hotkey::Forward))
     {
-        if (m_currentMoveVelocity < maxMoveVelocity)
+        if (!m_inchDecelerating) // start of inching movement
         {
-            m_currentMoveVelocity += moveAcceleration;
+            if (m_currentMoveVelocity < moveVelocityUpperBound)
+            {
+                m_currentMoveVelocity += moveAcceleration;
+            }
+            else if (m_timeAtMoveBound < 0.25f)
+            {
+                m_timeAtMoveBound += fixedDt;
+            }
+            else
+            {
+                m_inchDecelerating = true;
+                m_timeAtMoveBound = 0.0f;
+            }
         }
+        else // end of inching movement
+        {
+            if (m_currentMoveVelocity > moveVelocityLowerBound)
+            {
+                m_currentMoveVelocity -= moveAcceleration;
+            }
+            else if (m_timeAtMoveBound < 0.20f)
+            {
+                m_timeAtMoveBound += fixedDt;
+            }
+            else
+            {
+                m_inchDecelerating = false;
+                m_timeAtMoveBound = 0.0f;
+            }
+        }
+
         transform->Translate(transform->Forward() * m_currentMoveVelocity * fixedDt);
     }
     else if (!nc::FloatEqual(m_currentMoveVelocity, 0.0f))
@@ -154,6 +183,8 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
         if (m_currentMoveVelocity < 0.0f)
         {
             m_currentMoveVelocity = 0.0f;
+            m_timeAtMoveBound = 0.0f;
+            m_inchDecelerating = false;
         }
         else
         {
@@ -163,7 +194,7 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
     if (KeyHeld(game::hotkey::Back))
     {
-        transform->Translate(-transform->Forward() * maxMoveVelocity * 0.5f * fixedDt);
+        transform->Translate(-transform->Forward() * moveVelocityUpperBound * 0.5f * fixedDt);
     }
 
     auto turning = false;
@@ -221,21 +252,30 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
 {
     m_purifyOnCooldown = true;
     m_purifyRemainingCooldownTime = purifyCooldown;
+    const auto transform = registry->Get<nc::Transform>(ParentEntity());
+    const auto forward = transform->Forward();
 
     m_purifier = registry->Add<nc::Entity>(
     {
-        .position = nc::Vector3::Front() * 3.0f,
-        .scale = nc::Vector3::One() * 5.0f,
-        .parent = ParentEntity(),
+        .position = transform->Position() + forward * 2.0f,
+        .rotation = transform->Rotation(),
         .tag = tag::Purifier,
         .layer = layer::Purifier
     });
 
-    const auto transform = registry->Get<nc::Transform>(ParentEntity());
-    const auto forward = transform->Forward();
 
-    registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{}, true);
+
+    registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{.radius = 2.5f}, true);
     registry->Add<nc::physics::PhysicsBody>(m_purifier, nc::physics::PhysicsProperties{.isKinematic = true});
+
+    // add for debug visibility, could maybe add something?
+    // registry->Add<nc::graphics::ToonRenderer>(m_purifier, nc::asset::SphereMesh);
+
+    registry->Add<nc::FrameLogic>(m_purifier, [](nc::Entity self, nc::Registry* registry, float dt)
+    {
+        auto transform = registry->Get<nc::Transform>(self);
+        transform->TranslateLocalSpace(nc::Vector3::Front() * 8.0f * dt);
+    });
 }
 
 CharacterAudio::CharacterAudio(nc::Entity self, nc::Entity)
