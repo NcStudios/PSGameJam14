@@ -3,6 +3,7 @@ add_executable(${GAME}
         Assets.cpp
         Character.cpp
         Core.cpp
+        Environment.cpp
         Event.cpp
         FollowCamera.cpp
         GameplayOrchestrator.cpp

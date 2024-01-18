@@ -46,8 +46,8 @@ constexpr auto Terrain02Mesh = "terrain02.nca";
 constexpr auto TerrainInletMesh = "terrain_inlet.nca";
 
 /** Meshes - Tree */
-constexpr auto TreeMesh = "tree.nca";
 constexpr auto Tree01Mesh = "tree01.nca";
+constexpr auto SpreaderTreeMesh = "spreader_tree.nca";
 
 /** Textures */
 /** Textures - Character */
@@ -73,6 +73,7 @@ constexpr auto TerrainInletTexture = "terrain_inlet_base_color.nca";
 
 /** Textures - Tree */
 constexpr auto Tree01Texture = "tree01_base_color.nca";
+constexpr auto SpreaderTreeTexture = "spreader_tree_base_color.nca";
 
 /** Materials */
 inline auto BusFrontMaterial = nc::graphics::ToonMaterial
@@ -105,5 +106,21 @@ inline auto InfectedTree01Material = nc::graphics::ToonMaterial
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
     .hatchingTiling = 6
+};
+
+inline auto SpreaderTreeMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = SpreaderTreeTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 6
+};
+
+inline auto GrassMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = GrassTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 3
 };
 } // namespace game

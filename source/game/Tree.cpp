@@ -150,7 +150,8 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
     {
         .parent = tree,
         .tag = tag::Spreader,
-        .layer = layer::Spreader // prob don't need layer on both, but...
+        .layer = layer::Spreader,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
@@ -207,40 +208,37 @@ void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry)
 
 void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
 {
-    auto world = registry->GetEcs();
-    auto infectedTrees = world.GetAll<InfectedTree>();
-
-    if constexpr (!DisableEndGame)
+    if constexpr (EnableGameplay)
     {
+        auto world = registry->GetEcs();
+        auto infectedTrees = world.GetAll<InfectedTree>();
+
         if (infectedTrees.empty())
         {
             FireEvent(Event::Win);
             return;
         }
-    }
 
-    for (auto& infected : infectedTrees)
-    {
-        infected.Update(world, dt);
-    }
+        for (auto& infected : infectedTrees)
+        {
+            infected.Update(world, dt);
+        }
 
-    auto healthyTrees = world.GetAll<HealthyTree>();
+        auto healthyTrees = world.GetAll<HealthyTree>();
 
-    if constexpr (!DisableEndGame)
-    {
         if (healthyTrees.empty())
         {
             FireEvent(Event::Lose);
             return;
         }
-    }
 
-    for (auto& healthy : healthyTrees)
-    {
-        healthy.Update(dt);
-        if (healthy.ShouldMorph())
+        for (auto& healthy : healthyTrees)
         {
-            MorphTreeToInfected(world, healthy.ParentEntity());
+            healthy.Update(dt);
+            if (healthy.ShouldMorph())
+            {
+                MorphTreeToInfected(world, healthy.ParentEntity());
+            }
         }
     }
 }

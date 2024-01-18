@@ -11,7 +11,7 @@ inline void CreateDebugCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx)
 {
     const auto debugCamera = world.Emplace<nc::Entity>(
     {
-        .position = nc::Vector3{0.0f, 6.1f, -6.5f},
+        .position = nc::Vector3{15.0f, 80.0f, -200.0f},
         .rotation = nc::Quaternion::FromEulerAngles(0.7f, 0.0f, 0.0f),
         .tag = "DebugCamera",
         .flags = nc::Entity::Flags::NoSerialize
