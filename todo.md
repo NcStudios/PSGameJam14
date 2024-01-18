@@ -1,8 +1,12 @@
 
 # Must Do
-Fix moving static, but non-kinematic physics bodies in engine (or just don't have PB?)
+Add border asset - maybe can spawn something?
 
-Level design
+Add level detail + reduce redundancy
+
+Quest Triggers
+  - meet dave, trigger dialog to go to camp
+  - arrive at camp, start spreaders
 
 Dialog
 
@@ -56,6 +60,10 @@ Infected -> Healthy
 - Disinfect complete
 
 # Nice to have
+environment particles
+
+skybox
+
 Jump no longer really useful, could be a speed boost
 
 Window Icon
@@ -100,6 +108,8 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Fix moving static, but non-kinematic physics bodies in engine (or just don't have PB?)
+
 Improve movement/camera
   not perfect, but in a 'tweakable' state
   X improve general feel and steering control

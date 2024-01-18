@@ -9,8 +9,8 @@ namespace
 {
 constexpr auto Terrain1SpawnExtent = nc::Vector3{12.0f, 1.0f, 12.0f};
 constexpr auto Terrain2SpawnExtent = nc::Vector3{12.0f, 1.0f, 12.0f};
-constexpr auto TerrainCurve1SpawnExtent = nc::Vector3{1.0f, 1.0f, 1.0f};
-constexpr auto TerrainCurve2SpawnExtent = nc::Vector3{1.0f, 1.0f, 1.0f};
+constexpr auto TerrainCurve1SpawnExtent = nc::Vector3{3.0f, 1.0f, 11.0f};
+constexpr auto TerrainCurve2SpawnExtent = nc::Vector3{3.0f, 1.0f, 11.0f};
 constexpr auto TerrainInlet1SpawnExtent = nc::Vector3{10.0f, 1.0f, 20.0f};
 
 auto GetSpawnExtent(uint8_t layer) -> nc::Vector3
@@ -24,6 +24,25 @@ auto GetSpawnExtent(uint8_t layer) -> nc::Vector3
         case game::layer::TerrainInlet1: return TerrainInlet1SpawnExtent;
         default: throw nc::NcError("unhandled spawn extent");
     }
+}
+
+auto GetLocalSpawnExtents(nc::ecs::Ecs world, nc::Entity entity)
+{
+    auto maxExtent = ::GetSpawnExtent(entity.Layer());
+    auto minExtent = -maxExtent;
+    const auto transform = world.Get<nc::Transform>(entity);
+    const auto pos = transform->Position();
+    const auto& m = transform->TransformationMatrix();
+
+    auto v = DirectX::XMLoadVector3(&maxExtent);
+    v = DirectX::XMVector3Transform(v, m);
+    DirectX::XMStoreVector3(&maxExtent, v);
+
+    v = DirectX::XMLoadVector3(&minExtent);
+    v = DirectX::XMVector3Transform(v, m);
+    DirectX::XMStoreVector3(&minExtent, v);
+
+    return std::pair{minExtent, maxExtent};
 }
 } // anonymous namespace
 
@@ -73,36 +92,35 @@ void FinalizeTerrain(nc::ecs::Ecs world)
     }
 }
 
-void GenerateGrass(nc::ecs::Ecs world, nc::Random* random)
+void RandomlyPopulateTerrain(nc::ecs::Ecs world, nc::Random* random)
 {
-    constexpr auto grassPerTerrain = 5;
+    const auto terrain = FilterTerrainEntities(world);
+    GenerateGrass(world, random, terrain);
+    GenerateTrees(world, random, terrain);
+}
 
-    // We can leave this serializable if we want to use a development tool (generate, position, save)
-    // or turn off serialization if 'full blown random all the time' works
-    auto root = world.Emplace<nc::Entity>({.tag = "[Env] Grass"});
+auto FilterTerrainEntities(nc::ecs::Ecs world) -> std::vector<nc::Entity>
+{
+    auto filter = world.GetAll<nc::Entity>() | std::views::filter([](nc::Entity entity)
+    {
+        return IsTerrain(entity)
+            && entity.Layer() != layer::TerrainInlet1; // ignore these for now
+    });
 
-    auto terrain = world.GetAll<nc::Entity>()
-        | std::views::filter([](nc::Entity entity) { return IsTerrain(entity); });
+    return std::vector<nc::Entity>{filter.begin(), filter.end()};
+}
 
-    auto terrainCount = 0ull;
+void GenerateGrass(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc::Entity>& terrain)
+{
+    constexpr auto grassPerTerrain = 50ull;
+    const auto root = world.Emplace<nc::Entity>({.tag = "[Env] Grass"});
 
     for (auto entity : terrain)
     {
-        ++terrainCount;
-        auto grassCount = 0;
-
-        auto terrainTransform = world.Get<nc::Transform>(entity);
-        const auto pos = terrainTransform->Position();
-        const auto extent = ::GetSpawnExtent(entity.Layer());
-        const auto minPos = pos - extent;
-        const auto maxPos = pos + extent;
-
-        for (auto i = 0ull; i < grassPerTerrain; ++i)
+        const auto [minPos, maxPos] = ::GetLocalSpawnExtents(world, entity);
+        for ([[maybe_unused]] auto _ : std::views::iota(0ull, grassPerTerrain))
         {
-            ++grassCount;
-            auto scale = random->Between(nc::Vector3::Splat(0.3f), nc::Vector3::Splat(3.0f));
-
-            auto grass = world.Emplace<nc::Entity>({
+            const auto grass = world.Emplace<nc::Entity>({
                 .position = random->Between(
                     minPos,
                     maxPos
@@ -111,42 +129,28 @@ void GenerateGrass(nc::ecs::Ecs world, nc::Random* random)
                     nc::Vector3::Up(),
                     random->Between(-1.57f, 1.57f)
                 ),
-                .scale = scale,
+                .scale = random->Between(nc::Vector3::Splat(0.3f), nc::Vector3::Splat(3.0f)),
                 .parent = root,
                 .flags = nc::Entity::Flags::Static
             });
 
             world.Emplace<nc::graphics::ToonRenderer>(grass, GrassMesh, GrassMaterial);
         }
-
-        std::cerr << "terrain no. " << terrainCount << ", grassSpawned: " << grassCount << '\n';
     }
-
-    auto childCount = world.Get<nc::Transform>(root)->Children().size();
-    std::cerr << "actualChildCount: " << childCount << '\n';
 }
 
-void GenerateTrees(nc::ecs::Ecs world, nc::Random* random)
+void GenerateTrees(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc::Entity>& terrain)
 {
-    constexpr auto treesPerTerrain = 5ull;
-    auto root = world.Emplace<nc::Entity>({.tag = "[Env] Trees"});
-
-    auto terrain = world.GetAll<nc::Entity>()
-        | std::views::filter([](nc::Entity entity) { return IsTerrain(entity); });
+    constexpr auto treesPerTerrain = 10ull;
+    const auto root = world.Emplace<nc::Entity>({.tag = "[Env] Trees"});
 
     for (auto entity : terrain)
     {
-        auto terrainTransform = world.Get<nc::Transform>(entity);
-        const auto pos = terrainTransform->Position();
-        const auto extent = ::GetSpawnExtent(entity.Layer());
-        const auto minPos = pos - extent;
-        const auto maxPos = pos + extent;
+        const auto [minPos, maxPos] = ::GetLocalSpawnExtents(world, entity);
 
-        for (auto i = 0; i < treesPerTerrain; ++i)
+        for ([[maybe_unused]] auto _ : std::views::iota(0ull, treesPerTerrain))
         {
-            auto scale = nc::Vector3::Splat(random->Between(0.3f, 2.0f));
-
-            auto tree = world.Emplace<nc::Entity>({
+            const auto tree = world.Emplace<nc::Entity>({
                 .position = random->Between(
                     minPos,
                     maxPos
@@ -155,7 +159,7 @@ void GenerateTrees(nc::ecs::Ecs world, nc::Random* random)
                     nc::Vector3::Up(),
                     random->Between(-1.57f, 1.57f)
                 ),
-                .scale = scale,
+                .scale = nc::Vector3::Splat(random->Between(0.3f, 2.0f)),
                 .parent = root,
                 .flags = nc::Entity::Flags::Static
             });

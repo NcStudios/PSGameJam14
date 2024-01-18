@@ -83,8 +83,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     // Spawning ops
 #if 0
-    GenerateGrass(world, ncRandom);
-    GenerateTrees(world, ncRandom);
+    RandomlyPopulateTerrain(world, ncRandom);
 #endif
 
     // Not part of debug env, just needs to happen last
