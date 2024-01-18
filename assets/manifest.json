@@ -71,6 +71,10 @@
             "assetName": "mesh/bus_car"
         },
         {
+            "sourcePath": "raw/mesh/dave.fbx",
+            "assetName": "mesh/dave"
+        },
+        {
             "sourcePath": "raw/mesh/floor.fbx",
             "assetName": "mesh/floor"
         },
@@ -129,6 +133,10 @@
             "assetName": "texture/bus_car_base_color"
         },
         {
+            "sourcePath": "raw/texture/dave_base_color.png",
+            "assetName": "texture/dave_base_color"
+        },
+        {
             "sourcePath": "raw/texture/floor_base_color.png",
             "assetName": "texture/floor_base_color"
         },
@@ -179,6 +187,17 @@
         {
             "sourcePath": "raw/texture/spreader_tree_base_color.png",
             "assetName": "texture/spreader_tree_base_color"
+        }
+    ],
+    "skeletal-animation": [
+        {
+            "sourcePath": "raw/skeletal_animation/dave.fbx",
+            "assetNames": [
+                {
+                    "subResourceName" : "Dave|wave",
+                    "assetName" : "skeletal_animation\\dave_wave"
+                }
+            ]
         }
     ]
 }
