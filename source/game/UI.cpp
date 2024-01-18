@@ -36,6 +36,17 @@ void GameUI::Draw()
         m_menuOpen = !m_menuOpen;
     }
 
+#ifndef GAME_PROD_BUILD
+    ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Always);
+    ImGui::SetNextWindowSize({80, 30});
+    if (ImGui::Begin("DebugUI", nullptr, g_windowFlags))
+    {
+        ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
+    }
+
+    ImGui::End();
+#endif
+
     if (m_menuOpen)
     {
         ImGui::SetNextWindowPos({ windowDimensions.x / 2, windowDimensions.y / 2 }, ImGuiCond_Always, {0.5f, 0.5f});
