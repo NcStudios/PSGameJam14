@@ -1,5 +1,7 @@
 
 # Must Do
+Add border asset - maybe can spawn something?
+
 Add level detail + reduce redundancy
 
 Quest Triggers
@@ -58,6 +60,10 @@ Infected -> Healthy
 - Disinfect complete
 
 # Nice to have
+environment particles
+
+skybox
+
 Jump no longer really useful, could be a speed boost
 
 Window Icon
