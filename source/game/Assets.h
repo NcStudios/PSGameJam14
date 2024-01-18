@@ -31,6 +31,7 @@ constexpr auto MorphInfectedSfx = "morph_infected.nca";
 /** Meshes - Character */
 constexpr auto BusCarMesh = "bus_car.nca";
 constexpr auto BusFrontMesh = "bus_front.nca";
+constexpr auto DaveMesh = "dave.nca";
 
 /** Meshes - Floor */
 constexpr auto FloorMesh = "floor.nca";
@@ -53,6 +54,7 @@ constexpr auto SpreaderTreeMesh = "spreader_tree.nca";
 /** Textures - Character */
 constexpr auto BusCarTexture = "bus_car_base_color.nca";
 constexpr auto BusFrontTexture = "bus_base_color.nca";
+constexpr auto DaveTexture = "dave_base_color.nca";
 
 /** Textures - Floor */
 constexpr auto FloorTexture = "floor_base_color.nca";
