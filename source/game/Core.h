@@ -31,7 +31,7 @@ namespace game
 {
 // Enable/disable calls to finalize environment (adding game logic and such) and triggering win/lose condition
 // DO NOT SAVE SCENES WITH GAMEPLAY ENABLED!
-constexpr auto EnableGameplay = true;
+constexpr auto EnableGameplay = false;
 
 namespace layer
 {
@@ -48,6 +48,7 @@ constexpr uint8_t BoxCar = 8;
 constexpr uint8_t Terrain = 9; // remove? check not used first
 constexpr uint8_t Border = 10; // outer border
 constexpr uint8_t Blockade = 11; // obstacle
+constexpr uint8_t QuestTrigger = 12;
 
 // Reserving [100, 150] for terrain
 // so we can script applying stuff (colliders, etcs.) after the fact
@@ -99,6 +100,7 @@ const auto Purifier = std::string{"Purifier"};
 const auto TreeSystem = std::string{"TreeSystem"};
 const auto Ground = std::string{"Ground"};
 const auto Terrain = std::string{"Terrain"};
+const auto QuestTrigger = std::string{"QuestTrigger"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);

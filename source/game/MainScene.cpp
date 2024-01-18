@@ -6,6 +6,7 @@
 #include "Environment.h"
 #include "Event.h"
 #include "FollowCamera.h"
+#include "QuestTrigger.h"
 #include "Tree.h"
 
 #include "ncengine/serialize/SceneSerialization.h"
