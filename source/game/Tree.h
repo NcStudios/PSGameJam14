@@ -28,8 +28,8 @@ class HealthyTree : public nc::ComponentBase
 
         void Disinfect()
         {
-            NC_ASSERT(m_infectedByCount != 0, "expected at least one infected reference");
-            --m_infectedByCount;
+            if (m_infectedByCount != 0)
+                --m_infectedByCount;
         }
 
         auto ShouldMorph() -> bool { return m_timeInfected > InfectThresholdSeconds; }
