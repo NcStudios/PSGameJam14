@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "Core.h"
 #include "DebugCamera.h"
+#include "Environment.h"
 #include "Event.h"
 #include "FollowCamera.h"
 #include "Tree.h"
@@ -26,25 +27,35 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     auto gfx = modules.Get<nc::graphics::NcGraphics>();
     auto phys = modules.Get<nc::physics::NcPhysics>();
     auto ncAudio = modules.Get<nc::audio::NcAudio>();
+    [[maybe_unused]] auto ncRandom = modules.Get<nc::Random>();
 
-    // Runs the GameplayOrchestrator loop
-    auto storyRunner = world.Emplace<nc::Entity>({.tag = "StoryRunner"});
-    world.Emplace<nc::FrameLogic>(storyRunner, [this](nc::Entity, nc::Registry*, float dt)
+    if (EnableGameplay)
     {
-        m_runOrchestrator(dt);
-    });
+        // Runs the GameplayOrchestrator loop
+        auto storyRunner = world.Emplace<nc::Entity>({.tag = "StoryRunner", .flags = nc::Entity::Flags::NoSerialize});
+        world.Emplace<nc::FrameLogic>(storyRunner, [this](nc::Entity, nc::Registry*, float dt){ m_runOrchestrator(dt); });
+    }
 
-    // To overlay a saved scene: copy from fragment from install/game to workspace/scene/your_file and change the path below
-    // auto ncAsset = modules.Get<nc::asset::NcAsset>();
-    // ::LoadBaseScene(world, ncAsset, "scene/terrain");
+    // Look out, tedium ahead
+    // When modifying the scene, do not save to this name. It will get overwritten on install. Save with another filename, and update
+    // this path while doing modifications. Once complete, backup the latest 'workspace/scene' directory somewhere in 'workspace/backup'
+    // (backup 'workspace/prefab' too, if you changed anything) Then, save your temp scene from 'install/your_scene_name' to
+    // 'workspace/scene/terrain' (or 'workspace/prefab/your_prefab').
+    auto ncAsset = modules.Get<nc::asset::NcAsset>();
+    ::LoadBaseScene(world, ncAsset, "scene/level");
 
-    const auto characterSpawnPos = nc::Vector3{0.0f, 0.0f, -map::HalfExtent + 10.0f};
+    const auto characterSpawnPos = nc::Vector3{120.0f, 0.0f, -136.0f};
     const auto character = CreateCharacter(world, phys, characterSpawnPos);
     const auto camera = CreateCamera(world, gfx, characterSpawnPos, character);
     ncAudio->RegisterListener(camera);
 
     const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = tag::TreeSystem, .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::FrameLogic>(treeSystem, &ProcessTrees);
+
+    // Base objects for initial infected trees; should be able to add these to the scene instead
+    CreateTreeBase(world, nc::Vector3{5.0f, 0.0f, -12.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, SpreaderTreeMesh, SpreaderTreeMaterial);
+    CreateTreeBase(world, nc::Vector3{138.0f, 0.0f, -22.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, SpreaderTreeMesh, SpreaderTreeMaterial);
+    CreateTreeBase(world, nc::Vector3{24.5f, 0.0f, -116.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, SpreaderTreeMesh, SpreaderTreeMaterial);
 
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
     const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
@@ -69,24 +80,18 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     world.Emplace<nc::graphics::PointLight>(light, nc::Vector3{0.443f, 0.412f, 0.412f}, nc::Vector3{0.4751f, 0.525f, 1.0f}, 600.0f);
 
-    const auto floor = world.Emplace<nc::Entity>(nc::EntityInfo
-    {
-        .position = nc::Vector3::Up() * -1.0f,
-        .scale = nc::Vector3{300.0f, 1.0f, 300.0f},
-        .tag = tag::Ground,
-        .layer = layer::Ground,
-        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
-    });
-
-    world.Emplace<nc::graphics::MeshRenderer>(floor);
-    world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{});
-
-    CreateTreeBase(world, characterSpawnPos + nc::Vector3{10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
-    CreateTreeBase(world, characterSpawnPos + nc::Vector3{-10.0f, 0.0f, 0.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
-    CreateTreeBase(world, characterSpawnPos + nc::Vector3{0.0f, 0.0f, 10.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
-    CreateTreeBase(world, characterSpawnPos + nc::Vector3{10.0f, 0.0f, 20.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
+    // Spawning ops
+#if 0
+    GenerateGrass(world, ncRandom);
+    GenerateTrees(world, ncRandom);
+#endif
 
     // Not part of debug env, just needs to happen last
-    FinalizeTrees(world);
+    // These modify serialized objects: DO NOT SAVE SCENE WHEN ENABLED!
+    if constexpr (EnableGameplay)
+    {
+        FinalizeTrees(world);
+        FinalizeTerrain(world);
+    }
 }
 } // namespace game

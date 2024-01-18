@@ -17,6 +17,7 @@
 #include "ncengine/graphics/SkeletalAnimator.h"
 #include "ncengine/graphics/ToonRenderer.h"
 #include "ncengine/input/Input.h"
+#include "ncengine/math/Random.h"
 #include "ncengine/module/ModuleProvider.h"
 #include "ncengine/physics/Collider.h"
 #include "ncengine/physics/ConcaveCollider.h"
@@ -28,7 +29,9 @@
 
 namespace game
 {
-constexpr auto DisableEndGame = true;
+// Enable/disable calls to finalize environment (adding game logic and such) and triggering win/lose condition
+// DO NOT SAVE SCENES WITH GAMEPLAY ENABLED!
+constexpr auto EnableGameplay = true;
 
 namespace layer
 {
@@ -42,7 +45,19 @@ constexpr uint8_t Spreader = 5;
 constexpr uint8_t Purifier = 6;
 constexpr uint8_t Ground = 7;
 constexpr uint8_t BoxCar = 8;
-constexpr uint8_t Terrain = 9;
+constexpr uint8_t Terrain = 9; // remove? check not used first
+constexpr uint8_t Border = 10; // outer border
+constexpr uint8_t Blockade = 11; // obstacle
+
+// Reserving [100, 150] for terrain
+// so we can script applying stuff (colliders, etcs.) after the fact
+constexpr uint8_t Terrain1 = 100;
+constexpr uint8_t Terrain2 = 101;
+
+constexpr uint8_t TerrainInlet1 = 110;
+
+constexpr uint8_t TerrainCurve1 = 121;
+constexpr uint8_t TerrainCurve2 = 120;
 } // namespace layer
 
 namespace hotkey
@@ -87,6 +102,11 @@ const auto Terrain = std::string{"Terrain"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
+
+inline auto IsTerrain(nc::Entity entity) -> bool
+{
+    return entity.Layer() >= 100 && entity.Layer() <= 150;
+}
 
 template<class T>
 auto GetComponentByEntityTag(nc::ecs::Ecs world, const std::string& tag) -> T*

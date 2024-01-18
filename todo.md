@@ -66,6 +66,8 @@ Window Icon
 
 Script intro cut scene in GameplayManager
 
+Update vehicle movement to be even more worm-like
+
 Particle color transition, or at least fade out
 
 Particle alpha blending?

@@ -83,8 +83,8 @@
             "assetName": "mesh/rock"
         },
         {
-            "sourcePath": "raw/mesh/tree.fbx",
-            "assetName": "mesh/tree"
+            "sourcePath": "raw/mesh/spreader_tree.fbx",
+            "assetName": "mesh/spreader_tree"
         },
         {
             "sourcePath": "raw/mesh/terrain01.fbx",
@@ -167,6 +167,10 @@
         {
             "sourcePath": "raw/texture/terrain_inlet_base_color.png",
             "assetName": "texture/terrain_inlet_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/spreader_tree_base_color.png",
+            "assetName": "texture/spreader_tree_base_color"
         }
     ]
 }
