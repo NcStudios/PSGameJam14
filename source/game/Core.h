@@ -31,7 +31,7 @@ namespace game
 {
 // Enable/disable calls to finalize environment (adding game logic and such) and triggering win/lose condition
 // DO NOT SAVE SCENES WITH GAMEPLAY ENABLED!
-constexpr auto EnableGameplay = false;
+constexpr auto EnableGameplay = true;
 
 namespace layer
 {
@@ -69,7 +69,7 @@ constexpr auto Forward = nc::input::KeyCode::W;
 constexpr auto Back = nc::input::KeyCode::S;
 constexpr auto Left = nc::input::KeyCode::A;
 constexpr auto Right = nc::input::KeyCode::D;
-constexpr auto Jump = nc::input::KeyCode::Space;
+constexpr auto Lunge = nc::input::KeyCode::Space;
 constexpr auto Purify = nc::input::KeyCode::LeftShift;
 
 // General Controls
