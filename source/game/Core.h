@@ -49,6 +49,7 @@ constexpr uint8_t Terrain = 9; // remove? check not used first
 constexpr uint8_t Border = 10; // outer border
 constexpr uint8_t Blockade = 11; // obstacle
 constexpr uint8_t QuestTrigger = 12;
+constexpr uint8_t Dave = 13;
 
 // Reserving [100, 150] for terrain
 // so we can script applying stuff (colliders, etcs.) after the fact
@@ -97,10 +98,16 @@ const auto HealthyTree = std::string{"HealthyTree"};
 const auto InfectedTree = std::string{"InfectedTree"};
 const auto Spreader = std::string{"Spreader"};
 const auto Purifier = std::string{"Purifier"};
-const auto TreeSystem = std::string{"TreeSystem"};
 const auto Ground = std::string{"Ground"};
 const auto Terrain = std::string{"Terrain"};
 const auto QuestTrigger = std::string{"QuestTrigger"};
+const auto Dave = std::string{"Dave"};
+const auto Sasquatch = std::string{"Sasquatch"};
+const auto Camp = std::string{"Camp"};
+
+// Camera focus points
+const auto DaveEncounterFocusPoint = std::string{"DaveEncounterFocusPoint"};
+const auto CampEncounterFocusPoint = std::string{"CampEncounterFocusPoint"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);

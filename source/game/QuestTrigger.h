@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Assets.h"
 #include "Core.h"
 #include "Event.h"
 
@@ -18,8 +19,9 @@ inline auto AttachQuestTrigger(nc::ecs::Ecs world,
         .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
-    // placeholder indicator, maybe plane with some texture or particle emitter?
-    world.Emplace<nc::graphics::ToonRenderer>(trigger, nc::asset::PlaneMesh);
+    // placeholder indicator
+    auto material = nc::graphics::ToonMaterial{.baseColor = QuestIndicatorParticle};
+    world.Emplace<nc::graphics::ToonRenderer>(trigger, nc::asset::PlaneMesh, material);
 
     world.Emplace<nc::physics::Collider>(trigger, nc::physics::BoxProperties{.center = center, .extents = extents}, true);
     auto triggerHandler = [onPlayerHit](nc::Entity self, nc::Entity other, nc::Registry* registry)

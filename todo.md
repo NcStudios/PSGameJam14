@@ -5,8 +5,10 @@ Add border asset - maybe can spawn something?
 Add level detail + reduce redundancy
 
 Quest Triggers
-  - meet dave, trigger dialog to go to camp
-  - arrive at camp, start spreaders
+  - X meet dave, trigger dialog to go to camp
+  - X arrive at camp
+    X start spreaders at this point
+  - update indicator to use a texture or something
 
 Dialog
 
