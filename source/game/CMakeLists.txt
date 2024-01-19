@@ -8,6 +8,7 @@ add_executable(${GAME}
         FollowCamera.cpp
         GameplayOrchestrator.cpp
         MainScene.cpp
+        Sasquatch.cpp
         Tree.cpp
         UI.cpp
 )

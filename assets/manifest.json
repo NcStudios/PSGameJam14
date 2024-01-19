@@ -99,10 +99,6 @@
             "assetName": "mesh/rock"
         },
         {
-            "sourcePath": "raw/mesh/spreader_tree.fbx",
-            "assetName": "mesh/spreader_tree"
-        },
-        {
             "sourcePath": "raw/mesh/terrain01.fbx",
             "assetName": "mesh/terrain01"
         },
@@ -127,12 +123,12 @@
             "assetName": "mesh/tree01"
         },
         {
-            "sourcePath": "raw/mesh/tree02.fbx",
-            "assetName": "mesh/tree02"
-        },
-        {
             "sourcePath": "raw/mesh/vegetation01.fbx",
             "assetName": "mesh/vegetation01"
+        },
+        {
+            "sourcePath": "raw/mesh/decorative_tree01.fbx",
+            "assetName": "mesh/decorative_tree01"
         }
     ],
     "texture": [
@@ -189,8 +185,8 @@
             "assetName": "texture/tree01_base_color"
         },
         {
-            "sourcePath": "raw/texture/tree02_base_color.png",
-            "assetName": "texture/tree02_base_color"
+            "sourcePath": "raw/texture/decorative_tree01_base_color.png",
+            "assetName": "texture/decorative_tree01_base_color"
         },
         {
             "sourcePath": "raw/texture/terrain01_base_color.png",
@@ -213,12 +209,12 @@
             "assetName": "texture/terrain_inlet_base_color"
         },
         {
-            "sourcePath": "raw/texture/spreader_tree_base_color.png",
-            "assetName": "texture/spreader_tree_base_color"
-        },
-        {
             "sourcePath": "raw/texture/vegetation01_base_color.png",
             "assetName": "texture/vegetation01_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/quest_indicator_particle.png",
+            "assetName": "texture/quest_indicator_particle"
         }
     ],
     "skeletal-animation": [

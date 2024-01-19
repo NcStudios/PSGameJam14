@@ -13,8 +13,11 @@ namespace game
 
 enum class Event
 {
+    None, // for GameplayOrchestrator internal use
     Intro, // unhandled
     Begin, // signals end of intro
+    DaveEncounter,
+    CampEncounter,
     Win,
     Lose,
     NewGame

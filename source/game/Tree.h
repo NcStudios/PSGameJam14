@@ -97,7 +97,4 @@ void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target);
 void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target);
 
 void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry);
-
-// System for tree update loop
-void ProcessTrees(nc::Entity, nc::Registry* registry, float dt);
 } // namespace game

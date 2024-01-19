@@ -7,6 +7,7 @@
 #include "Event.h"
 #include "FollowCamera.h"
 #include "QuestTrigger.h"
+#include "Sasquatch.h"
 #include "Tree.h"
 
 #include "ncengine/serialize/SceneSerialization.h"
@@ -50,13 +51,10 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto camera = CreateCamera(world, gfx, characterSpawnPos, character);
     ncAudio->RegisterListener(camera);
 
-    const auto treeSystem = world.Emplace<nc::Entity>(nc::EntityInfo{.tag = tag::TreeSystem, .flags = nc::Entity::Flags::NoSerialize});
-    world.Emplace<nc::FrameLogic>(treeSystem, &ProcessTrees);
-
-    // Base objects for initial infected trees; should be able to add these to the scene instead
-    CreateTreeBase(world, nc::Vector3{5.0f, 0.0f, -12.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, SpreaderTreeMesh, SpreaderTreeMaterial);
-    CreateTreeBase(world, nc::Vector3{138.0f, 0.0f, -22.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, SpreaderTreeMesh, SpreaderTreeMaterial);
-    CreateTreeBase(world, nc::Vector3{24.5f, 0.0f, -116.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, SpreaderTreeMesh, SpreaderTreeMaterial);
+    // Base objects for initial infected trees; they start with 'healthy' assets
+    CreateTreeBase(world, nc::Vector3{5.0f, 0.0f, -12.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, nc::Vector3{138.0f, 0.0f, -22.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
+    CreateTreeBase(world, nc::Vector3{24.5f, 0.0f, -116.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
 
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
     const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
@@ -74,7 +72,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     const auto light = world.Emplace<nc::Entity>(nc::EntityInfo
     {
-        .position = characterSpawnPos + nc::Vector3{1.0f, 9.4f, 8.0f},
+        .position = characterSpawnPos + nc::Vector3{1.0f, 1.4f, 8.0f},
         .tag = "Light",
         .flags = nc::Entity::Flags::NoSerialize
     });
@@ -90,8 +88,11 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // These modify serialized objects: DO NOT SAVE SCENE WHEN ENABLED!
     if constexpr (EnableGameplay)
     {
-        FinalizeTrees(world);
+        registry->CommitStagedChanges(); // so we can search by tag
         FinalizeTerrain(world);
+        AttachDaveComponents(world);
+        AttachCampComponents(world);
+        // registry->CommitStagedChanges(); // what's this bug about???
     }
 }
 } // namespace game

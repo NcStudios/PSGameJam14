@@ -70,27 +70,6 @@ auto CreateTreeBase(nc::ecs::Ecs world,
         .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
-    auto daveMat = nc::graphics::ToonMaterial
-    {
-        .baseColor = "dave_base_color.nca",
-        .overlay = "overlay.nca",
-        .hatching = "hatch.nca",
-        .hatchingTiling = 6
-    };
-
-    const auto dave = world.Emplace<nc::Entity>(nc::EntityInfo{
-        .position = position,
-        .rotation = nc::Quaternion::Identity(),
-        .scale = nc::Vector3{1.5f, 1.5f, 1.5f},
-        .tag = tag,
-        .layer = layer,
-        .flags = nc::Entity::Flags::NoSerialize
-    });
-
-    world.Emplace<nc::graphics::ToonRenderer>(dave, "dave.nca", daveMat);
-    world.Emplace<nc::graphics::SkeletalAnimator>(dave, "dave.nca", "dave_wave.nca");
-
-
     world.Emplace<nc::graphics::ToonRenderer>(tree, mesh, material);
     world.Emplace<nc::physics::Collider>(tree, nc::physics::BoxProperties{});
     return tree;
@@ -226,42 +205,5 @@ void RegisterTreeComponents(nc::ecs::ComponentRegistry& registry)
         .name = "InfectedTree",
         .drawUI = [](InfectedTree&) {}
     });
-}
-
-void ProcessTrees(nc::Entity, nc::Registry* registry, float dt)
-{
-    if constexpr (EnableGameplay)
-    {
-        auto world = registry->GetEcs();
-        auto infectedTrees = world.GetAll<InfectedTree>();
-
-        if (infectedTrees.empty())
-        {
-            FireEvent(Event::Win);
-            return;
-        }
-
-        for (auto& infected : infectedTrees)
-        {
-            infected.Update(world, dt);
-        }
-
-        auto healthyTrees = world.GetAll<HealthyTree>();
-
-        if (healthyTrees.empty())
-        {
-            FireEvent(Event::Lose);
-            return;
-        }
-
-        for (auto& healthy : healthyTrees)
-        {
-            healthy.Update(dt);
-            if (healthy.ShouldMorph())
-            {
-                MorphTreeToInfected(world, healthy.ParentEntity());
-            }
-        }
-    }
 }
 } // namespace game

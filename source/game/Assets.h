@@ -52,7 +52,11 @@ constexpr auto Vegetation01Mesh = "vegetation01.nca";
 constexpr auto AspensMesh = "aspens.nca";
 constexpr auto PineMesh = "pine.nca";
 constexpr auto Tree01Mesh = "tree01.nca";
-constexpr auto SpreaderTreeMesh = "spreader_tree.nca";
+constexpr auto DecorativeTree01TreeMesh = "decorative_tree01.nca";
+
+/** Animations */
+/** Animations - Dave */
+constexpr auto DaveWave = "dave_wave.nca";
 
 /** Textures */
 /** Textures - Character */
@@ -83,7 +87,10 @@ constexpr auto Vegetation01Texture = "vegetation01_base_color.nca";
 constexpr auto AspensTexture = "aspens_base_color.nca";
 constexpr auto PineTexture = "pine_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
-constexpr auto SpreaderTreeTexture = "spreader_tree_base_color.nca";
+constexpr auto DecorativeTree01TreeTexture = "decorative_tree01_base_color.nca";
+
+/** Textures - Particles */
+constexpr auto QuestIndicatorParticle = "quest_indicator_particle.nca";
 
 /** Materials */
 inline auto BusFrontMaterial = nc::graphics::ToonMaterial
@@ -118,19 +125,19 @@ inline auto InfectedTree01Material = nc::graphics::ToonMaterial
     .hatchingTiling = 6
 };
 
-inline auto SpreaderTreeMaterial = nc::graphics::ToonMaterial
-{
-    .baseColor = SpreaderTreeTexture,
-    .overlay = OverlayTexture,
-    .hatching = HatchTexture,
-    .hatchingTiling = 6
-};
-
 inline auto GrassMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = GrassTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
     .hatchingTiling = 3
+};
+
+inline auto DaveMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = DaveTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 6
 };
 } // namespace game
