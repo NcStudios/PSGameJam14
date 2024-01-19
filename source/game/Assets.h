@@ -38,6 +38,7 @@ constexpr auto FloorMesh = "floor.nca";
 
 /** Meshes - Terrain */
 constexpr auto AloeMesh = "aloe.nca";
+constexpr auto FernMesh = "fern.nca";
 constexpr auto GrassMesh = "grass.nca";
 constexpr auto RockMesh = "rock.nca";
 constexpr auto Terrain01Mesh = "terrain01.nca";
@@ -45,8 +46,11 @@ constexpr auto TerrainCurve01Mesh = "terrain_curve01.nca";
 constexpr auto TerrainCurve02Mesh = "terrain_curve02.nca";
 constexpr auto Terrain02Mesh = "terrain02.nca";
 constexpr auto TerrainInletMesh = "terrain_inlet.nca";
+constexpr auto Vegetation01Mesh = "vegetation01.nca";
 
 /** Meshes - Tree */
+constexpr auto AspensMesh = "aspens.nca";
+constexpr auto PineMesh = "pine.nca";
 constexpr auto Tree01Mesh = "tree01.nca";
 constexpr auto SpreaderTreeMesh = "spreader_tree.nca";
 
@@ -65,6 +69,7 @@ constexpr auto OverlayTexture = "overlay.nca";
 
 /** Textures - Terrain */
 constexpr auto AloeTexture = "aloe_base_color.nca";
+constexpr auto FernTexture = "fern_base_color.nca";
 constexpr auto GrassTexture = "grass_base_color.nca";
 constexpr auto RockTexture = "rock_base_color.nca";
 constexpr auto Terrain01Texture = "terrain01_base_color.nca";
@@ -72,8 +77,11 @@ constexpr auto Terrain02Texture = "terrain02_base_color.nca";
 constexpr auto TerrainCurve01Texture = "terrain_curve_01_base_color.nca";
 constexpr auto TerrainCurve02Texture = "terrain_curve_02_base_color.nca";
 constexpr auto TerrainInletTexture = "terrain_inlet_base_color.nca";
+constexpr auto Vegetation01Texture = "vegetation01_base_color.nca";
 
 /** Textures - Tree */
+constexpr auto AspensTexture = "aspens_base_color.nca";
+constexpr auto PineTexture = "pine_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
 constexpr auto SpreaderTreeTexture = "spreader_tree_base_color.nca";
 
