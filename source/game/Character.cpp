@@ -29,10 +29,12 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
         node,
         nc::physics::PhysicsProperties{
             .mass = mass,
+            .drag = 0.9f, // ?
+            .angularDrag = 0.9f, // ?
             .friction = friction
         },
         nc::Vector3::One(),
-        nc::Vector3{0.5f, 1.0f, 0.5f} // TODO: play with these values
+        nc::Vector3{0.5f, 0.7f, 0.5f} // TODO: play with these values
     );
 
     return node;
@@ -40,19 +42,28 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
 
 auto CreateVehicle(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::Vector3& position) -> nc::Entity
 {
+    constexpr auto frontMass = 15.0f;
+    constexpr auto car1Mass = 3.0f;
+    constexpr auto car2Mass = 1.0f;
+    constexpr auto car3Mass = 0.2f;
+    constexpr auto frontFriction = 0.8f;
+    constexpr auto car1Friction= 0.7f;
+    constexpr auto car2Friction= 0.7f;
+    constexpr auto car3Friction= 0.7f;
+
     // TODO: play with mass/friction/restitution values
     //       also consider tweaking PhysicsConstants
-    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::layer::Character, game::BusFrontMesh, game::BusFrontMaterial, 15.0f, 0.8f);
-    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 3.0f, 0.7f);
-    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 1.0f, 0.6f);
-    const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, 0.2f, 0.5f);
+    const auto head = CreateVehicleNode(world, position, nc::Vector3::One(), game::tag::VehicleFront, game::layer::Character, game::BusFrontMesh, game::BusFrontMaterial, frontMass, frontFriction);
+    const auto second = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 1.62f}, nc::Vector3::Splat(0.8f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, car1Mass, car1Friction);
+    const auto third = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 2.88f}, nc::Vector3::Splat(0.6f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, car2Mass, car2Friction);
+    const auto fourth = CreateVehicleNode(world, position - nc::Vector3{0.0f, -0.1f, 3.78f}, nc::Vector3::Splat(0.4f), game::tag::VehicleCar, game::layer::BoxCar, game::BusCarMesh, game::BusCarMaterial, car3Mass, car3Friction);
 
     // TODO: play with these values
     constexpr auto bias = 0.3f; // lower has more 'spring', too high propagates too much force to front car
     constexpr auto softness = 0.4f; // maybe lower?
     phys->AddJoint(head, second, nc::Vector3{0.0f, -0.1f, -1.08f}, nc::Vector3{0.0f, 0.0f, 0.9f}, bias, softness);
-    phys->AddJoint(second, third, nc::Vector3{0.0f, -0.1f, -0.9f}, nc::Vector3{0.0f, 0.0f, 0.72f}, bias, softness);
-    phys->AddJoint(third, fourth, nc::Vector3{0.0f, -0.1f, -0.72f}, nc::Vector3{0.0f, 0.0f, 0.54f}, bias, softness);
+    phys->AddJoint(second, third, nc::Vector3{0.0f, -0.1f, -0.9f}, nc::Vector3{0.0f, 0.0f, 0.72f}, bias * 2.0f, softness);
+    phys->AddJoint(third, fourth, nc::Vector3{0.0f, -0.1f, -0.72f}, nc::Vector3{0.0f, 0.0f, 0.54f}, bias * 2.0f, softness);
 
     return head;
 }
@@ -101,19 +112,21 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
 
 void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 {
+    static auto fixedDt = nc::config::GetPhysicsSettings().fixedUpdateInterval;
+
     auto* body = registry->Get<nc::physics::PhysicsBody>(self);
     auto* transform = registry->Get<nc::Transform>(self);
 
     if(!body || !transform)
         return;
 
-    if (m_jumpOnCooldown)
+    if (m_lungeOnCooldown)
     {
-        m_jumpRemainingCooldownTime -= fixedDt;
-        if (m_jumpRemainingCooldownTime <= 0.0f)
+        m_lungeRemainingCooldownTime -= fixedDt;
+        if (m_lungeRemainingCooldownTime <= 0.0f)
         {
-            m_jumpRemainingCooldownTime = 0.0f;
-            m_jumpOnCooldown = false;
+            m_lungeRemainingCooldownTime = 0.0f;
+            m_lungeOnCooldown = false;
         }
     }
 
@@ -140,13 +153,18 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
         characterAudio->SetState(VehicleState::StopForward);
     }
 
+    auto moving = false;
     if (KeyHeld(game::hotkey::Forward))
     {
+        moving = true;
+
         if (!m_inchDecelerating) // start of inching movement
         {
-            if (m_currentMoveVelocity < moveVelocityUpperBound)
+            auto acceleration = m_lungeOnCooldown ? lungeAcceleration : moveAcceleration;
+            auto max = m_lungeOnCooldown ? lungeVelocityUpperBound : moveVelocityUpperBound;
+            if (m_currentMoveVelocity < max)
             {
-                m_currentMoveVelocity += moveAcceleration;
+                m_currentMoveVelocity += acceleration;
             }
             else if (m_timeAtMoveBound < 0.25f)
             {
@@ -201,14 +219,16 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
     if (KeyHeld(game::hotkey::Left))
     {
         turning = true;
-        if (m_currentTurnVelocity > -maxTurnVelocity)
+        auto max = moving ? maxMovingTurnVelocity : maxStationaryTurnVelocity;
+        if (m_currentTurnVelocity > -max)
             m_currentTurnVelocity -= turnAcceleration;
     }
 
     if (KeyHeld(game::hotkey::Right))
     {
         turning = true;
-        if (m_currentTurnVelocity < maxTurnVelocity)
+        auto max = moving ? maxMovingTurnVelocity : maxStationaryTurnVelocity;
+        if (m_currentTurnVelocity < max)
             m_currentTurnVelocity += turnAcceleration;
     }
 
@@ -222,11 +242,10 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
         m_currentTurnVelocity = 0.0f;
     }
 
-    if (!m_jumpOnCooldown && KeyDown(game::hotkey::Jump))
+    if (!m_lungeOnCooldown && KeyDown(game::hotkey::Lunge))
     {
-        m_jumpOnCooldown = true;
-        m_jumpRemainingCooldownTime = jumpCooldown;
-        body->ApplyImpulse(nc::Vector3::Up() * jumpForce);
+        m_lungeOnCooldown = true;
+        m_lungeRemainingCooldownTime = lungeCooldown;
     }
 
     if (!m_purifyOnCooldown && KeyDown(game::hotkey::Purify))

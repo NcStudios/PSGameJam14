@@ -9,6 +9,7 @@ Quest Triggers
   - X arrive at camp
     X start spreaders at this point
   - update indicator to use a texture or something
+  - escape to break convo, should disable UI popping menu temporarily
 
 Dialog
 

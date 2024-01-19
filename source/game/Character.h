@@ -9,14 +9,17 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
 class CharacterController : public nc::FreeComponent
 {
     public:
-        static constexpr auto fixedDt = 0.01667f;
-        static constexpr auto moveAcceleration = 0.4f;
-        static constexpr auto moveVelocityUpperBound = 8.0f;
-        static constexpr auto moveVelocityLowerBound = 2.0f;
+        static constexpr auto moveAcceleration = 0.5f;
+        static constexpr auto moveVelocityUpperBound = 10.0f;
+        static constexpr auto moveVelocityLowerBound = 2.5f;
+        static constexpr auto lungeAcceleration = moveAcceleration * 1.75f;
+        static constexpr auto lungeVelocityUpperBound = moveVelocityUpperBound * 1.75f;
+
         static constexpr auto turnAcceleration = 0.05f;
-        static constexpr auto maxTurnVelocity = 1.0f;
-        static constexpr auto jumpForce = 30.0f;
-        static constexpr auto jumpCooldown = 0.35f;
+        static constexpr auto maxStationaryTurnVelocity = 1.5f;
+        static constexpr auto maxMovingTurnVelocity = maxStationaryTurnVelocity;
+
+        static constexpr auto lungeCooldown = 0.35f;
         static constexpr auto purifyCooldown = 1.0f;
 
         CharacterController(nc::Entity self)
@@ -29,10 +32,10 @@ class CharacterController : public nc::FreeComponent
         float m_currentMoveVelocity = 0.0f;
         float m_timeAtMoveBound = 0.0f;
         float m_currentTurnVelocity = 0.0f;
-        float m_jumpRemainingCooldownTime = 0.0f;
+        float m_lungeRemainingCooldownTime = 0.0f;
         float m_purifyRemainingCooldownTime = 0.0f;
         bool m_inchDecelerating = false;
-        bool m_jumpOnCooldown = false;
+        bool m_lungeOnCooldown = false;
         bool m_purifyOnCooldown = false;
 
         void CreatePurifier(nc::Registry* registry);
