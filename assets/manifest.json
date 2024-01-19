@@ -63,6 +63,10 @@
             "assetName": "mesh/aloe"
         },
         {
+            "sourcePath": "raw/mesh/aspens.fbx",
+            "assetName": "mesh/aspens"
+        },
+        {
             "sourcePath": "raw/mesh/bus.fbx",
             "assetName": "mesh/bus_front"
         },
@@ -75,12 +79,20 @@
             "assetName": "mesh/dave"
         },
         {
+            "sourcePath": "raw/mesh/fern.fbx",
+            "assetName": "mesh/fern"
+        },
+        {
             "sourcePath": "raw/mesh/floor.fbx",
             "assetName": "mesh/floor"
         },
         {
             "sourcePath": "raw/mesh/grass.fbx",
             "assetName": "mesh/grass"
+        },
+        {
+            "sourcePath": "raw/mesh/pine.fbx",
+            "assetName": "mesh/pine"
         },
         {
             "sourcePath": "raw/mesh/rock.fbx",
@@ -111,6 +123,10 @@
             "assetName": "mesh/tree01"
         },
         {
+            "sourcePath": "raw/mesh/vegetation01.fbx",
+            "assetName": "mesh/vegetation01"
+        },
+        {
             "sourcePath": "raw/mesh/decorative_tree01.fbx",
             "assetName": "mesh/decorative_tree01"
         }
@@ -119,6 +135,10 @@
         {
             "sourcePath": "raw/texture/aloe_base_color.png",
             "assetName": "texture/aloe_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/aspens_base_color.png",
+            "assetName": "texture/aspens_base_color"
         },
         {
             "sourcePath": "raw/texture/bus_base_color.png",
@@ -131,6 +151,10 @@
         {
             "sourcePath": "raw/texture/dave_base_color.png",
             "assetName": "texture/dave_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/fern_base_color.png",
+            "assetName": "texture/fern_base_color"
         },
         {
             "sourcePath": "raw/texture/floor_base_color.png",
@@ -147,6 +171,10 @@
         {
             "sourcePath": "raw/texture/overlay.png",
             "assetName": "texture/overlay"
+        },
+        {
+            "sourcePath": "raw/texture/pine_base_color.png",
+            "assetName": "texture/pine_base_color"
         },
         {
             "sourcePath": "raw/texture/rock_base_color.png",
@@ -179,6 +207,10 @@
         {
             "sourcePath": "raw/texture/terrain_inlet_base_color.png",
             "assetName": "texture/terrain_inlet_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/vegetation01_base_color.png",
+            "assetName": "texture/vegetation01_base_color"
         },
         {
             "sourcePath": "raw/texture/quest_indicator_particle.png",
