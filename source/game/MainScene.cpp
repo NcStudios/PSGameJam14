@@ -44,7 +44,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // (backup 'workspace/prefab' too, if you changed anything) Then, save your temp scene from 'install/your_scene_name' to
     // 'workspace/scene/terrain' (or 'workspace/prefab/your_prefab').
     auto ncAsset = modules.Get<nc::asset::NcAsset>();
-    ::LoadBaseScene(world, ncAsset, "scene/level");
+    ::LoadBaseScene(world, ncAsset, "scene/level_in_progress");
 
     const auto characterSpawnPos = nc::Vector3{120.0f, 0.0f, -136.0f};
     const auto character = CreateCharacter(world, phys, characterSpawnPos);
@@ -61,8 +61,6 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto ambience = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = "Ambience", .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbienceSfx, nc::audio::AudioSourceProperties{.gain = 0.5f, .loop = true})->Play();
 
-    // Init GameplayManager sequence
-    FireEvent(Event::Intro);
 
     //////////////////////////////////////////////////////
     // Debug environment - just to have stuff in the world
@@ -84,15 +82,20 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     RandomlyPopulateTerrain(world, ncRandom);
 #endif
 
+    registry->CommitStagedChanges(); // so we can search by tag
+
+
     // Not part of debug env, just needs to happen last
     // These modify serialized objects: DO NOT SAVE SCENE WHEN ENABLED!
     if constexpr (EnableGameplay)
     {
-        registry->CommitStagedChanges(); // so we can search by tag
         FinalizeTerrain(world);
         AttachDaveComponents(world);
         AttachCampComponents(world);
         // registry->CommitStagedChanges(); // what's this bug about???
+
+        // Init GameplayManager sequence
+        FireEvent(Event::Intro);
     }
 }
 } // namespace game
