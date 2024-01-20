@@ -1,4 +1,5 @@
 #include "GameplayOrchestrator.h"
+#include "Assets.h"
 #include "Character.h"
 #include "Core.h"
 #include "Dialog.h"
@@ -7,6 +8,8 @@
 #include "Sasquatch.h"
 #include "Tree.h"
 #include "UI.h"
+
+#include "ncengine/graphics/SkeletalAnimator.h"
 
 namespace
 {
@@ -275,7 +278,7 @@ void GameplayOrchestrator::HandleDaveEncounter()
     const auto dave = m_world.GetEntityByTag(tag::Dave);
     auto animator = m_world.Get<nc::graphics::SkeletalAnimator>(dave);
     NC_ASSERT(animator, "expected dave to have an animator");
-    animator->StopImmediate([]() { return false; });
+    animator->LoopImmediate(DaveIdle, [](){return false;}, nc::graphics::anim::RootState);
     m_currentCutscene.Enter(m_world, tag::DaveEncounterFocusPoint, dialog::DaveEncounterSequence);
 }
 
