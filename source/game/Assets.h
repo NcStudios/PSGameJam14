@@ -27,6 +27,9 @@ constexpr auto PurifySfx = "purify.nca";
 constexpr auto MorphHealthySfx = "morph_healthy.nca";
 constexpr auto MorphInfectedSfx = "morph_infected.nca";
 
+/** Cube Maps  - Skybox */
+constexpr auto Skybox = "skybox.nca";
+
 /** Meshes */
 /** Meshes - Character */
 constexpr auto BusCarMesh = "bus_car.nca";

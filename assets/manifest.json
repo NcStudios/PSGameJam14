@@ -55,7 +55,13 @@
             "assetName": "concave_collider/terrain_inlet_collider"
         }
     ],
-    "cube-map": [],
+    "cube-map": 
+    [
+        {
+            "sourcePath": "raw/texture/skybox_base_color.png",
+            "assetName": "cube_map/skybox"
+        }
+    ],
     "hull-collider": [],
     "mesh": [
         {
