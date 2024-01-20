@@ -60,6 +60,12 @@ constexpr auto DecorativeTree01TreeMesh = "decorative_tree01.nca";
 /** Animations */
 /** Animations - Dave */
 constexpr auto DaveWave = "dave_wave.nca";
+constexpr auto DaveIdle = "dave_idle.nca";
+constexpr auto DaveSittingGround = "dave_idle_sitting_ground.nca";
+constexpr auto DaveStandupGround = "dave_idle_sit_to_stand_ground.nca";
+constexpr auto DaveSittingStump = "dave_idle_sitting_stump.nca";
+constexpr auto DaveCircleWalk = "dave_walk_in_circle.nca";
+constexpr auto DaveTinkering = "dave_tinkering.nca";
 
 /** Textures */
 /** Textures - Character */

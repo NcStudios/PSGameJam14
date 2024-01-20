@@ -228,8 +228,36 @@
             "sourcePath": "raw/skeletal_animation/dave.fbx",
             "assetNames": [
                 {
-                    "subResourceName" : "Dave|wave",
+                    "subResourceName" : "Dave|Wave",
                     "assetName" : "skeletal_animation\\dave_wave"
+                },
+                {
+                    "subResourceName" : "Dave|Idle",
+                    "assetName" : "skeletal_animation\\dave_idle"
+                },
+                {
+                    "subResourceName" : "Dave|Circle",
+                    "assetName" : "skeletal_animation\\dave_walk_in_circle"
+                },
+                {
+                    "subResourceName" : "Dave|IdleSittingGround",
+                    "assetName" : "skeletal_animation\\dave_idle_sitting_ground"
+                },
+                {
+                    "subResourceName" : "Dave|SitToStand2",
+                    "assetName" : "skeletal_animation\\dave_sit_to_stand_stump"
+                },
+                {
+                    "subResourceName" : "Dave|SitToStandFloor",
+                    "assetName" : "skeletal_animation\\dave_idle_sit_to_stand_ground"
+                },
+                {
+                    "subResourceName" : "Dave|Sitting",
+                    "assetName" : "skeletal_animation\\dave_idle_sitting_stump"
+                },
+                {
+                    "subResourceName" : "Dave|Tinkering",
+                    "assetName" : "skeletal_animation\\dave_tinkering"
                 }
             ]
         }
