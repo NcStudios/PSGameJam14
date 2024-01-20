@@ -14,13 +14,15 @@ namespace game
 enum class Event
 {
     None, // for GameplayOrchestrator internal use
-    Intro, // unhandled
-    Begin, // signals end of intro
+    Intro,
+    Begin, // display controls
     DaveEncounter,
+    HeadToCamp,
     CampEncounter,
     ElderEncounter,
     PutterEncounter,
     StartSpread,
+    FlavorDialog,
     Win,
     Lose,
     NewGame

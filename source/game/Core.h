@@ -70,7 +70,7 @@ constexpr auto Back = nc::input::KeyCode::S;
 constexpr auto Left = nc::input::KeyCode::A;
 constexpr auto Right = nc::input::KeyCode::D;
 constexpr auto Lunge = nc::input::KeyCode::Space;
-constexpr auto Purify = nc::input::KeyCode::LeftShift;
+constexpr auto Spray = nc::input::KeyCode::LeftShift;
 
 // General Controls
 constexpr auto ToggleMenu = nc::input::KeyCode::Escape;

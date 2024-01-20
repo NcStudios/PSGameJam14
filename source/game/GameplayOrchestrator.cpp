@@ -162,10 +162,12 @@ void GameplayOrchestrator::FireEvent(Event event)
         case Event::Intro:           { HandleIntro();           break; }
         case Event::Begin:           { HandleBegin();           break; }
         case Event::DaveEncounter:   { HandleDaveEncounter();   break; }
+        case Event::HeadToCamp:      { HandleHeadToCamp();      break; }
         case Event::CampEncounter:   { HandleCampEncounter();   break; }
         case Event::ElderEncounter:  { HandleElderEncounter();  break; }
         case Event::PutterEncounter: { HandlePutterEncounter(); break; }
         case Event::StartSpread:     { HandleStartSpread();     break; }
+        case Event::FlavorDialog:    { HandleFlavorDialog();    break; }
         case Event::NewGame:         { HandleNewGame();         break; }
         case Event::Win:             { HandleWin();             break; }
         case Event::Lose:            { HandleLose();            break; }
@@ -178,6 +180,8 @@ void GameplayOrchestrator::FireEvent(Event event)
 
 void GameplayOrchestrator::Run(float dt)
 {
+    constexpr auto flavorTextDelay = 10.0f;
+
     if (m_currentCutscene.IsRunning())
     {
         m_currentCutscene.Update(m_world, m_ui);
@@ -189,11 +193,31 @@ void GameplayOrchestrator::Run(float dt)
         ProcessTrees(dt);
     }
 
+    // If an event starts a cutscene, its case runs after it has finished
     switch (m_currentEvent)
     {
         case Event::Intro:
         {
             FireEvent(Event::Begin);
+            break;
+        }
+        case Event::DaveEncounter:
+        {
+            FireEvent(Event::HeadToCamp);
+            break;
+        }
+        case Event::HeadToCamp:
+        {
+            m_timeInCurrentEvent += dt;
+            if (m_timeInCurrentEvent > flavorTextDelay)
+            {
+                m_timeInCurrentEvent = 0.0f;
+                if (m_currentFlavorDialogIndex >= dialog::ExploringMoonValleyFlavor.size())
+                    SetEvent(Event::None);
+                else
+                    m_ui->AddNewDialog(std::string{dialog::ExploringMoonValleyFlavor.at(m_currentFlavorDialogIndex++)});
+            }
+
             break;
         }
         case Event::CampEncounter:
@@ -224,9 +248,10 @@ void GameplayOrchestrator::Run(float dt)
 void GameplayOrchestrator::Clear()
 {
     m_currentEvent = Event::Intro;
+    m_timeInCurrentEvent = 0.0f;
+    m_currentFlavorDialogIndex = 0ull;
     m_spreadStarted = false;
     m_ui->Clear();
-
     m_currentCutscene = Cutscene{};
 }
 
@@ -237,28 +262,31 @@ void GameplayOrchestrator::SetEvent(Event event)
 
 void GameplayOrchestrator::HandleIntro()
 {
-    // Need to remove character controller, but it was added this frame. Workaround for engine defect
-    m_engine->GetRegistry()->CommitStagedChanges();
     SetEvent(Event::Intro);
-    // some bug here
     m_currentCutscene.Enter(m_world, tag::IntroFocusPoint, dialog::Intro);
-    m_ui->AddNewDialog(std::string{dialog::Intro.at(0)});
 }
 
 void GameplayOrchestrator::HandleBegin()
 {
-    SetEvent(Event::Begin);
-    m_ui->AddNewDialog(dialog::BeginGame);
+    SetEvent(Event::None);
+    m_ui->AddNewDialog(dialog::Controls);
 }
 
 void GameplayOrchestrator::HandleDaveEncounter()
 {
-    SetEvent(Event::None);
+    SetEvent(Event::DaveEncounter);
     const auto dave = m_world.GetEntityByTag(tag::Dave);
     auto animator = m_world.Get<nc::graphics::SkeletalAnimator>(dave);
     NC_ASSERT(animator, "expected dave to have an animator");
     animator->LoopImmediate(DaveIdle, [](){return false;}, nc::graphics::anim::RootState);
     m_currentCutscene.Enter(m_world, tag::DaveEncounterFocusPoint, dialog::DaveEncounterSequence);
+}
+
+void GameplayOrchestrator::HandleHeadToCamp()
+{
+    m_timeInCurrentEvent = 0.0f;
+    m_currentFlavorDialogIndex = 0ull;
+    SetEvent(Event::HeadToCamp);
 }
 
 void GameplayOrchestrator::HandleCampEncounter()
@@ -282,9 +310,14 @@ void GameplayOrchestrator::HandlePutterEncounter()
 void GameplayOrchestrator::HandleStartSpread()
 {
     SetEvent(Event::None);
+    GetComponentByEntityTag<CharacterController>(m_world, tag::VehicleFront)->EquipSprayer();
     m_spreadStarted = true;
     FinalizeTrees(m_world);
     m_ui->AddNewDialog(dialog::StartSpread);
+}
+
+void GameplayOrchestrator::HandleFlavorDialog()
+{
 }
 
 void GameplayOrchestrator::HandleNewGame()
