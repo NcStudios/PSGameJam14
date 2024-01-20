@@ -156,15 +156,16 @@ void GameplayOrchestrator::FireEvent(Event event)
 {
     switch (event)
     {
-        case Event::Intro:          { HandleIntro();          break; }
-        case Event::Begin:          { HandleBegin();          break; }
-        case Event::DaveEncounter:  { HandleDaveEncounter();  break; }
-        case Event::CampEncounter:  { HandleCampEncounter();  break; }
-        case Event::ElderEncounter: { HandleElderEncounter(); break; }
-        case Event::StartSpread:    { HandleStartSpread();    break; }
-        case Event::NewGame:        { HandleNewGame();        break; }
-        case Event::Win:            { HandleWin();            break; }
-        case Event::Lose:           { HandleLose();           break; }
+        case Event::Intro:           { HandleIntro();           break; }
+        case Event::Begin:           { HandleBegin();           break; }
+        case Event::DaveEncounter:   { HandleDaveEncounter();   break; }
+        case Event::CampEncounter:   { HandleCampEncounter();   break; }
+        case Event::ElderEncounter:  { HandleElderEncounter();  break; }
+        case Event::PutterEncounter: { HandlePutterEncounter(); break; }
+        case Event::StartSpread:     { HandleStartSpread();     break; }
+        case Event::NewGame:         { HandleNewGame();         break; }
+        case Event::Win:             { HandleWin();             break; }
+        case Event::Lose:            { HandleLose();            break; }
         default:
         {
             throw nc::NcError(fmt::format("Event not implemented '{}'", static_cast<int>(event)));
@@ -201,7 +202,14 @@ void GameplayOrchestrator::Run(float dt)
         }
         case Event::ElderEncounter:
         {
-            // start spreaders as soon as ElderEncounter cutscene finishes
+            AttachPutterQuestTrigger(m_world);
+            SetEvent(Event::None);
+            break;
+        }
+        case Event::PutterEncounter:
+        {
+            // start spreaders as soon as PutteraEncounter cutscene finishes
+            // TODO: need to attach spread here
             FireEvent(Event::StartSpread);
             break;
         }
@@ -226,9 +234,11 @@ void GameplayOrchestrator::SetEvent(Event event)
 
 void GameplayOrchestrator::HandleIntro()
 {
+    // Need to remove character controller, but it was added this frame. Workaround for engine defect
+    m_engine->GetRegistry()->CommitStagedChanges();
     SetEvent(Event::Intro);
     // some bug here
-    // m_currentCutscene.Enter(m_world, tag::IntroFocusPoint, dialog::Intro);
+    m_currentCutscene.Enter(m_world, tag::IntroFocusPoint, dialog::Intro);
     m_ui->AddNewDialog(std::string{dialog::Intro.at(0)});
 }
 
@@ -258,6 +268,12 @@ void GameplayOrchestrator::HandleElderEncounter()
 {
     SetEvent(Event::ElderEncounter);
     m_currentCutscene.Enter(m_world, tag::ElderEncounterFocusPoint, dialog::ElderEncounterSequence);
+}
+
+void GameplayOrchestrator::HandlePutterEncounter()
+{
+    SetEvent(Event::PutterEncounter);
+    m_currentCutscene.Enter(m_world, tag::Putter, dialog::PutterEncounterSequence);
 }
 
 void GameplayOrchestrator::HandleStartSpread()

@@ -4,14 +4,9 @@ Add border asset - maybe can spawn something?
 
 Add level detail + reduce redundancy
 
-Quest Triggers
-  - X meet dave, trigger dialog to go to camp
-  - X arrive at camp
-    X start spreaders at this point
-  - update indicator to use a texture or something
-  - escape to break convo, should disable UI popping menu temporarily
-
 Dialog
+  - Display Controls dialog
+  - Finish Win/Lose dialog/sequence
 
 Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
 
@@ -111,6 +106,13 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Quest Triggers
+  - X meet dave, trigger dialog to go to camp
+  - X arrive at camp
+    X start spreaders at this point
+  - X update indicator to use a texture or something
+  - X escape to break convo, should disable UI popping menu temporarily
+
 Fix moving static, but non-kinematic physics bodies in engine (or just don't have PB?)
 
 Improve movement/camera

@@ -74,7 +74,13 @@ namespace game
 auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::Vector3& position) -> nc::Entity
 {
     const auto character = ::CreateVehicle(world, phys, position);
-    world.Emplace<CharacterController>(character);
+
+    // hack: GameplayOrchestrator must attach controller first, but only happens if gameplay enabled
+    if constexpr (!EnableGameplay)
+    {
+        world.Emplace<CharacterController>(character);
+    }
+
     world.Emplace<nc::FixedLogic>(character, nc::InvokeFreeComponent<CharacterController>{});
 
     const auto characterAudio = world.Emplace<nc::Entity>({.parent = character, .tag = tag::VehicleAudio});

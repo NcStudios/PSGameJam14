@@ -44,7 +44,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // (backup 'workspace/prefab' too, if you changed anything) Then, save your temp scene from 'install/your_scene_name' to
     // 'workspace/scene/terrain' (or 'workspace/prefab/your_prefab').
     auto ncAsset = modules.Get<nc::asset::NcAsset>();
-    ::LoadBaseScene(world, ncAsset, "scene/level_in_progress");
+    ::LoadBaseScene(world, ncAsset, "scene/level");
 
     const auto characterSpawnPos = nc::Vector3{120.0f, 0.0f, -136.0f};
     const auto character = CreateCharacter(world, phys, characterSpawnPos);

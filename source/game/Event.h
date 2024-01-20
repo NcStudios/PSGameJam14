@@ -19,6 +19,7 @@ enum class Event
     DaveEncounter,
     CampEncounter,
     ElderEncounter,
+    PutterEncounter,
     StartSpread,
     Win,
     Lose,

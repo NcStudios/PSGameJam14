@@ -56,6 +56,7 @@ class GameplayOrchestrator : public nc::StableAddress
         void HandleDaveEncounter();
         void HandleCampEncounter();
         void HandleElderEncounter();
+        void HandlePutterEncounter();
         void HandleStartSpread();
         void HandleNewGame();
         void HandleWin();

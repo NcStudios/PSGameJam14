@@ -9,8 +9,13 @@ using namespace std::string_view_literals;
 
 constexpr auto Intro = std::array{
 R"(Just another sunup, and another buckaroo in my pocket... I can't fathom why nobody else fancied ridin' out to the Moon Valley. It's the last patch of earth untouched by that darn Blight stench.
-[press space to continue])"sv
+
+Press [space] to continue)"sv
 };
+
+constexpr auto Controls =
+R"(Move with [WASD]
+Press [space] while moving forward to lung)";
 
 constexpr auto BeginGame =
 R"(Gotta admit, this place has got a certain charm. Clean air, nice skies. But I can't shake the feeling there's more to this delivery...)";
@@ -23,19 +28,33 @@ R"(Steve: Can do, partner. I'll have 'em there faster than a tumbleweed in a dus
 
 constexpr auto CampEncounterSequence = std::array{
 R"(Steve: Slap me with a cactus! This place is turnin' into a bone orchard.)"sv,
-R"(Sasquatch: The Blight has made its way to the forest. Its poisoning the fruit of the [xxx] tree.)"sv,
+R"(Sasquatch: The Blight has made its way to the forest. Its poisoning the fruit of the Lunar Plumwood. We've all gathered here in the Moon Valley because its the only place the plums still grow.)"sv,
 R"(Steve: Sounds like you got yerselves a real hoedown! No need to worry though, I've got your delivery here. That should set you right as rain.)"sv,
-R"(Sasquatch: We can't survive without the [xxx] trees, and from what I've seen, this disease spreads like wildfire. The sasquatch have all gathered in this forest because it was the only place free of the Blight. You can go talk to the elder. Maybe he can make use of what you have.)"sv
+R"(Sasquatch: We can't survive without the plums, so unless you happen to have some Roundemup(TM) in that shipment, we're done for. But since the rebellion, the Directorate has locked down all trade. From what I've seen, this disease spreads like wildfire. We have very little time left.)"sv,
+R"(Steve: Well, hold yer horses. My next delivery just so happens to be to the Stewards. They get a shipment of Roundemup(TM) from the Federal Goods Reserve every other week. I could probably skim off a little and leave those bootlickers none the wiser.)"sv,
+R"(Sasquatch: Wh-what? Really? Hurry, talk to the elder. He'll tell you what to do.)"sv
 };
 
 constexpr auto ElderEncounterSequence = std::array{
-R"(Elder: My people's days are numbered. Without access to untained [xxx] fruit, we won't survive much longer.)"sv,
-R"(Steve: Surely the food in your delievery can last you until next week?)"sv,
-R"(Elder: I'm afraid not. Unless you happen to have Roundemup(TM) in there, there's no hope. But that's impossible to come by with the new space trade restrictions.)"sv,
-R"(Steve: I might just have an ace in the hole, friend! My next delivery is to [xxx], and they get a shipment from the federal reserve every other week... Yup, got some right here.)"sv,
-R"(Elder: Wh-what? Really? You have to hurry and apply it to all the infected trees before its too late!)"sv,
-R"(Steve: How about I just leave you with a little? My boss'll tan my hide if I'm late with this next shipment.)"sv,
-R"(Elder: We've all eaten the tainted fruit. We simply don't have the strength to cross the forest. The fate of the sasquatch rests on your shoulders, little one.)"sv
+R"(Elder: The sands of time are slipping away, my friend. Without the nectar of untainted fruit, the days of the sasquatch are numbered.)"sv,
+R"(Steve: I might just have an ace in the hole, partner. I happen to have a shipment of Roundemup(TM) headin' to the Stewards. I reckon I could leave a little here with 'ya to lasso this bull.)"sv,
+R"(Elder: Surely, you jest. The Directorate has placed had all interstellar goods under an iron grip since the rebellion.)"sv,
+R"(Steve: Mmhmm, but 'ya still need a trusty cowpolk like m'self to get it where it needs to go. I can't spare much, or my boss'll tan my hide, but I could leave enough to get the job done.)"sv,
+R"(Elder: What a twist of fate! But, our strength falters. We've all eaten the infected plums. We don't have the strength to cross the forest in time. You'll have to apply the remedy alone, young one.)"sv,
+R"(Steve: Well, I ain't no coffe boiler or nothin', but I really to have to burn the breeze. Stewards ain't known to be a patient breed.)"sv,
+R"(Elder: Please, the fate of the sasquatch rests on your shoulders. Seek Putter. He can equip your vehicle with the necessary tools.)"sv
+};
+
+constexpr auto PutterEncounterSequence = std::array{
+R"(Putter: Alrighty then! Let's see what we can cook up here.)"sv,
+R"(...tinkering...)"sv,
+R"(Ah-ha! I can wire a sprayer for you in a jiffy. Just a minute...)"sv,
+R"(Steve: I know I might look the part, like I'd die standin' up 'n all...)"sv,
+R"(...mechanical noises...)"sv,
+R"(Steve: ...but truth be told, its all just extra mustard I put on, ya know? I really don't think I'm the best man for the job.)"sv,
+R"(Putter: Nonsense! There's no job too big for.. what's your name?)"sv,
+R"(Steve: Steve...)"sv,
+R"(Putter: too big for Steve. A real-deal delivery cowboy like yourself is born of grit, and I believe you have what it takes. We're all counting on you, Steve. Alright, you're all set. Press [left shift] to try out your new sprayer!)"sv
 };
 
 constexpr auto StartSpread =

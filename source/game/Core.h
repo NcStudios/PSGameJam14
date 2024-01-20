@@ -105,6 +105,7 @@ const auto Dave = std::string{"Dave"};
 const auto Sasquatch = std::string{"Sasquatch"};
 const auto Camp = std::string{"Camp"};
 const auto Elder = std::string{"Elder"};
+const auto Putter = std::string{"Putter"};
 
 // Camera focus points
 const auto IntroFocusPoint = std::string{"IntroFocusPoint"};
