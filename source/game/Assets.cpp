@@ -42,6 +42,7 @@ void LoadAssets(const nc::config::AssetSettings& settings)
     ::LoadAssets(settings.meshesPath, nc::AssetFlags::None, &nc::LoadMeshAssets);
     ::LoadAssets(settings.texturesPath, nc::AssetFlags::None, &nc::LoadTextureAssets);
     ::LoadAssets(settings.concaveCollidersPath, nc::AssetFlags::None, &nc::LoadConcaveColliderAssets);
+    ::LoadAssets(settings.cubeMapsPath, nc::AssetFlags::None, &nc::LoadCubeMapAssets);
     ::LoadAssets(settings.skeletalAnimationsPath, nc::AssetFlags::None, &nc::LoadSkeletalAnimationAssets);
 }
 } // namespace game
