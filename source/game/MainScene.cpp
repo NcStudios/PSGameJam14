@@ -56,6 +56,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     CreateTreeBase(world, nc::Vector3{138.0f, 0.0f, -22.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
     CreateTreeBase(world, nc::Vector3{24.5f, 0.0f, -116.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
 
+    gfx->SetSkybox(Skybox);
+
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
     const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
     const auto ambience = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = "Ambience", .flags = nc::Entity::Flags::NoSerialize});

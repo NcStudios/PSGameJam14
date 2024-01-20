@@ -31,7 +31,7 @@ namespace game
 {
 // Enable/disable calls to finalize environment (adding game logic and such) and triggering win/lose condition
 // DO NOT SAVE SCENES WITH GAMEPLAY ENABLED!
-constexpr auto EnableGameplay = false;
+constexpr auto EnableGameplay = true;
 
 namespace layer
 {
