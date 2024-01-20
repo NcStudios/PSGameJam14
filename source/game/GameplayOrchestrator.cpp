@@ -1,36 +1,15 @@
 #include "GameplayOrchestrator.h"
 #include "Character.h"
 #include "Core.h"
+#include "Dialog.h"
 #include "FollowCamera.h"
 #include "MainScene.h"
+#include "Sasquatch.h"
 #include "Tree.h"
 #include "UI.h"
 
 namespace
 {
-// placeholders
-constexpr auto g_introDialog =
-R"([placeholder] Another day, another dollar... but at least today's work is rewarding. I can't believe no one
-else wanted to deliver goods to the oasis. Its the only place left in the entire planet that doesn't
-reek of that infectious tree poison.)";
-
-constexpr auto g_beginGameDialog =
-R"([placeholder] Oh no!!! The big, bad meteor boys are back in town and they're infecting the sasquatch reserve.
-The poison will need to be cleared from the fruit trees before it spreads across the oasis.
-I better scoot! (like, with WASD))";
-
-constexpr auto g_daveEncounterDialog =
-R"([placeholder] Go to the camp out west, dude! They're in need of supplies.)";
-
-constexpr auto g_campEncounterDialog =
-R"([placeholder] The infection has made its way into the forest. You have to stop the spread quickly!)";
-
-constexpr auto g_winDialog =
-R"([placeholder] You saved the sasquatch oasis!)";
-
-constexpr auto g_loseDialog =
-R"([placeholder] This planet cannot be saved.)";
-
 void EnableCharacterMovement(nc::ecs::Ecs world)
 {
     auto character = world.GetEntityByTag(game::tag::VehicleFront);
@@ -105,6 +84,53 @@ class TreeTracker
         nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
 };
 
+void Cutscene::Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const std::string_view> dialogSequence)
+{
+    ::DisableCharacterMovement(world);
+    ::SetCameraTargetToFocusPoint(world, focusPointTag);
+    m_dialogSequence = dialogSequence;
+    m_currentDialog = 0;
+    m_running = true;
+    m_initialDialogPlayed = false;
+}
+
+void Cutscene::Exit(nc::ecs::Ecs world)
+{
+    ::EnableCharacterMovement(world);
+    ::SetCameraTargetToCharacter(world);
+    m_dialogSequence = {};
+    m_currentDialog = 0;
+    m_running = false;
+    m_initialDialogPlayed = false;
+}
+
+auto Cutscene::IsRunning() -> bool
+{
+    return m_running;
+}
+
+void Cutscene::Update(nc::ecs::Ecs world, GameUI* ui)
+{
+    if (m_currentDialog > m_dialogSequence.size())
+    {
+        Exit(world);
+        return;
+    }
+    else if (!m_initialDialogPlayed)
+    {
+        m_initialDialogPlayed = true;
+        ui->AddNewDialog(m_dialogSequence[m_currentDialog++].data());
+    }
+    else if (KeyDown(nc::input::KeyCode::Space))
+    {
+        if (m_currentDialog < m_dialogSequence.size())
+            ui->AddNewDialog(m_dialogSequence[m_currentDialog].data());
+
+        // Do this separe from above, so we hang out on the last dialog until space pressed again
+        ++m_currentDialog;
+    }
+}
+
 GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, GameUI* ui)
     : m_engine{engine},
       m_world{m_engine->GetRegistry()->GetEcs()},
@@ -130,13 +156,16 @@ void GameplayOrchestrator::FireEvent(Event event)
 {
     switch (event)
     {
-        case Event::Intro:   { HandleIntro();   break; }
-        case Event::Begin:   { HandleBegin();   break; }
-        case Event::DaveEncounter: { HandleDaveEncounter(); break; }
-        case Event::CampEncounter: { HandleCampEncounter(); break; }
-        case Event::NewGame: { HandleNewGame(); break; }
-        case Event::Win:     { HandleWin();     break; }
-        case Event::Lose:    { HandleLose();    break; }
+        case Event::Intro:           { HandleIntro();           break; }
+        case Event::Begin:           { HandleBegin();           break; }
+        case Event::DaveEncounter:   { HandleDaveEncounter();   break; }
+        case Event::CampEncounter:   { HandleCampEncounter();   break; }
+        case Event::ElderEncounter:  { HandleElderEncounter();  break; }
+        case Event::PutterEncounter: { HandlePutterEncounter(); break; }
+        case Event::StartSpread:     { HandleStartSpread();     break; }
+        case Event::NewGame:         { HandleNewGame();         break; }
+        case Event::Win:             { HandleWin();             break; }
+        case Event::Lose:            { HandleLose();            break; }
         default:
         {
             throw nc::NcError(fmt::format("Event not implemented '{}'", static_cast<int>(event)));
@@ -146,10 +175,11 @@ void GameplayOrchestrator::FireEvent(Event event)
 
 void GameplayOrchestrator::Run(float dt)
 {
-    constexpr auto introRunTime = 10.0f;
-    constexpr auto daveEncounterRunTime = 5.0f;
-    constexpr auto campEncounterRunTime = 5.0f;
-    m_timeInCurrentEvent += dt;
+    if (m_currentCutscene.IsRunning())
+    {
+        m_currentCutscene.Update(m_world, m_ui);
+        return;
+    }
 
     if (m_spreadStarted)
     {
@@ -160,50 +190,27 @@ void GameplayOrchestrator::Run(float dt)
     {
         case Event::Intro:
         {
-            // this needs a trigger, not time based
-            if (m_timeInCurrentEvent > introRunTime) FireEvent(Event::Begin);
-            break;
-        }
-        case Event::DaveEncounter:
-        {
-            if (!m_daveEncountered)
-            {
-                m_daveEncountered = true;
-                const auto dave = m_world.GetEntityByTag(tag::Dave);
-                NC_ASSERT(dave.Valid(), "expected Dave to exist");
-                auto animator = m_world.Get<nc::graphics::SkeletalAnimator>(dave);
-                NC_ASSERT(animator, "expected dave to have an animator");
-                animator->StopImmediate([]() { return false; });
-
-                ::DisableCharacterMovement(m_world);
-                ::SetCameraTargetToFocusPoint(m_world, tag::DaveEncounterFocusPoint);
-            }
-
-            if (m_timeInCurrentEvent > daveEncounterRunTime)
-            {
-                SetEvent(Event::None);
-                ::EnableCharacterMovement(m_world);
-                ::SetCameraTargetToCharacter(m_world);
-            }
+            FireEvent(Event::Begin);
             break;
         }
         case Event::CampEncounter:
         {
-            if (!m_campEncountered)
-            {
-                m_campEncountered = true;
-                ::DisableCharacterMovement(m_world);
-                ::SetCameraTargetToFocusPoint(m_world, tag::CampEncounterFocusPoint);
-            }
-
-            if (m_timeInCurrentEvent > campEncounterRunTime)
-            {
-                m_spreadStarted = true;
-                SetEvent(Event::None);
-                FinalizeTrees(m_world);
-                ::EnableCharacterMovement(m_world);
-                ::SetCameraTargetToCharacter(m_world);
-            }
+            // enable elder encounter after camp
+            AttachElderQuestTrigger(m_world);
+            SetEvent(Event::None);
+            break;
+        }
+        case Event::ElderEncounter:
+        {
+            AttachPutterQuestTrigger(m_world);
+            SetEvent(Event::None);
+            break;
+        }
+        case Event::PutterEncounter:
+        {
+            // start spreaders as soon as PutteraEncounter cutscene finishes
+            // TODO: need to attach spread here
+            FireEvent(Event::StartSpread);
             break;
         }
         default: break;
@@ -214,41 +221,67 @@ void GameplayOrchestrator::Run(float dt)
 void GameplayOrchestrator::Clear()
 {
     m_currentEvent = Event::Intro;
-    m_timeInCurrentEvent = 0.0f;
-    m_daveEncountered = false;
-    m_campEncountered = false;
     m_spreadStarted = false;
     m_ui->Clear();
+
+    m_currentCutscene = Cutscene{};
 }
 
 void GameplayOrchestrator::SetEvent(Event event)
 {
     m_currentEvent = event;
-    m_timeInCurrentEvent = 0.0f;
 }
 
 void GameplayOrchestrator::HandleIntro()
 {
+    // Need to remove character controller, but it was added this frame. Workaround for engine defect
+    m_engine->GetRegistry()->CommitStagedChanges();
     SetEvent(Event::Intro);
-    m_ui->AddNewDialog(g_introDialog);
+    // some bug here
+    m_currentCutscene.Enter(m_world, tag::IntroFocusPoint, dialog::Intro);
+    m_ui->AddNewDialog(std::string{dialog::Intro.at(0)});
 }
 
 void GameplayOrchestrator::HandleBegin()
 {
     SetEvent(Event::Begin);
-    m_ui->AddNewDialog(g_beginGameDialog);
+    m_ui->AddNewDialog(dialog::BeginGame);
 }
 
 void GameplayOrchestrator::HandleDaveEncounter()
 {
-    SetEvent(Event::DaveEncounter);
-    m_ui->AddNewDialog(g_daveEncounterDialog);
+    SetEvent(Event::None);
+    const auto dave = m_world.GetEntityByTag(tag::Dave);
+    auto animator = m_world.Get<nc::graphics::SkeletalAnimator>(dave);
+    NC_ASSERT(animator, "expected dave to have an animator");
+    animator->StopImmediate([]() { return false; });
+    m_currentCutscene.Enter(m_world, tag::DaveEncounterFocusPoint, dialog::DaveEncounterSequence);
 }
 
 void GameplayOrchestrator::HandleCampEncounter()
 {
     SetEvent(Event::CampEncounter);
-    m_ui->AddNewDialog(g_campEncounterDialog);
+    m_currentCutscene.Enter(m_world, tag::CampEncounterFocusPoint, dialog::CampEncounterSequence);
+}
+
+void GameplayOrchestrator::HandleElderEncounter()
+{
+    SetEvent(Event::ElderEncounter);
+    m_currentCutscene.Enter(m_world, tag::ElderEncounterFocusPoint, dialog::ElderEncounterSequence);
+}
+
+void GameplayOrchestrator::HandlePutterEncounter()
+{
+    SetEvent(Event::PutterEncounter);
+    m_currentCutscene.Enter(m_world, tag::Putter, dialog::PutterEncounterSequence);
+}
+
+void GameplayOrchestrator::HandleStartSpread()
+{
+    SetEvent(Event::None);
+    m_spreadStarted = true;
+    FinalizeTrees(m_world);
+    m_ui->AddNewDialog(dialog::StartSpread);
 }
 
 void GameplayOrchestrator::HandleNewGame()
@@ -262,7 +295,7 @@ void GameplayOrchestrator::HandleWin()
 {
     SetEvent(Event::Win);
     auto world = m_engine->GetRegistry()->GetEcs();
-    m_ui->AddNewDialog(g_winDialog);
+    m_ui->AddNewDialog(dialog::Win);
     m_ui->OpenMenu();
     ::DisableGameplayMechanics(world);
     m_spreadStarted = false;
@@ -273,7 +306,7 @@ void GameplayOrchestrator::HandleLose()
     // basically duplicate code with HandleWin(), but keep separate for easier future tweaking
     SetEvent(Event::Lose);
     auto world = m_engine->GetRegistry()->GetEcs();
-    m_ui->AddNewDialog(g_loseDialog);
+    m_ui->AddNewDialog(dialog::Lose);
     m_ui->OpenMenu();
     ::DisableGameplayMechanics(world);
     m_spreadStarted = false;

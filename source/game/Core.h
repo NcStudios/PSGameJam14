@@ -104,10 +104,14 @@ const auto QuestTrigger = std::string{"QuestTrigger"};
 const auto Dave = std::string{"Dave"};
 const auto Sasquatch = std::string{"Sasquatch"};
 const auto Camp = std::string{"Camp"};
+const auto Elder = std::string{"Elder"};
+const auto Putter = std::string{"Putter"};
 
 // Camera focus points
+const auto IntroFocusPoint = std::string{"IntroFocusPoint"};
 const auto DaveEncounterFocusPoint = std::string{"DaveEncounterFocusPoint"};
 const auto CampEncounterFocusPoint = std::string{"CampEncounterFocusPoint"};
+const auto ElderEncounterFocusPoint = std::string{"ElderEncounterFocusPoint"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);
