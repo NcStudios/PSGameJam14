@@ -16,4 +16,10 @@ void AttachCampComponents(nc::ecs::Ecs world)
     const auto camp = world.GetEntityByTag(tag::Camp);
     AttachQuestTrigger(world, camp, Event::CampEncounter, nc::Vector3{}, nc::Vector3::Splat(3.0f));
 }
+
+void AttachElderQuestTrigger(nc::ecs::Ecs world)
+{
+    const auto elder = world.GetEntityByTag(tag::Elder);
+    AttachQuestTrigger(world, elder, Event::ElderEncounter, nc::Vector3{}, nc::Vector3::Splat(3.0f));
+}
 } // namespace game

@@ -143,7 +143,7 @@ void GameUI::DrawDialogWindow()
                 m_currentDialog.push_back(fullDialog.at(m_currentDialogNextCharacter++));
             }
 
-            ImGui::Text("%s", m_currentDialog.c_str());
+            ImGui::TextWrapped("%s", m_currentDialog.c_str());
         }
     }
 

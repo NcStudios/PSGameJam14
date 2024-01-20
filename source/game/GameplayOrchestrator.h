@@ -11,6 +11,21 @@ namespace game
 class GameUI;
 class TreeTracker;
 
+class Cutscene
+{
+    public:
+        void Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const std::string_view> dialogSequence);
+        void Exit(nc::ecs::Ecs world);
+        auto IsRunning() -> bool;
+        void Update(nc::ecs::Ecs world, GameUI* ui);
+
+    private:
+        std::span<const std::string_view> m_dialogSequence;
+        size_t m_currentDialog = 0ull;
+        bool m_running = false;
+        bool m_initialDialogPlayed = false;
+};
+
 // Manager for scripting major game events
 class GameplayOrchestrator : public nc::StableAddress
 {
@@ -31,10 +46,7 @@ class GameplayOrchestrator : public nc::StableAddress
         GameUI* m_ui;
         std::unique_ptr<TreeTracker> m_treeTracker;
         Event m_currentEvent = Event::Intro;
-        float m_timeInCurrentEvent = 0.0f;
-
-        bool m_daveEncountered = false;
-        bool m_campEncountered = false;
+        Cutscene m_currentCutscene;
         bool m_spreadStarted = false;
 
         void SetEvent(Event event);
@@ -43,9 +55,14 @@ class GameplayOrchestrator : public nc::StableAddress
         void HandleBegin();
         void HandleDaveEncounter();
         void HandleCampEncounter();
+        void HandleElderEncounter();
+        void HandleStartSpread();
         void HandleNewGame();
         void HandleWin();
         void HandleLose();
+
+        void StartCutsence(std::string_view focusPointTag);
+        void EndCutScene();
 
         void ProcessTrees(float dt);
 };

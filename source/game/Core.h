@@ -31,7 +31,7 @@ namespace game
 {
 // Enable/disable calls to finalize environment (adding game logic and such) and triggering win/lose condition
 // DO NOT SAVE SCENES WITH GAMEPLAY ENABLED!
-constexpr auto EnableGameplay = true;
+constexpr auto EnableGameplay = false;
 
 namespace layer
 {
@@ -104,10 +104,13 @@ const auto QuestTrigger = std::string{"QuestTrigger"};
 const auto Dave = std::string{"Dave"};
 const auto Sasquatch = std::string{"Sasquatch"};
 const auto Camp = std::string{"Camp"};
+const auto Elder = std::string{"Elder"};
 
 // Camera focus points
+const auto IntroFocusPoint = std::string{"IntroFocusPoint"};
 const auto DaveEncounterFocusPoint = std::string{"DaveEncounterFocusPoint"};
 const auto CampEncounterFocusPoint = std::string{"CampEncounterFocusPoint"};
+const auto ElderEncounterFocusPoint = std::string{"ElderEncounterFocusPoint"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);

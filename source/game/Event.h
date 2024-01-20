@@ -18,6 +18,8 @@ enum class Event
     Begin, // signals end of intro
     DaveEncounter,
     CampEncounter,
+    ElderEncounter,
+    StartSpread,
     Win,
     Lose,
     NewGame
