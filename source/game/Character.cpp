@@ -136,13 +136,13 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
         }
     }
 
-    if (m_purifyOnCooldown)
+    if (m_sprayOnCooldown)
     {
-        m_purifyRemainingCooldownTime -= fixedDt;
-        if (m_purifyRemainingCooldownTime <= 0.0f)
+        m_sprayRemainingCooldownTime -= fixedDt;
+        if (m_sprayRemainingCooldownTime <= 0.0f)
         {
-            m_purifyRemainingCooldownTime = 0.0f;
-            m_purifyOnCooldown = false;
+            m_sprayRemainingCooldownTime = 0.0f;
+            m_sprayOnCooldown = false;
             registry->Remove<nc::Entity>(m_purifier);
             m_purifier = nc::Entity::Null();
         }
@@ -254,7 +254,7 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
         m_lungeRemainingCooldownTime = lungeCooldown;
     }
 
-    if (!m_purifyOnCooldown && KeyDown(game::hotkey::Purify))
+    if (m_sprayerEquipped && !m_sprayOnCooldown && KeyDown(game::hotkey::Spray))
     {
         auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
         characterAudio->PlayPurifySfx(registry->GetEcs());
@@ -275,8 +275,8 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
 void CharacterController::CreatePurifier(nc::Registry* registry)
 {
-    m_purifyOnCooldown = true;
-    m_purifyRemainingCooldownTime = purifyCooldown;
+    m_sprayOnCooldown = true;
+    m_sprayRemainingCooldownTime = sprayCooldown;
     const auto transform = registry->Get<nc::Transform>(ParentEntity());
     const auto forward = transform->Forward();
 
@@ -287,8 +287,6 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
         .tag = tag::Purifier,
         .layer = layer::Purifier
     });
-
-
 
     registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{.radius = 2.5f}, true);
     registry->Add<nc::physics::PhysicsBody>(m_purifier, nc::physics::PhysicsProperties{.isKinematic = true});

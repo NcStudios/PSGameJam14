@@ -20,12 +20,14 @@ class CharacterController : public nc::FreeComponent
         static constexpr auto maxMovingTurnVelocity = maxStationaryTurnVelocity;
 
         static constexpr auto lungeCooldown = 0.35f;
-        static constexpr auto purifyCooldown = 1.0f;
+        static constexpr auto sprayCooldown = 1.0f;
 
         CharacterController(nc::Entity self)
             : nc::FreeComponent{self} {}
 
         void Run(nc::Entity self, nc::Registry* registry);
+
+        void EquipSprayer() { m_sprayerEquipped = true; }
 
     private:
         nc::Entity m_purifier = nc::Entity::Null();
@@ -33,10 +35,11 @@ class CharacterController : public nc::FreeComponent
         float m_timeAtMoveBound = 0.0f;
         float m_currentTurnVelocity = 0.0f;
         float m_lungeRemainingCooldownTime = 0.0f;
-        float m_purifyRemainingCooldownTime = 0.0f;
+        float m_sprayRemainingCooldownTime = 0.0f;
         bool m_inchDecelerating = false;
         bool m_lungeOnCooldown = false;
-        bool m_purifyOnCooldown = false;
+        bool m_sprayOnCooldown = false;
+        bool m_sprayerEquipped = false;
 
         void CreatePurifier(nc::Registry* registry);
 };

@@ -47,6 +47,8 @@ class GameplayOrchestrator : public nc::StableAddress
         std::unique_ptr<TreeTracker> m_treeTracker;
         Event m_currentEvent = Event::Intro;
         Cutscene m_currentCutscene;
+        float m_timeInCurrentEvent = 0.0f;
+        size_t m_currentFlavorDialogIndex = 0ull;
         bool m_spreadStarted = false;
 
         void SetEvent(Event event);
@@ -54,10 +56,12 @@ class GameplayOrchestrator : public nc::StableAddress
         void HandleIntro();
         void HandleBegin();
         void HandleDaveEncounter();
+        void HandleHeadToCamp();
         void HandleCampEncounter();
         void HandleElderEncounter();
         void HandlePutterEncounter();
         void HandleStartSpread();
+        void HandleFlavorDialog();
         void HandleNewGame();
         void HandleWin();
         void HandleLose();
