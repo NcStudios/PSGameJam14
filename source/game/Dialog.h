@@ -10,15 +10,20 @@ using namespace std::string_view_literals;
 constexpr auto Intro = std::array{
 R"(Just another sunup, and another buckaroo in my pocket... I can't fathom why nobody else fancied ridin' out to the Moon Valley. It's the last patch of earth untouched by that darn Blight stench.
 
-Press [space] to continue)"sv
+[press space to continue])"sv
 };
 
 constexpr auto Controls =
-R"(Move with [WASD]
-Press [space] while moving forward to lung)";
+R"(Let's see if this ol' Cayuse can still make 'er through the Valley.
 
-constexpr auto BeginGame =
-R"(Gotta admit, this place has got a certain charm. Clean air, nice skies. But I can't shake the feeling there's more to this delivery...)";
+[move with WASD]
+
+[press space while moving forward to lunge])";
+
+constexpr auto ExploringMoonValleyFlavor = std::array{
+R"(Just me, my trusty bangtail, and a trail of dust - that's the life of a delivery cowboy.)"sv,
+R"(Gotta admit, this place has got a certain charm. Clean air, nice skies. But I can't shake the feeling there's more to this delivery...)"sv
+};
 
 constexpr auto DaveEncounterSequence = std::array{
 R"(Steve: Howdy, big bug. Steve's the name, Scootin' Steve that is, and I reckon I brought supplies for you fellas.)"sv,
@@ -52,9 +57,9 @@ R"(Ah-ha! I can wire a sprayer for you in a jiffy. Just a minute...)"sv,
 R"(Steve: I know I might look the part, like I'd die standin' up 'n all...)"sv,
 R"(...mechanical noises...)"sv,
 R"(Steve: ...but truth be told, its all just extra mustard I put on, ya know? I really don't think I'm the best man for the job.)"sv,
-R"(Putter: Nonsense! There's no job too big for.. what's your name?)"sv,
+R"(Putter: Nonsense! There's no job too big for... what's your name?)"sv,
 R"(Steve: Steve...)"sv,
-R"(Putter: too big for Steve. A real-deal delivery cowboy like yourself is born of grit, and I believe you have what it takes. We're all counting on you, Steve. Alright, you're all set. Press [left shift] to try out your new sprayer!)"sv
+R"(Putter: ...too big for Steve. A real-deal delivery cowboy like yourself is born of grit, and I believe you have what it takes. We're all counting on you, Steve. Alright, you're all set. Press [left shift] to try out your new sprayer!)"sv
 };
 
 constexpr auto StartSpread =
@@ -66,4 +71,8 @@ R"([placeholder] You saved the sasquatch oasis!)";
 
 constexpr auto Lose =
 R"([placeholder] This planet cannot be saved.)";
+
+constexpr auto SteveFlavor = std::array{
+R"()"sv
+};
 } // namespace game::dialog
