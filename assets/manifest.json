@@ -117,6 +117,10 @@
             "assetName": "mesh/terrain_curve01"
         },
         {
+            "sourcePath": "raw/mesh/terrain_flat_edge.fbx",
+            "assetName": "mesh/terrain_edge"
+        },
+        {
             "sourcePath": "raw/mesh/terrain_curve02.fbx",
             "assetName": "mesh/terrain_curve02"
         },
@@ -209,6 +213,10 @@
         {
             "sourcePath": "raw/texture/terrain_curve02_base_color.png",
             "assetName": "texture/terrain_curve02_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/terrain_flat_edge_base_color.png",
+            "assetName": "texture/terrain_edge_base_color"
         },
         {
             "sourcePath": "raw/texture/terrain_inlet_base_color.png",
