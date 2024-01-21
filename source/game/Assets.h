@@ -47,6 +47,7 @@ constexpr auto RockMesh = "rock.nca";
 constexpr auto Terrain01Mesh = "terrain01.nca";
 constexpr auto TerrainCurve01Mesh = "terrain_curve01.nca";
 constexpr auto TerrainCurve02Mesh = "terrain_curve02.nca";
+constexpr auto TerrainEdgeMesh = "terrain_edge.nca";
 constexpr auto Terrain02Mesh = "terrain02.nca";
 constexpr auto TerrainInletMesh = "terrain_inlet.nca";
 constexpr auto Vegetation01Mesh = "vegetation01.nca";
@@ -89,6 +90,7 @@ constexpr auto Terrain01Texture = "terrain01_base_color.nca";
 constexpr auto Terrain02Texture = "terrain02_base_color.nca";
 constexpr auto TerrainCurve01Texture = "terrain_curve_01_base_color.nca";
 constexpr auto TerrainCurve02Texture = "terrain_curve_02_base_color.nca";
+constexpr auto TerrainEdgeTexture = "terrain_edge_base_color.nca";
 constexpr auto TerrainInletTexture = "terrain_inlet_base_color.nca";
 constexpr auto Vegetation01Texture = "vegetation01_base_color.nca";
 
