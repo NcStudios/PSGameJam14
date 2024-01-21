@@ -44,7 +44,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // (backup 'workspace/prefab' too, if you changed anything) Then, save your temp scene from 'install/your_scene_name' to
     // 'workspace/scene/terrain' (or 'workspace/prefab/your_prefab').
     auto ncAsset = modules.Get<nc::asset::NcAsset>();
-    ::LoadBaseScene(world, ncAsset, "scene/level_in_progress");
+    ::LoadBaseScene(world, ncAsset, "scene/level");
 
     const auto characterSpawnPos = nc::Vector3{120.0f, 0.0f, -136.0f};
     const auto character = CreateCharacter(world, phys, characterSpawnPos);
@@ -82,6 +82,17 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // Spawning ops
 #if 0
     RandomlyPopulateTerrain(world, ncRandom);
+
+    auto saver = world.Emplace<nc::Entity>({.flags = nc::Entity::Flags::NoSerialize});
+    world.Emplace<nc::FrameLogic>(saver, [](nc::Entity, nc::Registry* registry, float)
+    {
+        if (nc::input::KeyDown(nc::input::KeyCode::F9))
+        {
+            static auto filter = [](nc::Entity entity) { return entity.Layer() == layer::Foliage; };
+            auto fragment = std::ofstream{"foliage", std::ios::binary | std::ios::trunc};
+            nc::SaveSceneFragment(fragment, registry->GetEcs(), nc::asset::AssetMap{}, filter);
+        }
+    });
 #endif
 
     registry->CommitStagedChanges(); // so we can search by tag

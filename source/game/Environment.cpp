@@ -13,8 +13,11 @@ constexpr auto TerrainCurve1SpawnExtent = nc::Vector3{3.0f, 1.0f, 11.0f};
 constexpr auto TerrainCurve2SpawnExtent = nc::Vector3{11.0f, 1.0f, 3.0f};
 constexpr auto TerrainInlet1SpawnExtent = nc::Vector3{10.0f, 1.0f, 20.0f};
 
-constexpr auto ItemsPerLargeTerrain = 20ull;
-constexpr auto ItemsPerSmallTerrain = 8ull;
+constexpr auto BorderSpawnExtent = nc::Vector3{24.0f, 4.0f, 6.0f};
+
+constexpr auto ItemsPerLargeTerrain = 15ull;
+constexpr auto ItemsPerSmallTerrain = 6ull;
+constexpr auto ItemsPerBorder = 15ull;
 
 using choice_t = std::pair<const char* const, nc::graphics::ToonMaterial>;
 
@@ -27,10 +30,10 @@ const auto TreeChoices = std::array<choice_t, 5 >
     choice_t{game::AspensMesh, game::AspensMaterial},
 };
 
-const auto VegetationChoices = std::array<choice_t, 5>
+const auto VegetationChoices = std::array<choice_t, 3>
 {
-    choice_t{game::GrassMesh, game::GrassMaterial},
-    choice_t{game::GrassMesh, game::GrassMaterial},
+    // choice_t{game::GrassMesh, game::GrassMaterial},
+    // choice_t{game::GrassMesh, game::GrassMaterial},
     choice_t{game::FernMesh, game::FernMaterial},
     choice_t{game::FernMesh, game::FernMaterial},
     choice_t{game::AloeMesh, game::AloeMaterial}
@@ -45,6 +48,7 @@ auto GetSpawnExtent(uint8_t layer) -> nc::Vector3
         case game::layer::TerrainCurve1: return TerrainCurve1SpawnExtent;
         case game::layer::TerrainCurve2: return TerrainCurve2SpawnExtent;
         case game::layer::TerrainInlet1: return TerrainInlet1SpawnExtent;
+        case game::layer::Border: return BorderSpawnExtent;
         default: throw nc::NcError("unhandled spawn extent");
     }
 }
@@ -58,6 +62,7 @@ auto GetItemsPerTerrain(uint8_t layer) -> size_t
         case game::layer::TerrainCurve1: return ItemsPerSmallTerrain;
         case game::layer::TerrainCurve2: return ItemsPerSmallTerrain;
         case game::layer::TerrainInlet1: return ItemsPerLargeTerrain;
+        case game::layer::Border: return ItemsPerBorder;
         default: throw nc::NcError("unhandled spawn extent");
     }
 }
@@ -65,9 +70,8 @@ auto GetItemsPerTerrain(uint8_t layer) -> size_t
 auto GetLocalSpawnExtents(nc::ecs::Ecs world, nc::Entity entity)
 {
     auto maxExtent = ::GetSpawnExtent(entity.Layer());
-    auto minExtent = -maxExtent;
+    auto minExtent = nc::Vector3{-maxExtent.x, maxExtent.y, -maxExtent.z};
     const auto transform = world.Get<nc::Transform>(entity);
-    const auto pos = transform->Position();
     const auto& m = transform->TransformationMatrix();
 
     auto v = DirectX::XMLoadVector3(&maxExtent);
@@ -130,9 +134,13 @@ void FinalizeTerrain(nc::ecs::Ecs world)
 
 void RandomlyPopulateTerrain(nc::ecs::Ecs world, nc::Random* random)
 {
-    const auto terrain = FilterTerrainEntities(world);
+    // const auto terrain = FilterTerrainEntities(world);
     // GenerateGrass(world, random, terrain);
-    GenerateTrees(world, random, terrain);
+    // GenerateVegetation(world, random, terrain);
+    // GenerateTrees(world, random, terrain);
+
+    const auto borders = FilterBorderEntities(world);
+    GenerateBorderTrees(world, random, borders);
 }
 
 auto FilterTerrainEntities(nc::ecs::Ecs world) -> std::vector<nc::Entity>
@@ -140,15 +148,52 @@ auto FilterTerrainEntities(nc::ecs::Ecs world) -> std::vector<nc::Entity>
     auto filter = world.GetAll<nc::Entity>() | std::views::filter([](nc::Entity entity)
     {
         return IsTerrain(entity)
-            && entity.Layer() != layer::TerrainInlet1; // ignore these for now
+            && entity.Layer();// != layer::TerrainInlet1; // ignore these for now
     });
 
     return std::vector<nc::Entity>{filter.begin(), filter.end()};
 }
 
-void GenerateGrass(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc::Entity>& terrain)
+auto FilterBorderEntities(nc::ecs::Ecs world) -> std::vector<nc::Entity>
 {
-    const auto root = world.Emplace<nc::Entity>({.tag = "[Env] Grass"});
+    auto filter = world.GetAll<nc::Entity>() | std::views::filter([](nc::Entity entity)
+    {
+        return entity.Layer() == layer::Border;
+    });
+
+    return std::vector<nc::Entity>{filter.begin(), filter.end()};
+}
+
+// void GenerateGrass(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc::Entity>&)
+// {
+//     const auto root = world.Emplace<nc::Entity>({.tag = "[Env] Grass"});
+
+//     auto totalGrass = 200ull;
+//     const auto [minPos, maxPos] = std::pair{nc::Vector3{-180.0f, -1.0f, 180.0f}, nc::Vector3{180.0f, -1.0f, 180.0f}};
+//     while (totalGrass-- != 0)
+//     {
+//         const auto grass = world.Emplace<nc::Entity>({
+//             .position = random->Between(
+//                 minPos,
+//                 maxPos
+//             ),
+//             .rotation = nc::Quaternion::FromAxisAngle(
+//                 nc::Vector3::Up(),
+//                 random->Between(-1.57f, 1.57f)
+//             ),
+//             .scale = random->Between(nc::Vector3::Splat(0.3f), nc::Vector3::Splat(3.0f)),
+//             .parent = root,
+//             .layer = layer::Foliage,
+//             .flags = nc::Entity::Flags::Static
+//         });
+
+//         world.Emplace<nc::graphics::ToonRenderer>(grass, GrassMesh, GrassMaterial);
+//     }
+// }
+
+void GenerateVegetation(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc::Entity>& terrain)
+{
+    const auto root = world.Emplace<nc::Entity>({.tag = "[Env] Vegetation"});
     auto lastChoice = 0ull;
 
     for (auto entity : terrain)
@@ -168,6 +213,7 @@ void GenerateGrass(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc:
                 ),
                 .scale = random->Between(nc::Vector3::Splat(0.3f), nc::Vector3::Splat(3.0f)),
                 .parent = root,
+                .layer = layer::Foliage,
                 .flags = nc::Entity::Flags::Static
             });
 
@@ -203,6 +249,7 @@ void GenerateTrees(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc:
                 ),
                 .scale = nc::Vector3::Splat(random->Between(0.3f, 2.0f)),
                 .parent = root,
+                .layer = layer::Foliage,
                 .flags = nc::Entity::Flags::Static
             });
 
@@ -211,6 +258,38 @@ void GenerateTrees(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc:
 
             const auto& [mesh, material] = ::TreeChoices.at(lastChoice++);
             world.Emplace<nc::graphics::ToonRenderer>(tree, mesh, material);
+        }
+    }
+}
+
+void GenerateBorderTrees(nc::ecs::Ecs world, nc::Random* random, const std::vector<nc::Entity>& terrain)
+{
+    const auto root = world.Emplace<nc::Entity>({.tag = "[Env] Border Trees"});
+
+    for (auto entity : terrain)
+    {
+        const auto treesPerTerrain = ::GetItemsPerTerrain(entity.Layer());
+        const auto [minPos, maxPos] = ::GetLocalSpawnExtents(world, entity);
+
+        for ([[maybe_unused]] auto _ : std::views::iota(0ull, treesPerTerrain))
+        {
+            const auto tree = world.Emplace<nc::Entity>({
+                .position = random->Between(
+                    minPos,
+                    maxPos
+                ),
+                .rotation = nc::Quaternion::FromAxisAngle(
+                    nc::Vector3::Up(),
+                    random->Between(-1.57f, 1.57f)
+                ),
+                .scale = nc::Vector3::Splat(random->Between(0.45f, 5.0f)),
+                .parent = root,
+                .layer = layer::Foliage,
+                .flags = nc::Entity::Flags::Static
+            });
+
+
+            world.Emplace<nc::graphics::ToonRenderer>(tree, PineMesh, PineMaterial);
         }
     }
 }

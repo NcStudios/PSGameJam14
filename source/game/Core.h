@@ -51,6 +51,7 @@ constexpr uint8_t Blockade = 11; // obstacle
 constexpr uint8_t QuestTrigger = 12;
 constexpr uint8_t Dave = 13;
 constexpr uint8_t GenericSasquatch = 14;
+constexpr uint8_t Foliage = 15;
 
 // Reserving [100, 150] for terrain
 // so we can script applying stuff (colliders, etcs.) after the fact
@@ -78,6 +79,7 @@ constexpr auto ToggleMenu = nc::input::KeyCode::Escape;
 
 // Debug Controls
 constexpr auto ToggleDebugCamera = nc::input::KeyCode::F5;
+constexpr auto SaveFoliageScene = nc::input::KeyCode::F9;
 } // namespace hotkey
 
 namespace map
