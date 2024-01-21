@@ -64,6 +64,7 @@ constexpr auto DaveIdle = "dave_idle.nca";
 constexpr auto DaveSittingGround = "dave_idle_sitting_ground.nca";
 constexpr auto DaveStandupGround = "dave_idle_sit_to_stand_ground.nca";
 constexpr auto DaveSittingStump = "dave_idle_sitting_stump.nca";
+constexpr auto DaveStandupStump = "dave_sit_to_stand_stump.nca";
 constexpr auto DaveCircleWalk = "dave_walk_in_circle.nca";
 constexpr auto DaveTinkering = "dave_tinkering.nca";
 
@@ -134,12 +135,44 @@ inline auto InfectedTree01Material = nc::graphics::ToonMaterial
     .hatchingTiling = 6
 };
 
+inline auto AspensMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = AspensTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 9
+};
+
+inline auto PineMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = PineTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 5
+};
+
 inline auto GrassMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = GrassTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
-    .hatchingTiling = 3
+    .hatchingTiling = 6
+};
+
+inline auto FernMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = FernTexture,
+    .overlay = FernTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 5
+};
+
+inline auto AloeMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = AloeTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 2
 };
 
 inline auto DaveMaterial = nc::graphics::ToonMaterial

@@ -4,17 +4,76 @@
 
 namespace game
 {
-void AttachDaveComponents(nc::ecs::Ecs world)
+void AttachSasquatchAnimators(nc::ecs::Ecs world)
 {
-    const auto dave = world.GetEntityByTag(tag::Dave);
-    world.Emplace<nc::graphics::SkeletalAnimator>(dave, DaveMesh, DaveWave);
-    AttachQuestTrigger(world, dave, Event::DaveEncounter, nc::Vector3{}, nc::Vector3::Splat(5.0f));
+    {
+        const auto dave = world.GetEntityByTag(tag::Dave);
+        auto anim = world.Emplace<nc::graphics::SkeletalAnimator>(dave, DaveMesh, DaveIdle);
+        anim->LoopImmediate(DaveWave, nc::graphics::anim::Never);
+    }
+
+    {
+        const auto camp = world.GetEntityByTag(tag::Camp);
+        world.Emplace<nc::graphics::SkeletalAnimator>(camp, DaveMesh, DaveIdle);
+    }
+
+    {
+        const auto elder = world.GetEntityByTag(tag::Elder);
+        auto anim = world.Emplace<nc::graphics::SkeletalAnimator>(elder, DaveMesh, DaveIdle);
+        anim->LoopImmediate(DaveSittingStump, nc::graphics::anim::Never);
+    }
+
+    {
+        const auto putter = world.GetEntityByTag(tag::Putter);
+        world.Emplace<nc::graphics::SkeletalAnimator>(putter, DaveMesh, DaveTinkering);
+    }
+
+    {
+        const auto s1 = world.GetEntityByTag(tag::Sasquatch1);
+        world.Emplace<nc::graphics::SkeletalAnimator>(s1, DaveMesh, DaveSittingGround);
+
+        const auto s2 = world.GetEntityByTag(tag::Sasquatch2);
+        world.Emplace<nc::graphics::SkeletalAnimator>(s2, DaveMesh, DaveSittingStump);
+
+        const auto s3 = world.GetEntityByTag(tag::Sasquatch3);
+        world.Emplace<nc::graphics::SkeletalAnimator>(s3, DaveMesh, DaveCircleWalk);
+    }
 }
 
-void AttachCampComponents(nc::ecs::Ecs world)
+void SetAnimatorState(nc::ecs::Ecs world, std::string_view animation, std::string_view tag)
+{
+    const auto entity = world.GetEntityByTag(tag);
+    auto animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
+    NC_ASSERT(animator, "expected entity to have an animator");
+    animator->LoopImmediate(std::string{animation}, [](){ return false; });
+}
+
+void SetPlayOnceAnimation(nc::ecs::Ecs world, std::string_view animation, std::string_view tag)
+{
+    const auto entity = world.GetEntityByTag(tag);
+    auto animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
+    NC_ASSERT(animator, "expected entity to have an animator");
+    animator->PlayOnceImmediate(std::string{animation});
+}
+
+void ReturnAnimatorToRootState(nc::ecs::Ecs world, std::string_view tag)
+{
+    const auto entity = world.GetEntityByTag(tag);
+    auto animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
+    NC_ASSERT(animator, "expected entity to have an animator");
+    animator->StopImmediate([](){ return true; });
+}
+
+void AttachCampQuestTrigger(nc::ecs::Ecs world)
 {
     const auto camp = world.GetEntityByTag(tag::Camp);
     AttachQuestTrigger(world, camp, Event::CampEncounter, nc::Vector3{}, nc::Vector3::Splat(5.0f));
+}
+
+void AttachDaveQuestTrigger(nc::ecs::Ecs world)
+{
+    const auto dave = world.GetEntityByTag(tag::Dave);
+    AttachQuestTrigger(world, dave, Event::DaveEncounter, nc::Vector3{}, nc::Vector3::Splat(5.0f));
 }
 
 void AttachElderQuestTrigger(nc::ecs::Ecs world)
