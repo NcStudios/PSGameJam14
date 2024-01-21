@@ -82,20 +82,27 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     // Spawning ops
 #if 0
     RandomlyPopulateTerrain(world, ncRandom);
+
+    auto saver = world.Emplace<nc::Entity>({.flags = nc::Entity::Flags::NoSerialize});
+    world.Emplace<nc::FrameLogic>(saver, [](nc::Entity, nc::Registry* registry, float)
+    {
+        if (nc::input::KeyDown(nc::input::KeyCode::F9))
+        {
+            static auto filter = [](nc::Entity entity) { return entity.Layer() == layer::Foliage; };
+            auto fragment = std::ofstream{"foliage", std::ios::binary | std::ios::trunc};
+            nc::SaveSceneFragment(fragment, registry->GetEcs(), nc::asset::AssetMap{}, filter);
+        }
+    });
 #endif
 
     registry->CommitStagedChanges(); // so we can search by tag
-
 
     // Not part of debug env, just needs to happen last
     // These modify serialized objects: DO NOT SAVE SCENE WHEN ENABLED!
     if constexpr (EnableGameplay)
     {
         FinalizeTerrain(world);
-        AttachDaveComponents(world);
-        AttachCampComponents(world);
-        // registry->CommitStagedChanges(); // what's this bug about???
-
+        AttachSasquatchAnimators(world);
         // Init GameplayManager sequence
         FireEvent(Event::Intro);
     }

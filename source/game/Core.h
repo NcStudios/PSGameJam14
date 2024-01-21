@@ -50,6 +50,8 @@ constexpr uint8_t Border = 10; // outer border
 constexpr uint8_t Blockade = 11; // obstacle
 constexpr uint8_t QuestTrigger = 12;
 constexpr uint8_t Dave = 13;
+constexpr uint8_t GenericSasquatch = 14;
+constexpr uint8_t Foliage = 15;
 
 // Reserving [100, 150] for terrain
 // so we can script applying stuff (colliders, etcs.) after the fact
@@ -77,6 +79,7 @@ constexpr auto ToggleMenu = nc::input::KeyCode::Escape;
 
 // Debug Controls
 constexpr auto ToggleDebugCamera = nc::input::KeyCode::F5;
+constexpr auto SaveFoliageScene = nc::input::KeyCode::F9;
 } // namespace hotkey
 
 namespace map
@@ -106,6 +109,9 @@ const auto Sasquatch = std::string{"Sasquatch"};
 const auto Camp = std::string{"Camp"};
 const auto Elder = std::string{"Elder"};
 const auto Putter = std::string{"Putter"};
+const auto Sasquatch1 = std::string{"Sasquatch1"};
+const auto Sasquatch2 = std::string{"Sasquatch2"};
+const auto Sasquatch3 = std::string{"Sasquatch3"};
 
 // Camera focus points
 const auto IntroFocusPoint = std::string{"IntroFocusPoint"};

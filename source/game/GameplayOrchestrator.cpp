@@ -198,6 +198,8 @@ void GameplayOrchestrator::Run(float dt)
     {
         case Event::Intro:
         {
+            AttachDaveQuestTrigger(m_world);
+            AttachCampQuestTrigger(m_world); // allow skipping Dave?
             FireEvent(Event::Begin);
             break;
         }
@@ -229,6 +231,7 @@ void GameplayOrchestrator::Run(float dt)
         }
         case Event::ElderEncounter:
         {
+            SetAnimatorState(m_world, DaveSittingStump, tag::Elder);
             AttachPutterQuestTrigger(m_world);
             SetEvent(Event::None);
             break;
@@ -236,7 +239,6 @@ void GameplayOrchestrator::Run(float dt)
         case Event::PutterEncounter:
         {
             // start spreaders as soon as PutteraEncounter cutscene finishes
-            // TODO: need to attach spread here
             FireEvent(Event::StartSpread);
             break;
         }
@@ -275,10 +277,7 @@ void GameplayOrchestrator::HandleBegin()
 void GameplayOrchestrator::HandleDaveEncounter()
 {
     SetEvent(Event::DaveEncounter);
-    const auto dave = m_world.GetEntityByTag(tag::Dave);
-    auto animator = m_world.Get<nc::graphics::SkeletalAnimator>(dave);
-    NC_ASSERT(animator, "expected dave to have an animator");
-    animator->LoopImmediate(DaveIdle, [](){return false;}, nc::graphics::anim::RootState);
+    ReturnAnimatorToRootState(m_world, tag::Dave);
     m_currentCutscene.Enter(m_world, tag::DaveEncounterFocusPoint, dialog::DaveEncounterSequence);
 }
 
@@ -298,6 +297,7 @@ void GameplayOrchestrator::HandleCampEncounter()
 void GameplayOrchestrator::HandleElderEncounter()
 {
     SetEvent(Event::ElderEncounter);
+    SetPlayOnceAnimation(m_world, DaveStandupStump, tag::Elder);
     m_currentCutscene.Enter(m_world, tag::ElderEncounterFocusPoint, dialog::ElderEncounterSequence);
 }
 
