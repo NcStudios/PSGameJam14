@@ -80,6 +80,7 @@ constexpr auto ToggleMenu = nc::input::KeyCode::Escape;
 // Debug Controls
 constexpr auto ToggleDebugCamera = nc::input::KeyCode::F5;
 constexpr auto SaveFoliageScene = nc::input::KeyCode::F9;
+constexpr auto SkipToSpreadEvent = nc::input::KeyCode::F12;
 } // namespace hotkey
 
 namespace map
@@ -118,6 +119,11 @@ const auto IntroFocusPoint = std::string{"IntroFocusPoint"};
 const auto DaveEncounterFocusPoint = std::string{"DaveEncounterFocusPoint"};
 const auto CampEncounterFocusPoint = std::string{"CampEncounterFocusPoint"};
 const auto ElderEncounterFocusPoint = std::string{"ElderEncounterFocusPoint"};
+
+const auto DaveEndingPosition = std::string{"DaveEndingPosition"};
+const auto EndingFocusPoint = std::string{"EndingFocusPoint"};
+
+const auto Light = std::string{"Light"};
 } // namespace tag
 
 void LoadFragment(std::string_view path, nc::Registry* registry, nc::ModuleProvider modules);

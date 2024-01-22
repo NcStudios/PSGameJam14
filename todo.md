@@ -1,26 +1,11 @@
 
 # Must Do
-Add border asset - maybe can spawn something?
-
-Add level detail + reduce redundancy
 
 Dialog
-  - Display Controls dialog
+  - X Display Controls dialog
   - Finish Win/Lose dialog/sequence
 
-Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
-
-Shadow wonkiness
-
-Bug on Surface - crash in igvk64.dll when running installed build against MSVC 17.5.0. Fixed by updating to MSVC 17.8.5.0.
-Frame rate drop investigations?
-
-
-Keep vehicle upright, or force back somehow
-  - can we restrict PhysicsBody freedom?
-    - is in world space, so must do x and z... its not the worst looking. could use as fallback, or maybe set to like 0.1f?
-
-Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
+Add level detail + reduce redundancy
 
 Purify
   X update to only emit when key held, shape is probably a long box instead
@@ -34,6 +19,25 @@ Healthy -> Infected
 Infected -> Healthy
   X make sfx
   make particle
+
+Finalize SFX
+
+Music
+
+Fix collision boxes and getting on top of terrain
+
+Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
+
+Shadow wonkiness
+
+
+Keep vehicle upright, or force back somehow
+  - can we restrict PhysicsBody freedom?
+    - is in world space, so must do x and z... its not the worst looking. could use as fallback, or maybe set to like 0.1f?
+
+Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
+
+
 
 **Asset List**
 
@@ -106,6 +110,11 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+X Bug on Surface - crash in igvk64.dll when running installed build against MSVC 17.5.0. Fixed by updating to MSVC 17.8.5.0.
+Frame rate drop investigations?
+
+X Add border asset - maybe can spawn something?
+
 Quest Triggers
   - X meet dave, trigger dialog to go to camp
   - X arrive at camp
