@@ -43,6 +43,8 @@ constexpr auto FloorMesh = "floor.nca";
 /** Meshes - Terrain */
 constexpr auto AloeMesh = "aloe.nca";
 constexpr auto FernMesh = "fern.nca";
+constexpr auto FireMesh = "fire.nca";
+constexpr auto FirepitMesh = "firepit.nca";
 constexpr auto GrassMesh = "grass.nca";
 constexpr auto RockMesh = "rock.nca";
 constexpr auto StatueMesh = "statue.nca";
@@ -71,6 +73,9 @@ constexpr auto DaveStandupStump = "dave_sit_to_stand_stump.nca";
 constexpr auto DaveCircleWalk = "dave_walk_in_circle.nca";
 constexpr auto DaveTinkering = "dave_tinkering.nca";
 
+/** Animations - Fire */
+constexpr auto FireFlicker = "fire_flicker.nca";
+
 /** Textures */
 /** Textures - Character */
 constexpr auto BusCarTexture = "bus_car_base_color.nca";
@@ -87,6 +92,8 @@ constexpr auto OverlayTexture = "overlay.nca";
 /** Textures - Terrain */
 constexpr auto AloeTexture = "aloe_base_color.nca";
 constexpr auto FernTexture = "fern_base_color.nca";
+constexpr auto FireTexture = "fire_base_color.nca";
+constexpr auto FirepitTexture = "firepit_base_color.nca";
 constexpr auto GrassTexture = "grass_base_color.nca";
 constexpr auto RockTexture = "rock_base_color.nca";
 constexpr auto StatueTexture = "statue_base_color.nca";
@@ -185,6 +192,22 @@ inline auto AloeMaterial = nc::graphics::ToonMaterial
 inline auto DaveMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = DaveTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 6
+};
+
+inline auto FirepitMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = FirepitTexture,
+    .overlay = OverlayTexture,
+    .hatching = HatchTexture,
+    .hatchingTiling = 6
+};
+
+inline auto FireMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = FireTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
     .hatchingTiling = 6

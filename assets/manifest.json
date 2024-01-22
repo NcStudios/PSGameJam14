@@ -93,6 +93,14 @@
             "assetName": "mesh/fern"
         },
         {
+            "sourcePath": "raw/mesh/fire.fbx",
+            "assetName": "mesh/fire"
+        },
+        {
+            "sourcePath": "raw/mesh/firepit.fbx",
+            "assetName": "mesh/firepit"
+        },
+        {
             "sourcePath": "raw/mesh/floor.fbx",
             "assetName": "mesh/floor"
         },
@@ -173,6 +181,14 @@
         {
             "sourcePath": "raw/texture/fern_base_color.png",
             "assetName": "texture/fern_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/fire_base_color.png",
+            "assetName": "texture/fire_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/firepit_base_color.png",
+            "assetName": "texture/firepit_base_color"
         },
         {
             "sourcePath": "raw/texture/floor_base_color.png",
@@ -286,6 +302,15 @@
                 {
                     "subResourceName" : "Dave|Tinkering",
                     "assetName" : "skeletal_animation\\dave_tinkering"
+                }
+            ]
+        },
+        {
+            "sourcePath": "raw/skeletal_animation/fire.fbx",
+            "assetNames": [
+                {
+                    "subResourceName" : "Armature|Fire",
+                    "assetName" : "skeletal_animation\\fire_flicker"
                 }
             ]
         }

@@ -56,6 +56,38 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     CreateTreeBase(world, nc::Vector3{138.0f, 0.0f, -22.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
     CreateTreeBase(world, nc::Vector3{24.5f, 0.0f, -116.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
 
+    const auto firepit = world.Emplace<nc::Entity>(nc::EntityInfo
+    {
+        .position = nc::Vector3{4.0f, 0.0f, -86.0f},
+        .rotation = nc::Quaternion(),
+        .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
+        .tag = tag::Firepit,
+        .layer = layer::Detail
+    });
+
+    const auto fire = world.Emplace<nc::Entity>(nc::EntityInfo
+    {
+        .position = nc::Vector3{4.0f, 0.0f, -86.0f},
+        .rotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0, 0.0f),
+        .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
+        .tag = tag::Fire,
+        .layer = layer::Detail
+    });
+
+    const auto fireLight = world.Emplace<nc::Entity>(nc::EntityInfo
+    {
+        .position = nc::Vector3{5.0f, 1.0f, -87.0f},
+        .rotation = nc::Quaternion{},
+        .scale = nc::Vector3::One(),
+        .tag = tag::Light,
+        .layer = layer::Default
+    });
+
+    world.Emplace<nc::graphics::ToonRenderer>(firepit, FirepitMesh, FirepitMaterial);
+    world.Emplace<nc::graphics::ToonRenderer>(fire, FireMesh, FireMaterial);
+    world.Emplace<nc::graphics::SkeletalAnimator>(fire, FireMesh, FireFlicker);
+    world.Emplace<nc::graphics::PointLight>(fireLight, nc::Vector3{1.0f, 1.0f, 0.0f}, nc::Vector3{1.0f, 0.64f, 0.0f}, 10.0f);
+
     gfx->SetSkybox(Skybox);
 
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
