@@ -19,6 +19,7 @@ constexpr auto TerrainCurve02Collider = "terrain_curve02_collider.nca";
 constexpr auto TerrainInletCollider = "terrain_inlet_collider.nca";
 
 /** SFX */
+constexpr auto IntroThemeMusic = "intro_theme.nca";
 constexpr auto ForestAmbienceSfx = "forest.nca";
 constexpr auto EngineStartSfx = "engine_start.nca";
 constexpr auto EngineRunningSfx = "engine_running.nca";
@@ -105,6 +106,8 @@ constexpr auto DecorativeTree01TreeTexture = "decorative_tree01_base_color.nca";
 
 /** Textures - Particles */
 constexpr auto QuestIndicatorParticle = "quest_indicator_particle.nca";
+constexpr auto RoundemupParticle = "roundemup_particle.nca";
+constexpr auto BlightParticle = "blight_particle.nca";
 
 /** Materials */
 inline auto BusFrontMaterial = nc::graphics::ToonMaterial
