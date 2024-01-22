@@ -25,7 +25,7 @@ inline auto AttachQuestTrigger(nc::ecs::Ecs world,
         .emission = {
             .initialEmissionCount = 1,
             .periodicEmissionCount = 1,
-            .periodicEmissionFrequency = 10.0f
+            .periodicEmissionFrequency = 5.0f
         },
         .init = {
             .lifetime = 10.0f,
@@ -34,9 +34,10 @@ inline auto AttachQuestTrigger(nc::ecs::Ecs world,
             .particleTexturePath = QuestIndicatorParticle
         },
         .kinematic = {
-            .rotationMin = 0.2f,
-            .rotationMax = 0.2f,
-            .rotationOverTimeFactor = 0.0f
+            .rotationMin = 3.14f,
+            .rotationMax = 3.14f,
+            .rotationOverTimeFactor = 0.0f,
+            .scaleOverTimeFactor = -10.0f
         }
     });
 

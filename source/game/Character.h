@@ -41,7 +41,7 @@ class CharacterController : public nc::FreeComponent
         bool m_sprayOnCooldown = false;
         bool m_sprayerEquipped = false;
 
-        void CreatePurifier(nc::Registry* registry);
+        void CreatePurifier(nc::Registry* registry, float moveVelocity);
 };
 
 enum class VehicleState

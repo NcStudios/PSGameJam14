@@ -30,6 +30,10 @@
         {
             "sourcePath": "raw/audio_clip/morph_infected.wav",
             "assetName": "audio_clip/morph_infected"
+        },
+        {
+            "sourcePath": "raw/audio_clip/intro_theme.wav",
+            "assetName": "audio_clip/intro_theme"
         }
     ],
     "concave-collider": 
@@ -237,6 +241,14 @@
         {
             "sourcePath": "raw/texture/quest_indicator_particle.png",
             "assetName": "texture/quest_indicator_particle"
+        },
+        {
+            "sourcePath": "raw/texture/roundemup_particle.png",
+            "assetName": "texture/roundemup_particle"
+        },
+        {
+            "sourcePath": "raw/texture/blight_particle.png",
+            "assetName": "texture/blight_particle"
         }
     ],
     "skeletal-animation": [

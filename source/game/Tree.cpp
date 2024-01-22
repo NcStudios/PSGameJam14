@@ -41,8 +41,8 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto particleInfo = emitter->GetInfo();
     if (particleInfo.kinematic.velocityMax.y < 5.0f)
     {
-        particleInfo.kinematic.velocityMin -= nc::Vector3{0.03f, 0.0f, 0.03f};
-        particleInfo.kinematic.velocityMax += nc::Vector3{0.03f, 0.1f, 0.03f};
+        particleInfo.kinematic.velocityMin -= nc::Vector3{0.1f, 0.0f, 0.1f};
+        particleInfo.kinematic.velocityMax += nc::Vector3{0.1f, 0.1f, 0.1f};
     }
     if (particleInfo.emission.periodicEmissionCount < MaxEmissionCount) // nc::Clamp needs template adjustment
     {
@@ -122,10 +122,14 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
             .rotationMax = 0.157f,
             .scaleMin = 0.005f,
             .scaleMax = 0.6f,
+            .particleTexturePath = BlightParticle
         },
         .kinematic = nc::graphics::ParticleKinematicInfo{
             .velocityMin = nc::Vector3{-0.35f, 0.05f, -0.35f},
             .velocityMax = nc::Vector3{0.35f, 0.5f, 0.35f},
+            .rotationMin = -1.0f,
+            .rotationMax = 1.0f,
+            .rotationOverTimeFactor = 0.0f,
             .scaleOverTimeFactor = -20.0f
         }
     });

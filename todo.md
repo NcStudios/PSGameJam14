@@ -1,6 +1,10 @@
 
 # Must Do
 
+Spreader trees don't start with correct texture on Event::StartSpread
+Finalize Cutscene focus points + positioning
+Fix Dave's final position
+
 Dialog
   - X Display Controls dialog
   - Finish Win/Lose dialog/sequence
@@ -10,7 +14,7 @@ Add level detail + reduce redundancy
 Purify
   X update to only emit when key held, shape is probably a long box instead
   X make sfx
-  make particle
+  X make particle
 
 Healthy -> Infected
   X make sfx
@@ -23,6 +27,8 @@ Infected -> Healthy
 Finalize SFX
 
 Music
+  - X intro theme
+  - spread theme
 
 Fix collision boxes and getting on top of terrain
 
@@ -52,7 +58,7 @@ Visual representation of healthy/infected tree count (UI, but...) [not sure if '
  - Sick Tree 1
  - Sick Tree 2
  - Sick Tree 3
- - Poison particle
+ - X Poison particle
 
 **Sound List**
 - Main Theme

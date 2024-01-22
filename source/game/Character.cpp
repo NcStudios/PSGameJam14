@@ -102,7 +102,8 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
             .rotationMin = -0.157f,
             .rotationMax = 0.157f,
             .scaleMin = 0.05f,
-            .scaleMax = 0.5f
+            .scaleMax = 0.5f,
+            .particleTexturePath = RoundemupParticle
         },
         .kinematic = nc::graphics::ParticleKinematicInfo{
             .velocityMin = forwardMin,
@@ -264,16 +265,15 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
         const auto moveVel = transform->ToLocalSpace(nc::Vector3::Front()) * m_currentMoveVelocity;
         const auto baseVelMin = transform->ToLocalSpace(nc::Vector3{-1.0f, -1.0f, 5.0f}) * 5.0f;
         const auto baseVelMax = transform->ToLocalSpace(nc::Vector3{1.0f, 1.0f, 10.0f}) * 10.0f;
-
         props.kinematic.velocityMin = moveVel + baseVelMin;
         props.kinematic.velocityMax = moveVel + baseVelMax;
         purifyParticles->SetInfo(props);
         purifyParticles->Emit(30);
-        CreatePurifier(registry);
+        CreatePurifier(registry, m_currentMoveVelocity);
     }
 }
 
-void CharacterController::CreatePurifier(nc::Registry* registry)
+void CharacterController::CreatePurifier(nc::Registry* registry, float moveVelocity)
 {
     m_sprayOnCooldown = true;
     m_sprayRemainingCooldownTime = sprayCooldown;
@@ -285,7 +285,8 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
         .position = transform->Position() + forward * 2.0f,
         .rotation = transform->Rotation(),
         .tag = tag::Purifier,
-        .layer = layer::Purifier
+        .layer = layer::Purifier,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static // absolutely should not have to make static, but is interacting with concaves...
     });
 
     registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{.radius = 2.5f}, true);
@@ -294,10 +295,10 @@ void CharacterController::CreatePurifier(nc::Registry* registry)
     // add for debug visibility, could maybe add something?
     // registry->Add<nc::graphics::ToonRenderer>(m_purifier, nc::asset::SphereMesh);
 
-    registry->Add<nc::FrameLogic>(m_purifier, [](nc::Entity self, nc::Registry* registry, float dt)
+    registry->Add<nc::FrameLogic>(m_purifier, [moveVelocity](nc::Entity self, nc::Registry* registry, float dt)
     {
         auto transform = registry->Get<nc::Transform>(self);
-        transform->TranslateLocalSpace(nc::Vector3::Front() * 8.0f * dt);
+        transform->TranslateLocalSpace(nc::Vector3::Front() * 10.0f * dt + nc::Vector3::Front() * moveVelocity * dt);
     });
 }
 
