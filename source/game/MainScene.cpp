@@ -84,6 +84,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(firepit, FirepitMesh, FirepitMaterial);
+    world.Emplace<nc::physics::Collider>(firepit, nc::physics::SphereProperties{.center = nc::Vector3::Zero(), .radius = 1.7f}, false);
     world.Emplace<nc::graphics::ToonRenderer>(fire, FireMesh, FireMaterial);
     world.Emplace<nc::graphics::SkeletalAnimator>(fire, FireMesh, FireFlicker);
     world.Emplace<nc::graphics::PointLight>(fireLight, nc::Vector3{1.0f, 1.0f, 0.0f}, nc::Vector3{1.0f, 0.64f, 0.0f}, 10.0f);
