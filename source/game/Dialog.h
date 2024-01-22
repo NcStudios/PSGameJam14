@@ -65,14 +65,22 @@ R"(Putter: ...too big for Steve. A real-deal delivery cowboy like yourself is bo
 constexpr auto StartSpread =
 R"(I better get a wiggle on!)";
 
-// placeholders
-constexpr auto Win =
-R"([placeholder] You saved the sasquatch oasis!)";
+constexpr auto TreesCleared =
+R"(That's the last of 'em. I better go tell the fellas.)";
 
-constexpr auto Lose =
-R"([placeholder] This planet cannot be saved.)";
-
-constexpr auto SteveFlavor = std::array{
-R"()"sv
+constexpr auto WinSequence = std::array{
+R"(Elder: Steve, you've restored the Lunar Plumfruit trees. We're eternally grateful for your help.)"sv,
+R"(Steve: Glad I could be of help. Unfortunately, it seems I've used up most of the Roundemup(TM). I reckon I might be out of a job.)"sv,
+R"(Dave: Sounds like you're plum out of luck! But don't worry about it. You've earned your spurs with us, cowboy. You're welcome in Moon Valley anytime.)"sv,
+R"(Steve: What is this stuff, anyhow?)"sv,
+R"(broad-spectrum weed control... avoid breathing vapor, oops...)"sv,
+R"(do not apply near base of trees... That's probably just to cover the manufacturer's hide, right?)"sv,
+R"(...)"sv,
+R"(Steve: Fellas?)"sv,
+R"(Steve: Ah, heck.)"sv
 };
+
+// placeholders
+constexpr auto Lose =
+R"([placeholder] You have failed. The fate of the sasquatch looks grim.)";
 } // namespace game::dialog

@@ -73,7 +73,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto light = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = characterSpawnPos + nc::Vector3{1.0f, 1.4f, 8.0f},
-        .tag = "Light",
+        .tag = tag::Light,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
