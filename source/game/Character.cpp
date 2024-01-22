@@ -117,6 +117,12 @@ auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc:
     return character;
 }
 
+void CharacterController::SetAudioState(nc::Registry* registry, VehicleState state)
+{
+    auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
+    characterAudio->SetState(state);
+}
+
 void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 {
     static auto fixedDt = nc::config::GetPhysicsSettings().fixedUpdateInterval;
@@ -151,13 +157,11 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
     if (KeyDown(game::hotkey::Forward))
     {
-        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
-        characterAudio->SetState(VehicleState::StartForward);
+        SetAudioState(registry, VehicleState::StartForward);
     }
     else if (KeyUp(game::hotkey::Forward))
     {
-        auto characterAudio = GetComponentByEntityTag<CharacterAudio>(registry, tag::VehicleAudio);
-        characterAudio->SetState(VehicleState::StopForward);
+        SetAudioState(registry, VehicleState::StopForward);
     }
 
     auto moving = false;
@@ -179,6 +183,7 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
             }
             else
             {
+                SetAudioState(registry, VehicleState::StopForward);
                 m_inchDecelerating = true;
                 m_timeAtMoveBound = 0.0f;
             }
@@ -195,6 +200,7 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
             }
             else
             {
+                SetAudioState(registry, VehicleState::Forward);
                 m_inchDecelerating = false;
                 m_timeAtMoveBound = 0.0f;
             }
@@ -219,7 +225,12 @@ void CharacterController::Run(nc::Entity self, nc::Registry* registry)
 
     if (KeyHeld(game::hotkey::Back))
     {
+        SetAudioState(registry, VehicleState::Forward);
         transform->Translate(-transform->Forward() * moveVelocityUpperBound * 0.5f * fixedDt);
+    }
+    else if (KeyUp(game::hotkey::Back))
+    {
+        SetAudioState(registry, VehicleState::StopForward);
     }
 
     auto turning = false;
@@ -315,7 +326,7 @@ void CharacterAudio::Init(nc::ecs::Ecs world)
 
     m_engineStartPlayer = world.Emplace<nc::Entity>({.parent = self});
     world.Emplace<nc::audio::AudioSource>(m_engineStartPlayer, EngineStartSfx, nc::audio::AudioSourceProperties{
-        .gain = 0.8f,
+        .gain = 0.6f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
         .spatialize = true
@@ -323,7 +334,7 @@ void CharacterAudio::Init(nc::ecs::Ecs world)
 
     m_engineRunningPlayer = world.Emplace<nc::Entity>({.parent = self});
     world.Emplace<nc::audio::AudioSource>(m_engineRunningPlayer, EngineRunningSfx, nc::audio::AudioSourceProperties{
-        .gain = 0.5f,
+        .gain = 0.2f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
         .spatialize = true
@@ -331,18 +342,18 @@ void CharacterAudio::Init(nc::ecs::Ecs world)
 
     m_engineStopPlayer = world.Emplace<nc::Entity>({.parent = self});
     world.Emplace<nc::audio::AudioSource>(m_engineStopPlayer, EngineStopSfx, nc::audio::AudioSourceProperties{
-        .gain = 0.6f,
+        .gain = 0.4f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
         .spatialize = true
     });
 
     m_purifyPlayer = world.Emplace<nc::Entity>({.parent = self});
-    world.Emplace<nc::audio::AudioSource>(m_purifyPlayer, PurifySfx, nc::audio::AudioSourceProperties{
-        .gain = 1.0f,
+    world.Emplace<nc::audio::AudioSource>(m_purifyPlayer, SpraySfx, nc::audio::AudioSourceProperties{
+        .gain = 4.0f,
         .innerRadius = innerRadius,
         .outerRadius = outerRadius,
-        .spatialize = true
+        .spatialize = false
     });
 }
 

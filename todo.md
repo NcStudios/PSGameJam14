@@ -1,7 +1,15 @@
-
 # Must Do
 
-Spreader trees don't start with correct texture on Event::StartSpread
+Infected tree texture
+  - Spreader trees don't start with correct texture on Event::StartSpread
+    - set in editor once texture is in (since we're using a default asset for now)
+
+Make Steve bigger
+
+Fix Vehicle box car mesh positioning
+
+Intro cutscene zoomed in on steve
+
 Finalize Cutscene focus points + positioning
 Fix Dave's final position
 
@@ -10,11 +18,6 @@ Dialog
   - Finish Win/Lose dialog/sequence
 
 Add level detail + reduce redundancy
-
-Purify
-  X update to only emit when key held, shape is probably a long box instead
-  X make sfx
-  X make particle
 
 Healthy -> Infected
   X make sfx
@@ -25,6 +28,7 @@ Infected -> Healthy
   make particle
 
 Finalize SFX
+  - probably need one to signal all trees are cleared, it isn't that obvious
 
 Music
   - X intro theme
@@ -34,16 +38,7 @@ Fix collision boxes and getting on top of terrain
 
 Test audio on other devices, bumping buffer to 512 fixed my machine - may just be debug build issue
 
-Shadow wonkiness
-
-
-Keep vehicle upright, or force back somehow
-  - can we restrict PhysicsBody freedom?
-    - is in world space, so must do x and z... its not the worst looking. could use as fallback, or maybe set to like 0.1f?
-
 Visual representation of healthy/infected tree count (UI, but...) [not sure if 'must' or 'nice to have']
-
-
 
 **Asset List**
 
@@ -61,11 +56,11 @@ Visual representation of healthy/infected tree count (UI, but...) [not sure if '
  - X Poison particle
 
 **Sound List**
-- Main Theme
+- X Main Theme
 - Win/lose
 - Infect/Tree Morph
-- Disinfect in progress
-- Disinfect complete
+- X Disinfect in progress
+- X Disinfect complete
 
 # Nice to have
 environment particles
@@ -116,6 +111,16 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Shadow wonkiness
+
+Purify
+  X update to only emit when key held, shape is probably a long box instead
+  X make sfx
+  X make particle
+
+X Set Dave's wave after intro cutscene
+X Make Dave's quest required
+
 X Bug on Surface - crash in igvk64.dll when running installed build against MSVC 17.5.0. Fixed by updating to MSVC 17.8.5.0.
 Frame rate drop investigations?
 

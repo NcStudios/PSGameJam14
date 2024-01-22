@@ -66,10 +66,10 @@ press [left shift] to use your sprayer)"sv
 };
 
 constexpr auto StartSpread =
-R"(I better get a wiggle on.)";
+R"(Steve: I better get a wiggle on.)";
 
 constexpr auto TreesCleared =
-R"(That's the last of 'em. I better go tell the fellas.)";
+R"(Steve: That's the last of 'em. I better go tell the fellas.)";
 
 constexpr auto WinSequence = std::array{
 R"(Elder: Steve, you've restored the Lunar Plumfruit trees. We're eternally grateful for your help.)"sv,

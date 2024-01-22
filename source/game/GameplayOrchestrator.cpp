@@ -35,7 +35,7 @@ void SetCameraTargetToCharacter(nc::ecs::Ecs world)
     mainCamera->SetFollowSpeed(game::FollowCamera::DefaultFollowSpeed);
 }
 
-void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float followDistance = 6.0f, float followHeight = 5.0f, float followSpeed = 2.0f)
+void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float followDistance = 7.0f, float followHeight = 6.0f, float followSpeed = 2.0f)
 {
     auto mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
     mainCamera->SetTarget(world.GetEntityByTag(tag));
@@ -208,13 +208,14 @@ void GameplayOrchestrator::Run(float dt)
     {
         case Event::Intro:
         {
+            SetAnimatorState(m_world, DaveWave, tag::Dave);
             AttachDaveQuestTrigger(m_world);
-            AttachCampQuestTrigger(m_world); // allow skipping Dave?
             FireEvent(Event::Begin);
             break;
         }
         case Event::DaveEncounter:
         {
+            AttachCampQuestTrigger(m_world); // don't allow skip - cutscenes remove controller/sprayer state
             FireEvent(Event::HeadToCamp);
             break;
         }

@@ -6,6 +6,16 @@ namespace game
 {
 auto CreateCharacter(nc::ecs::Ecs world, nc::physics::NcPhysics* phys, const nc::Vector3& position) -> nc::Entity;
 
+enum class VehicleState
+{
+    Idle,
+    StartForward,
+    Forward,
+    StopForward,
+    Back,
+    Turning
+};
+
 class CharacterController : public nc::FreeComponent
 {
     public:
@@ -42,16 +52,7 @@ class CharacterController : public nc::FreeComponent
         bool m_sprayerEquipped = false;
 
         void CreatePurifier(nc::Registry* registry, float moveVelocity);
-};
-
-enum class VehicleState
-{
-    Idle,
-    StartForward,
-    Forward,
-    StopForward,
-    Back,
-    Turning
+        void SetAudioState(nc::Registry* registry, VehicleState state);
 };
 
 class CharacterAudio : public nc::FreeComponent
