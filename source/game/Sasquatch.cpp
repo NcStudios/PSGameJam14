@@ -8,8 +8,7 @@ void AttachSasquatchAnimators(nc::ecs::Ecs world)
 {
     {
         const auto dave = world.GetEntityByTag(tag::Dave);
-        auto anim = world.Emplace<nc::graphics::SkeletalAnimator>(dave, DaveMesh, DaveIdle);
-        anim->LoopImmediate(DaveWave, nc::graphics::anim::Never);
+        world.Emplace<nc::graphics::SkeletalAnimator>(dave, DaveMesh, DaveIdle);
     }
 
     {

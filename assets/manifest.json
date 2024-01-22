@@ -20,10 +20,6 @@
             "assetName": "audio_clip/engine_running"
         },
         {
-            "sourcePath": "raw/audio_clip/purify.wav",
-            "assetName": "audio_clip/purify"
-        },
-        {
             "sourcePath": "raw/audio_clip/morph_healthy.wav",
             "assetName": "audio_clip/morph_healthy"
         },
@@ -34,6 +30,10 @@
         {
             "sourcePath": "raw/audio_clip/intro_theme.wav",
             "assetName": "audio_clip/intro_theme"
+        },
+        {
+            "sourcePath": "raw/audio_clip/spray1.wav",
+            "assetName": "audio_clip/spray1"
         }
     ],
     "concave-collider": 

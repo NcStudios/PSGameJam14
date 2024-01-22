@@ -24,7 +24,7 @@ constexpr auto ForestAmbienceSfx = "forest.nca";
 constexpr auto EngineStartSfx = "engine_start.nca";
 constexpr auto EngineRunningSfx = "engine_running.nca";
 constexpr auto EngineStopSfx = "engine_stop.nca";
-constexpr auto PurifySfx = "purify.nca";
+constexpr auto SpraySfx = "spray1.nca";
 constexpr auto MorphHealthySfx = "morph_healthy.nca";
 constexpr auto MorphInfectedSfx = "morph_infected.nca";
 

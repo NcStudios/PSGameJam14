@@ -62,8 +62,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
     const auto ambience = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::AmbienceSfx, .flags = nc::Entity::Flags::NoSerialize});
     const auto introTheme = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::IntroThemeMusic, .flags = nc::Entity::Flags::NoSerialize});
-    world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbienceSfx, nc::audio::AudioSourceProperties{.gain = 0.4f, .loop = true})->Play();
-    world.Emplace<nc::audio::AudioSource>(introTheme, IntroThemeMusic, nc::audio::AudioSourceProperties{.gain = 0.6f, .loop = false})->Play();
+    world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbienceSfx, nc::audio::AudioSourceProperties{.gain = 0.3f, .loop = true})->Play();
+    world.Emplace<nc::audio::AudioSource>(introTheme, IntroThemeMusic, nc::audio::AudioSourceProperties{.gain = 0.4f, .loop = false})->Play();
 
     //////////////////////////////////////////////////////
     // Debug environment - just to have stuff in the world
