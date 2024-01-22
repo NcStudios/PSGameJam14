@@ -35,25 +35,25 @@ void SetCameraTargetToCharacter(nc::ecs::Ecs world)
     mainCamera->SetFollowSpeed(game::FollowCamera::DefaultFollowSpeed);
 }
 
-void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag)
+void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float followDistance = 6.0f, float followHeight = 5.0f, float followSpeed = 2.0f)
 {
     auto mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
     mainCamera->SetTarget(world.GetEntityByTag(tag));
-    mainCamera->SetFollowDistance(5.0f);
-    mainCamera->SetFollowHeight(5.0f);
-    mainCamera->SetFollowSpeed(2.25f);
+    mainCamera->SetFollowDistance(followDistance);
+    mainCamera->SetFollowHeight(followHeight);
+    mainCamera->SetFollowSpeed(followSpeed);
 }
 
-void DisableGameplayMechanics(nc::ecs::Ecs world)
+void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, float followHeight = 40.0f, float followSpeed = 0.25f)
 {
     // Stop character controller
     DisableCharacterMovement(world);
 
     // Redirect camera focus
     auto mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
-    mainCamera->SetFollowDistance(5.0f);
-    mainCamera->SetFollowHeight(40.0f);
-    mainCamera->SetFollowSpeed(0.25f);
+    mainCamera->SetFollowDistance(followDistance);
+    mainCamera->SetFollowHeight(followHeight);
+    mainCamera->SetFollowSpeed(followSpeed);
 }
 } // anonymous namespace
 
@@ -167,6 +167,7 @@ void GameplayOrchestrator::FireEvent(Event event)
         case Event::ElderEncounter:  { HandleElderEncounter();  break; }
         case Event::PutterEncounter: { HandlePutterEncounter(); break; }
         case Event::StartSpread:     { HandleStartSpread();     break; }
+        case Event::TreesCleared:    { HandleTreesCleared();    break; }
         case Event::FlavorDialog:    { HandleFlavorDialog();    break; }
         case Event::NewGame:         { HandleNewGame();         break; }
         case Event::Win:             { HandleWin();             break; }
@@ -182,16 +183,25 @@ void GameplayOrchestrator::Run(float dt)
 {
     constexpr auto flavorTextDelay = 10.0f;
 
+    // need to do before cutscene because it can start them
+    if (m_spreadStarted)
+    {
+        ProcessTrees(dt);
+    }
+
     if (m_currentCutscene.IsRunning())
     {
         m_currentCutscene.Update(m_world, m_ui);
         return;
     }
 
-    if (m_spreadStarted)
+#ifndef GAME_PROD_BUILD
+    if (KeyDown(hotkey::SkipToSpreadEvent))
     {
-        ProcessTrees(dt);
+        FireEvent(Event::StartSpread);
+        return;
     }
+#endif
 
     // If an event starts a cutscene, its case runs after it has finished
     switch (m_currentEvent)
@@ -242,9 +252,38 @@ void GameplayOrchestrator::Run(float dt)
             FireEvent(Event::StartSpread);
             break;
         }
+        case Event::Win:
+        {
+            if (m_timeInCurrentEvent == 0.0f)
+            {
+                ::DisableGameplayMechanics(m_world, 5.0f, 20.0f, 0.25f);
+            }
+
+            m_timeInCurrentEvent += dt;
+
+            if (m_timeInCurrentEvent > 5.0f)
+            {
+                SetEvent(Event::None);
+                m_ui->OpenMenu();
+                return;
+            }
+
+            constexpr auto fadeFactor = 1.3f;
+            auto light = GetComponentByEntityTag<nc::graphics::PointLight>(m_world, tag::Light);
+            auto ambient = light->GetAmbient();
+            auto diffuseColor = light->GetDiffuseColor();
+            ambient.x = nc::Lerp(ambient.x, 0.0f, dt * fadeFactor);
+            ambient.y = nc::Lerp(ambient.y, 0.0f, dt * fadeFactor);
+            ambient.z = nc::Lerp(ambient.z, 0.0f, dt * fadeFactor);
+            diffuseColor.x = nc::Lerp(diffuseColor.x, 0.0f, dt * fadeFactor);
+            diffuseColor.y = nc::Lerp(diffuseColor.y, 0.0f, dt * fadeFactor);
+            diffuseColor.z = nc::Lerp(diffuseColor.z, 0.0f, dt * fadeFactor);
+            light->SetAmbient(ambient);
+            light->SetDiffuseColor(diffuseColor);
+            break;
+        }
         default: break;
     }
-    // TODO: add scripting for story sequence
 }
 
 void GameplayOrchestrator::Clear()
@@ -316,6 +355,14 @@ void GameplayOrchestrator::HandleStartSpread()
     m_ui->AddNewDialog(dialog::StartSpread);
 }
 
+void GameplayOrchestrator::HandleTreesCleared()
+{
+    SetEvent(Event::None);
+    m_spreadStarted = false;
+    AttachFinalQuestTrigger(m_world);
+    m_ui->AddNewDialog(dialog::TreesCleared);
+}
+
 void GameplayOrchestrator::HandleFlavorDialog()
 {
 }
@@ -329,12 +376,10 @@ void GameplayOrchestrator::HandleNewGame()
 
 void GameplayOrchestrator::HandleWin()
 {
+    m_timeInCurrentEvent = 0.0f;
     SetEvent(Event::Win);
-    auto world = m_engine->GetRegistry()->GetEcs();
-    m_ui->AddNewDialog(dialog::Win);
-    m_ui->OpenMenu();
-    ::DisableGameplayMechanics(world);
-    m_spreadStarted = false;
+    MoveSasquatchToCamp(m_world);
+    m_currentCutscene.Enter(m_world, tag::ElderEncounterFocusPoint, dialog::WinSequence);
 }
 
 void GameplayOrchestrator::HandleLose()
@@ -357,7 +402,7 @@ void GameplayOrchestrator::ProcessTrees(float dt)
 
         if (registry->StorageFor<InfectedTree>()->TotalSize() == 0)
         {
-            FireEvent(Event::Win);
+            FireEvent(Event::TreesCleared);
             return;
         }
 

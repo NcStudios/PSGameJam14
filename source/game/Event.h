@@ -23,6 +23,7 @@ enum class Event
     PutterEncounter,
     StartSpread,
     FlavorDialog,
+    TreesCleared,
     Win,
     Lose,
     NewGame

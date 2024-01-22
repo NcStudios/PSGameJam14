@@ -64,6 +64,16 @@ void ReturnAnimatorToRootState(nc::ecs::Ecs world, std::string_view tag)
     animator->StopImmediate([](){ return true; });
 }
 
+void MoveSasquatchToCamp(nc::ecs::Ecs world)
+{
+    // Remove any pending quests? only matters if dave is optional
+    // move others?
+
+    auto pos = GetComponentByEntityTag<nc::Transform>(world, tag::DaveEndingPosition)->Position();
+    auto daveTransform = GetComponentByEntityTag<nc::Transform>(world, tag::Dave);
+    daveTransform->SetPosition(pos);
+}
+
 void AttachCampQuestTrigger(nc::ecs::Ecs world)
 {
     const auto camp = world.GetEntityByTag(tag::Camp);
@@ -86,5 +96,11 @@ void AttachPutterQuestTrigger(nc::ecs::Ecs world)
 {
     const auto putter = world.GetEntityByTag(tag::Putter);
     AttachQuestTrigger(world, putter, Event::PutterEncounter, nc::Vector3{}, nc::Vector3::Splat(5.0f));
+}
+
+void AttachFinalQuestTrigger(nc::ecs::Ecs world)
+{
+    const auto elder = world.GetEntityByTag(tag::Elder);
+    AttachQuestTrigger(world, elder, Event::Win, nc::Vector3{}, nc::Vector3::Splat(5.0f));
 }
 } // namespace game
