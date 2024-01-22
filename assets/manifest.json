@@ -105,6 +105,10 @@
             "assetName": "mesh/rock"
         },
         {
+            "sourcePath": "raw/mesh/statue.fbx",
+            "assetName": "mesh/statue"
+        },
+        {
             "sourcePath": "raw/mesh/terrain01.fbx",
             "assetName": "mesh/terrain01"
         },
@@ -189,6 +193,10 @@
         {
             "sourcePath": "raw/texture/rock_base_color.png",
             "assetName": "texture/rock_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/statue_base_color.png",
+            "assetName": "texture/statue_base_color"
         },
         {
             "sourcePath": "raw/texture/tree01_base_color.png",

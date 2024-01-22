@@ -46,7 +46,7 @@ R"(Steve: I might just have an ace in the hole, partner. I happen to have a ship
 R"(Elder: Surely, you jest. The Directorate has placed had all interstellar goods under an iron grip since the rebellion.)"sv,
 R"(Steve: Mmhmm, but 'ya still need a trusty cowpolk like m'self to get it where it needs to go. I can't spare much, or my boss'll tan my hide, but I could leave enough to get the job done.)"sv,
 R"(Elder: What a twist of fate! But, our strength falters. We've all eaten the infected plums. We don't have the strength to cross the forest in time. You'll have to apply the remedy alone, young one.)"sv,
-R"(Steve: Well, I ain't no coffe boiler or nothin', but I really to have to burn the breeze. Stewards ain't known to be a patient breed.)"sv,
+R"(Steve: Well, I ain't no coffee boiler or nothin', but I really to have to burn the breeze. Stewards ain't known to be a patient breed.)"sv,
 R"(Elder: Please, the fate of the sasquatch rests on your shoulders. Seek Putter. He can equip your vehicle with the necessary tools.)"sv
 };
 

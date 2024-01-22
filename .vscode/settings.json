@@ -97,7 +97,14 @@
         "xmemory": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "*.tcc": "cpp",
+        "cwctype": "cpp",
+        "string_view": "cpp",
+        "hash_map": "cpp",
+        "semaphore": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp"
     },
     "cmake.installPrefix": "${workspaceFolder}/install/"
 }
