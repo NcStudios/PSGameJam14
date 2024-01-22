@@ -69,16 +69,6 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 #ifndef GAME_PROD_BUILD
     CreateDebugCamera(world, gfx); // MAKE SURE NOT IN FINAL BUILD
 #endif
-
-    const auto light = world.Emplace<nc::Entity>(nc::EntityInfo
-    {
-        .position = characterSpawnPos + nc::Vector3{1.0f, 1.4f, 8.0f},
-        .tag = tag::Light,
-        .flags = nc::Entity::Flags::NoSerialize
-    });
-
-    world.Emplace<nc::graphics::PointLight>(light, nc::Vector3{0.443f, 0.412f, 0.412f}, nc::Vector3{0.4751f, 0.525f, 1.0f}, 600.0f);
-
     // Spawning ops
 #if 0
     RandomlyPopulateTerrain(world, ncRandom);

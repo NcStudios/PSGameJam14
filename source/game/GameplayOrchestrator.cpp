@@ -269,17 +269,20 @@ void GameplayOrchestrator::Run(float dt)
             }
 
             constexpr auto fadeFactor = 1.3f;
-            auto light = GetComponentByEntityTag<nc::graphics::PointLight>(m_world, tag::Light);
-            auto ambient = light->GetAmbient();
-            auto diffuseColor = light->GetDiffuseColor();
-            ambient.x = nc::Lerp(ambient.x, 0.0f, dt * fadeFactor);
-            ambient.y = nc::Lerp(ambient.y, 0.0f, dt * fadeFactor);
-            ambient.z = nc::Lerp(ambient.z, 0.0f, dt * fadeFactor);
-            diffuseColor.x = nc::Lerp(diffuseColor.x, 0.0f, dt * fadeFactor);
-            diffuseColor.y = nc::Lerp(diffuseColor.y, 0.0f, dt * fadeFactor);
-            diffuseColor.z = nc::Lerp(diffuseColor.z, 0.0f, dt * fadeFactor);
-            light->SetAmbient(ambient);
-            light->SetDiffuseColor(diffuseColor);
+            auto lights = m_world.GetAll<nc::graphics::PointLight>();
+            for (auto& light : lights)
+            {
+                auto ambient = light.GetAmbient();
+                auto diffuseColor = light.GetDiffuseColor();
+                ambient.x = nc::Lerp(ambient.x, 0.0f, dt * fadeFactor);
+                ambient.y = nc::Lerp(ambient.y, 0.0f, dt * fadeFactor);
+                ambient.z = nc::Lerp(ambient.z, 0.0f, dt * fadeFactor);
+                diffuseColor.x = nc::Lerp(diffuseColor.x, 0.0f, dt * fadeFactor);
+                diffuseColor.y = nc::Lerp(diffuseColor.y, 0.0f, dt * fadeFactor);
+                diffuseColor.z = nc::Lerp(diffuseColor.z, 0.0f, dt * fadeFactor);
+                light.SetAmbient(ambient);
+                light.SetDiffuseColor(diffuseColor);
+            }
             break;
         }
         default: break;

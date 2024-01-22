@@ -63,6 +63,10 @@ install(DIRECTORY   "${PROJECT_BINARY_DIR}/_deps/ncengine-src/resources/nca"
         DESTINATION "game/assets"
 )
 
+install(DIRECTORY   "${PROJECT_SOURCE_DIR}/assets/fonts"
+        DESTINATION "game/assets"
+)
+
 install(DIRECTORY      "${PROJECT_BINARY_DIR}/_deps/ncengine-src/resources/shaders/compiled/"
         DESTINATION    "game/assets/shaders"
         FILES_MATCHING REGEX ".*\.(spv)"
