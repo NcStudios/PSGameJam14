@@ -52,6 +52,7 @@ constexpr uint8_t QuestTrigger = 12;
 constexpr uint8_t Dave = 13;
 constexpr uint8_t GenericSasquatch = 14;
 constexpr uint8_t Foliage = 15;
+constexpr uint8_t Detail = 16;
 
 // Reserving [100, 150] for terrain
 // so we can script applying stuff (colliders, etcs.) after the fact
@@ -115,6 +116,8 @@ const auto Putter = std::string{"Putter"};
 const auto Sasquatch1 = std::string{"Sasquatch1"};
 const auto Sasquatch2 = std::string{"Sasquatch2"};
 const auto Sasquatch3 = std::string{"Sasquatch3"};
+const auto Firepit = std::string{"Firepit"};
+const auto Fire = std::string{"Fire"};
 
 // Camera focus points
 const auto IntroFocusPoint = std::string{"IntroFocusPoint"};
