@@ -51,11 +51,6 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto camera = CreateCamera(world, gfx, characterSpawnPos, character);
     ncAudio->RegisterListener(camera);
 
-    // Base objects for initial infected trees; they start with 'healthy' assets
-    CreateTreeBase(world, nc::Vector3{5.0f, 0.0f, -12.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
-    CreateTreeBase(world, nc::Vector3{138.0f, 0.0f, -22.0f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
-    CreateTreeBase(world, nc::Vector3{24.5f, 0.0f, -116.5f}, nc::Quaternion{}, nc::Vector3::One(), tag::InfectedTree, layer::InfectedTree, Tree01Mesh, HealthyTree01Material);
-
     const auto firepit = world.Emplace<nc::Entity>(nc::EntityInfo
     {
         .position = nc::Vector3{4.0f, 0.0f, -86.0f},
