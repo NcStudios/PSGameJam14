@@ -20,6 +20,9 @@ constexpr auto TerrainInletCollider = "terrain_inlet_collider.nca";
 
 /** SFX */
 constexpr auto IntroThemeMusic = "intro_theme.nca";
+constexpr auto BlightClearedMusic = "blight_cleared.nca";
+constexpr auto LoseMusic = "lose.nca";
+constexpr auto EndingMusic = "ending.nca";
 constexpr auto ForestAmbienceSfx = "forest.nca";
 constexpr auto EngineStartSfx = "engine_start.nca";
 constexpr auto EngineRunningSfx = "engine_running.nca";
