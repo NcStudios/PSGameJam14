@@ -265,6 +265,14 @@
         {
             "sourcePath": "raw/texture/blight_particle.png",
             "assetName": "texture/blight_particle"
+        },
+        {
+            "sourcePath": "raw/texture/to_infected_particle.png",
+            "assetName": "texture/to_infected_particle"
+        },
+        {
+            "sourcePath": "raw/texture/to_healthy_particle.png",
+            "assetName": "texture/to_healthy_particle"
         }
     ],
     "skeletal-animation": [

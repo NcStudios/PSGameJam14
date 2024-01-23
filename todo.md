@@ -13,19 +13,7 @@ Intro cutscene zoomed in on steve
 Finalize Cutscene focus points + positioning
 Fix Dave's final position
 
-Dialog
-  - X Display Controls dialog
-  - Finish Win/Lose dialog/sequence
-
 Add level detail + reduce redundancy
-
-Healthy -> Infected
-  X make sfx
-  make particle
-
-Infected -> Healthy
-  X make sfx
-  make particle
 
 Finalize SFX
   - probably need one to signal all trees are cleared, it isn't that obvious
@@ -33,6 +21,8 @@ Finalize SFX
 Music
   - X intro theme
   - spread theme
+  - win
+  - lose
 
 Fix collision boxes and getting on top of terrain
 
@@ -111,6 +101,18 @@ default camera has funny aspect ratio problem?
 Update usage of Registry to EcsInterface
 
 # Done
+Dialog
+  - X Display Controls dialog
+  - Finish Win/Lose dialog/sequence
+
+Healthy -> Infected
+  X make sfx
+  X make particle
+
+Infected -> Healthy
+  X make sfx
+  X make particle
+
 Shadow wonkiness
 
 Purify

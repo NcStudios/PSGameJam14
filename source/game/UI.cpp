@@ -37,7 +37,7 @@ void GameUI::Draw()
     }
 
 #ifndef GAME_PROD_BUILD
-    ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Always);
+    ImGui::SetNextWindowPos({windowDimensions.x - 80, 0}, ImGuiCond_Always);
     ImGui::SetNextWindowSize({80, 30});
     if (ImGui::Begin("DebugUI", nullptr, g_windowFlags))
     {
@@ -57,6 +57,13 @@ void GameUI::Draw()
     ImGui::SetNextWindowPos({ (windowDimensions.x - screenExtent.x) / 2, windowDimensions.y - g_narrativeWindowHeight });
     ImGui::SetNextWindowSize({ screenExtent.x, g_narrativeWindowHeight });
     DrawDialogWindow();
+
+    if (m_counterOpen)
+    {
+        ImGui::SetNextWindowPos({ (windowDimensions.x - screenExtent.x) / 2, (windowDimensions.y - screenExtent.y) / 2});
+        ImGui::SetNextWindowSize({ 170, 50 });
+        DrawTreeCounter();
+    }
 }
 
 bool GameUI::IsHovered()
@@ -70,6 +77,9 @@ void GameUI::Clear()
     m_currentDialogIndex = 0;
     SetDialogPosition(0);
     m_menuOpen = false;
+    m_counterOpen = false;
+    m_healthyCount = 0;
+    m_infectedCount = 0;
 }
 
 void GameUI::AddNewDialog(std::string dialog)
@@ -145,6 +155,25 @@ void GameUI::DrawDialogWindow()
 
             ImGui::TextWrapped("%s", m_currentDialog.c_str());
         }
+    }
+
+    ImGui::End();
+}
+
+void GameUI::DrawTreeCounter()
+{
+    if (ImGui::Begin("Counter", nullptr, g_windowFlags))
+    {
+        constexpr auto healthyColor = ImVec4{0.196f, 0.659f, 0.321f, 1.0f};
+        constexpr auto infectedColor = ImVec4{0.616f, 0.196f, 0.659f, 1.0f};
+
+        ImGui::Text("%s", "Healthy Plumwoods:  ");
+            ImGui::SameLine();
+            ImGui::TextColored(healthyColor, "%zu", m_healthyCount);
+
+        ImGui::Text("%s", "Blighted Plumwoods: ");
+            ImGui::SameLine();
+            ImGui::TextColored(infectedColor, "%zu", m_infectedCount);
     }
 
     ImGui::End();
