@@ -125,7 +125,7 @@ inline auto BusFrontMaterial = nc::graphics::ToonMaterial
     .baseColor = BusFrontTexture,
     .overlay = nc::asset::DefaultBaseColor,
     .hatching = nc::asset::DefaultBaseColor,
-    .hatchingTiling = 6
+    .hatchingTiling = 36
 };
 
 inline auto BusCarMaterial = nc::graphics::ToonMaterial
@@ -133,7 +133,7 @@ inline auto BusCarMaterial = nc::graphics::ToonMaterial
     .baseColor = BusCarTexture,
     .overlay = nc::asset::DefaultBaseColor,
     .hatching = nc::asset::DefaultBaseColor,
-    .hatchingTiling = 6
+    .hatchingTiling = 36
 };
 
 inline auto HealthyTree01Material = nc::graphics::ToonMaterial

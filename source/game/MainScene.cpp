@@ -57,7 +57,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .rotation = nc::Quaternion(),
         .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
         .tag = tag::Firepit,
-        .layer = layer::Detail
+        .layer = layer::Detail,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     const auto fire = world.Emplace<nc::Entity>(nc::EntityInfo
@@ -66,7 +67,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .rotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0, 0.0f),
         .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
         .tag = tag::Fire,
-        .layer = layer::Detail
+        .layer = layer::Detail,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     const auto fireLight = world.Emplace<nc::Entity>(nc::EntityInfo
@@ -75,7 +77,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .rotation = nc::Quaternion{},
         .scale = nc::Vector3::One(),
         .tag = tag::Light,
-        .layer = layer::Default
+        .layer = layer::Default,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(firepit, FirepitMesh, FirepitMaterial);
