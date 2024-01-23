@@ -11,8 +11,15 @@ class FollowCamera : public nc::graphics::Camera
         static constexpr auto DefaultFollowHeight = 5.0f;
         static constexpr auto DefaultFollowSpeed = 4.0f;
 
+        static constexpr auto CameraProperties = nc::graphics::CameraProperties
+        {
+            .fov = 1.0472f,
+            .nearClip = 3.0f,
+            .farClip = 400.0f
+        };
+
         FollowCamera(nc::Entity self, nc::Entity target)
-            : nc::graphics::Camera{self}, m_target{target} {}
+            : nc::graphics::Camera{self, CameraProperties}, m_target{target} {}
 
         void Run(nc::Entity entity, nc::Registry* registry, float dt);
 

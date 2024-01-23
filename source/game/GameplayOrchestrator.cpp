@@ -56,6 +56,12 @@ void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, f
     mainCamera->SetFollowSpeed(followSpeed);
 }
 
+void StopMusic(nc::ecs::Ecs world)
+{
+    auto introTheme = game::GetComponentByEntityTag<nc::audio::AudioSource>(world, game::tag::IntroThemeMusic);
+    if (introTheme->IsPlaying()) introTheme->Stop();
+}
+
 void StepFadeToBlack(nc::ecs::Ecs world, float dt)
 {
     constexpr auto fade = [](const nc::Vector3& in, float factor)
@@ -282,6 +288,8 @@ void GameplayOrchestrator::Run(float dt)
             if (m_timeInCurrentEvent == 0.0f)
             {
                 ::DisableGameplayMechanics(m_world, 5.0f, 20.0f, 0.25f);
+                ::StopMusic(m_world);
+                GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::EndingMusic)->Play();
             }
 
             m_timeInCurrentEvent += dt;
@@ -382,6 +390,7 @@ void GameplayOrchestrator::HandleStartSpread()
     FinalizeTrees(m_world);
     m_ui->AddNewDialog(dialog::StartSpread);
     m_ui->ToggleTreeCounter(true);
+    // StopMusic
 }
 
 void GameplayOrchestrator::HandleTreesCleared()
@@ -391,6 +400,8 @@ void GameplayOrchestrator::HandleTreesCleared()
     AttachFinalQuestTrigger(m_world);
     m_ui->ToggleTreeCounter(false);
     m_ui->AddNewDialog(dialog::TreesCleared);
+    ::StopMusic(m_world);
+    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::BlightClearedMusic)->Play();
 }
 
 void GameplayOrchestrator::HandleFlavorDialog()
@@ -421,6 +432,8 @@ void GameplayOrchestrator::HandleLose()
     m_ui->AddNewDialog(dialog::Lose);
     ::DisableGameplayMechanics(world);
     m_spreadStarted = false;
+    ::StopMusic(m_world);
+    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::LoseMusic)->Play();
 }
 
 void GameplayOrchestrator::ProcessTrees(float dt)
