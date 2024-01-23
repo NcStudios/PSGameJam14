@@ -35,7 +35,7 @@ constexpr auto CampEncounterSequence = std::array{
 R"(Steve: Slap me with a cactus! This place is turnin' into a bone orchard.)"sv,
 R"(Sasquatch: The Blight has made its way to the forest. Its poisoning the fruit of the Lunar Plumwood. We've all gathered here in the Moon Valley because its the only place the plums still grow, but it looks like our luck has run out.)"sv,
 R"(Steve: Sounds like you got yerselves a real hoedown, but no need to worry. I've got your delivery here. Should set you right as rain.)"sv,
-R"(Sasquatch: We can't survive without the plums, so unless you happen to have some Roundemup(TM) in that shipment, we're done for. Since the rebellion, the Directorate has locked down all trade. From what I've seen, this disease spreads like wildfire. We have very little time left.)"sv,
+R"(Sasquatch: We can't survive without the plums, so unless you happen to have some Roundemup(TM) in that shipment, we're done for. Its the only thing we know of that slows the spread, but since the rebellion, the Directorate has locked down all trade, making it impossible to find. This disease spreads like wildfire. We have very little time left.)"sv,
 R"(Steve: Well, hold yer horses. My next delivery just so happens to be to the Stewards. They get a shipment of Roundemup(TM) from the Federal Goods Reserve every other week. I could probably skim off a little and leave those bootlickers none the wiser.)"sv,
 R"(Sasquatch: Wh-what? Really? Hurry, talk to the elder. He'll tell you what to do.)"sv
 };
@@ -85,5 +85,5 @@ R"(Steve: Ah, heck.)"sv
 
 // placeholders
 constexpr auto Lose =
-R"([placeholder] You have failed. The fate of the sasquatch looks grim.)";
+R"(The lone ranger, against the odds, couldn't wrangle Moon Valley from the Blight's grasp.)";
 } // namespace game::dialog

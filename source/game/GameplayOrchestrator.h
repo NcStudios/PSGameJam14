@@ -50,6 +50,8 @@ class GameplayOrchestrator : public nc::StableAddress
         float m_timeInCurrentEvent = 0.0f;
         size_t m_currentFlavorDialogIndex = 0ull;
         bool m_spreadStarted = false;
+        size_t m_healthyCount = 0ull;
+        size_t m_infectedCount = 0ull;
 
         void SetEvent(Event event);
 

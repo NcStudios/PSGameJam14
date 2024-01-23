@@ -55,6 +55,29 @@ void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, f
     mainCamera->SetFollowHeight(followHeight);
     mainCamera->SetFollowSpeed(followSpeed);
 }
+
+void StepFadeToBlack(nc::ecs::Ecs world, float dt)
+{
+    constexpr auto fade = [](const nc::Vector3& in, float factor)
+    {
+        auto out = nc::Vector3{};
+        out.x = nc::Lerp(in.x, 0.0f, factor);
+        out.y = nc::Lerp(in.y, 0.0f, factor);
+        out.z = nc::Lerp(in.z, 0.0f, factor);
+        return out;
+    };
+
+    constexpr auto fadeFactor = 1.3f;
+    const auto factor = fadeFactor * dt;
+
+    for (auto& light : world.GetAll<nc::graphics::PointLight>())
+    {
+        auto ambient = light.GetAmbient();
+        auto diffuseColor = light.GetDiffuseColor();
+        light.SetAmbient(fade(light.GetAmbient(), factor));
+        light.SetDiffuseColor(fade(light.GetDiffuseColor(), factor));
+    }
+}
 } // anonymous namespace
 
 namespace game
@@ -187,6 +210,7 @@ void GameplayOrchestrator::Run(float dt)
     if (m_spreadStarted)
     {
         ProcessTrees(dt);
+        m_ui->SetTreeCounts(m_healthyCount, m_infectedCount);
     }
 
     if (m_currentCutscene.IsRunning())
@@ -261,7 +285,6 @@ void GameplayOrchestrator::Run(float dt)
             }
 
             m_timeInCurrentEvent += dt;
-
             if (m_timeInCurrentEvent > 5.0f)
             {
                 SetEvent(Event::None);
@@ -269,21 +292,20 @@ void GameplayOrchestrator::Run(float dt)
                 return;
             }
 
-            constexpr auto fadeFactor = 1.3f;
-            auto lights = m_world.GetAll<nc::graphics::PointLight>();
-            for (auto& light : lights)
+            ::StepFadeToBlack(m_world, dt);
+            break;
+        }
+        case Event::Lose:
+        {
+            m_timeInCurrentEvent += dt;
+            if (m_timeInCurrentEvent > 5.0f)
             {
-                auto ambient = light.GetAmbient();
-                auto diffuseColor = light.GetDiffuseColor();
-                ambient.x = nc::Lerp(ambient.x, 0.0f, dt * fadeFactor);
-                ambient.y = nc::Lerp(ambient.y, 0.0f, dt * fadeFactor);
-                ambient.z = nc::Lerp(ambient.z, 0.0f, dt * fadeFactor);
-                diffuseColor.x = nc::Lerp(diffuseColor.x, 0.0f, dt * fadeFactor);
-                diffuseColor.y = nc::Lerp(diffuseColor.y, 0.0f, dt * fadeFactor);
-                diffuseColor.z = nc::Lerp(diffuseColor.z, 0.0f, dt * fadeFactor);
-                light.SetAmbient(ambient);
-                light.SetDiffuseColor(diffuseColor);
+                SetEvent(Event::None);
+                m_ui->OpenMenu();
+                return;
             }
+
+            ::StepFadeToBlack(m_world, dt);
             break;
         }
         default: break;
@@ -296,6 +318,8 @@ void GameplayOrchestrator::Clear()
     m_timeInCurrentEvent = 0.0f;
     m_currentFlavorDialogIndex = 0ull;
     m_spreadStarted = false;
+    m_healthyCount = 0ull;
+    m_infectedCount = 0ull;
     m_ui->Clear();
     m_currentCutscene = Cutscene{};
 }
@@ -357,6 +381,7 @@ void GameplayOrchestrator::HandleStartSpread()
     m_spreadStarted = true;
     FinalizeTrees(m_world);
     m_ui->AddNewDialog(dialog::StartSpread);
+    m_ui->ToggleTreeCounter(true);
 }
 
 void GameplayOrchestrator::HandleTreesCleared()
@@ -364,6 +389,7 @@ void GameplayOrchestrator::HandleTreesCleared()
     SetEvent(Event::None);
     m_spreadStarted = false;
     AttachFinalQuestTrigger(m_world);
+    m_ui->ToggleTreeCounter(false);
     m_ui->AddNewDialog(dialog::TreesCleared);
 }
 
@@ -389,10 +415,10 @@ void GameplayOrchestrator::HandleWin()
 void GameplayOrchestrator::HandleLose()
 {
     // basically duplicate code with HandleWin(), but keep separate for easier future tweaking
+    m_timeInCurrentEvent = 0.0f;
     SetEvent(Event::Lose);
     auto world = m_engine->GetRegistry()->GetEcs();
     m_ui->AddNewDialog(dialog::Lose);
-    m_ui->OpenMenu();
     ::DisableGameplayMechanics(world);
     m_spreadStarted = false;
 }
@@ -403,8 +429,8 @@ void GameplayOrchestrator::ProcessTrees(float dt)
     {
         auto registry = m_engine->GetRegistry();
         auto infectedTrees = m_world.GetAll<InfectedTree>();
-
-        if (registry->StorageFor<InfectedTree>()->TotalSize() == 0)
+        m_infectedCount = registry->StorageFor<InfectedTree>()->TotalSize();
+        if (m_infectedCount == 0)
         {
             FireEvent(Event::TreesCleared);
             return;
@@ -416,8 +442,8 @@ void GameplayOrchestrator::ProcessTrees(float dt)
         }
 
         auto healthyTrees = m_world.GetAll<HealthyTree>();
-
-        if (registry->StorageFor<HealthyTree>()->TotalSize() == 0)
+        m_healthyCount = registry->StorageFor<HealthyTree>()->TotalSize();
+        if (m_healthyCount == 0)
         {
             FireEvent(Event::Lose);
             return;

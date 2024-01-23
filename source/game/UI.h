@@ -23,6 +23,8 @@ class GameUI : public nc::ui::IUI,
         void AddNewDialog(std::string dialog);
 
         void OpenMenu() { m_menuOpen = true; }
+        void ToggleTreeCounter(bool isOpen) { m_counterOpen = isOpen; }
+        void SetTreeCounts(size_t healthy, size_t infected) { m_healthyCount = healthy; m_infectedCount = infected; }
 
     private:
         std::function<void()> m_stopEngine; // could add event instead
@@ -32,8 +34,13 @@ class GameUI : public nc::ui::IUI,
         std::string m_currentDialog = "";
         bool m_menuOpen = false;
 
+        bool m_counterOpen = false;
+        size_t m_healthyCount = 0;
+        size_t m_infectedCount = 0;
+
         void DrawMainMenu();
         void DrawDialogWindow();
+        void DrawTreeCounter();
         void SetDialogPosition(size_t pos);
 };
 } // namespace game

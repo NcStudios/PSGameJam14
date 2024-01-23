@@ -115,6 +115,8 @@ constexpr auto DecorativeTree01TreeTexture = "decorative_tree01_base_color.nca";
 constexpr auto QuestIndicatorParticle = "quest_indicator_particle.nca";
 constexpr auto RoundemupParticle = "roundemup_particle.nca";
 constexpr auto BlightParticle = "blight_particle.nca";
+constexpr auto MorphInfectedParticle = "to_infected_particle.nca";
+constexpr auto MorphHealthyParticle = "to_healthy_particle.nca";
 
 /** Materials */
 inline auto BusFrontMaterial = nc::graphics::ToonMaterial
