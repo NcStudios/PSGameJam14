@@ -109,6 +109,7 @@ constexpr auto Vegetation01Texture = "vegetation01_base_color.nca";
 constexpr auto AspensTexture = "aspens_base_color.nca";
 constexpr auto PineTexture = "pine_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
+constexpr auto Tree01InfectedTexture = "tree01_infected_base_color.nca";
 constexpr auto DecorativeTree01TreeTexture = "decorative_tree01_base_color.nca";
 
 /** Textures - Particles */
@@ -145,7 +146,7 @@ inline auto HealthyTree01Material = nc::graphics::ToonMaterial
 
 inline auto InfectedTree01Material = nc::graphics::ToonMaterial
 {
-    .baseColor = nc::asset::DefaultBaseColor,
+    .baseColor = Tree01InfectedTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
     .hatchingTiling = 6
