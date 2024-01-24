@@ -289,6 +289,10 @@
         {
             "sourcePath": "raw/texture/to_healthy_particle.png",
             "assetName": "texture/to_healthy_particle"
+        },
+        {
+            "sourcePath": "raw/texture/title_screen.png",
+            "assetName": "texture/title_screen"
         }
     ],
     "skeletal-animation": [

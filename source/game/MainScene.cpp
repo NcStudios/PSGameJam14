@@ -145,7 +145,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         FinalizeTerrain(world);
         AttachSasquatchAnimators(world);
         // Init GameplayManager sequence
-        FireEvent(Event::Intro);
+        FireEvent(Event::TitleScreen);
     }
 }
 } // namespace game

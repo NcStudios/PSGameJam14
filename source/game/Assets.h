@@ -116,6 +116,7 @@ constexpr auto Tree01InfectedTexture = "tree01_infected_base_color.nca";
 constexpr auto DecorativeTree01TreeTexture = "decorative_tree01_base_color.nca";
 
 /** Textures - Particles */
+constexpr auto TitleScreenParticle = "title_screen.nca";
 constexpr auto QuestIndicatorParticle = "quest_indicator_particle.nca";
 constexpr auto RoundemupParticle = "roundemup_particle.nca";
 constexpr auto BlightParticle = "blight_particle.nca";

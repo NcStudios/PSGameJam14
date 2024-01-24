@@ -62,6 +62,48 @@ void StopMusic(nc::ecs::Ecs world)
     if (introTheme->IsPlaying()) introTheme->Stop();
 }
 
+auto GetPointLightValues(std::span<nc::graphics::PointLight> lights) -> std::vector<std::pair<nc::Vector3, nc::Vector3>>
+{
+    auto out = std::vector<std::pair<nc::Vector3, nc::Vector3>>{};
+    out.reserve(lights.size());
+    for (auto& light : lights)
+    {
+        out.emplace_back(light.GetAmbient(), light.GetDiffuseColor());
+    }
+
+    return out;
+}
+
+void SetPointLightsToBlack(std::span<nc::graphics::PointLight> lights)
+{
+    for (auto& light : lights)
+    {
+        light.SetAmbient(nc::Vector3{});
+        light.SetDiffuseColor(nc::Vector3{});
+    }
+}
+
+void StepFadeIn(std::span<nc::graphics::PointLight> lights, const std::vector<std::pair<nc::Vector3, nc::Vector3>>& initialValues, float dt)
+{
+    constexpr auto fade = [](const nc::Vector3& from, const nc::Vector3& to, float factor)
+    {
+        auto out = nc::Vector3{};
+        out.x = std::clamp(std::lerp(from.x, to.x, factor), 0.0f, to.x);
+        out.y = std::clamp(std::lerp(from.y, to.y, factor), 0.0f, to.y);
+        out.z = std::clamp(std::lerp(from.z, to.z, factor), 0.0f, to.z);
+        return out;
+    };
+
+    constexpr auto fadeFactor = 0.1f;
+    const auto factor = std::clamp(fadeFactor * dt, 0.0f, 1.0f);
+
+    for (auto [light, value] : std::views::zip(lights, initialValues))
+    {
+        light.SetAmbient(fade(light.GetAmbient(), value.first, factor));
+        light.SetDiffuseColor(fade(light.GetDiffuseColor(), value.second, factor));
+    }
+}
+
 void StepFadeToBlack(nc::ecs::Ecs world, float dt)
 {
     constexpr auto fade = [](const nc::Vector3& in, float factor)
@@ -78,12 +120,40 @@ void StepFadeToBlack(nc::ecs::Ecs world, float dt)
 
     for (auto& light : world.GetAll<nc::graphics::PointLight>())
     {
-        auto ambient = light.GetAmbient();
-        auto diffuseColor = light.GetDiffuseColor();
         light.SetAmbient(fade(light.GetAmbient(), factor));
         light.SetDiffuseColor(fade(light.GetDiffuseColor(), factor));
     }
 }
+
+class LightFader : public nc::FreeComponent
+{
+    public:
+        LightFader(nc::Entity self, nc::ecs::Ecs world)
+            : nc::FreeComponent{self}, m_world{world} {}
+
+        void Run(nc::Entity self, nc::Registry*, float dt)
+        {
+            auto lights = m_world.GetAll<nc::graphics::PointLight>();
+            static auto lightValues = ::GetPointLightValues(lights);
+
+            if (m_runTime == 0.0f)
+                ::SetPointLightsToBlack(lights);
+
+            m_runTime += dt;
+
+            if (m_runTime < 2.0f)
+                return;
+
+            if (m_runTime < 18.0f)
+                ::StepFadeIn(lights, lightValues, dt);
+            else
+                m_world.Remove<nc::Entity>(self);
+        }
+
+    private:
+        nc::ecs::Ecs m_world;
+        float m_runTime = 0.0f;
+};
 } // anonymous namespace
 
 namespace game
@@ -188,6 +258,7 @@ void GameplayOrchestrator::FireEvent(Event event)
 {
     switch (event)
     {
+        case Event::TitleScreen:     { HandleTitleScreen();     break; }
         case Event::Intro:           { HandleIntro();           break; }
         case Event::Begin:           { HandleBegin();           break; }
         case Event::DaveEncounter:   { HandleDaveEncounter();   break; }
@@ -236,6 +307,16 @@ void GameplayOrchestrator::Run(float dt)
     // If an event starts a cutscene, its case runs after it has finished
     switch (m_currentEvent)
     {
+        case Event::TitleScreen:
+        {
+            m_timeInCurrentEvent += dt;
+            if (m_timeInCurrentEvent > 4.0f)
+            {
+                FireEvent(Event::Intro);
+            }
+
+            break;
+        }
         case Event::Intro:
         {
             SetAnimatorState(m_world, DaveWave, tag::Dave);
@@ -335,6 +416,44 @@ void GameplayOrchestrator::Clear()
 void GameplayOrchestrator::SetEvent(Event event)
 {
     m_currentEvent = event;
+}
+
+void GameplayOrchestrator::HandleTitleScreen()
+{
+    SetEvent(Event::TitleScreen);
+    ::SetCameraTargetToFocusPoint(m_world, tag::IntroFocusPoint);
+
+    auto fader = m_world.Emplace<nc::Entity>({
+        .tag = "PointLightFader",
+        .flags = nc::Entity::Flags::NoSerialize
+    });
+
+    m_world.Emplace<LightFader>(fader, m_world);
+    m_world.Emplace<nc::FrameLogic>(fader, nc::InvokeFreeComponent<LightFader>{});
+
+    auto camTrans = GetComponentByEntityTag<nc::Transform>(m_world, tag::MainCamera);
+    auto title = m_world.Emplace<nc::Entity>({
+        .position = camTrans->Position() + camTrans->Forward() * 5.0f,
+        .flags = nc::Entity::Flags::NoSerialize
+    });
+
+    m_world.Emplace<nc::graphics::ParticleEmitter>(title, nc::graphics::ParticleInfo{
+        .emission = {
+            .initialEmissionCount = 1,
+        },
+        .init = {
+            .lifetime = 4.5f,
+            .rotationMin = 1.570795f,
+            .rotationMax = 1.570795f,
+            .scaleMin = 2.0f,
+            .scaleMax = 2.0f,
+            .particleTexturePath = TitleScreenParticle
+        },
+        .kinematic = {
+            .rotationOverTimeFactor = 0.0f,
+        }
+    });
+
 }
 
 void GameplayOrchestrator::HandleIntro()

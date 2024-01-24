@@ -55,6 +55,7 @@ class GameplayOrchestrator : public nc::StableAddress
 
         void SetEvent(Event event);
 
+        void HandleTitleScreen();
         void HandleIntro();
         void HandleBegin();
         void HandleDaveEncounter();
