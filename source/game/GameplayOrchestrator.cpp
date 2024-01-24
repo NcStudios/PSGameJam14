@@ -94,7 +94,7 @@ void StepFadeIn(std::span<nc::graphics::PointLight> lights, const std::vector<st
         return out;
     };
 
-    constexpr auto fadeFactor = 0.1f;
+    constexpr auto fadeFactor = 0.15f;
     const auto factor = std::clamp(fadeFactor * dt, 0.0f, 1.0f);
 
     for (auto [light, value] : std::views::zip(lights, initialValues))
@@ -144,10 +144,17 @@ class LightFader : public nc::FreeComponent
             if (m_runTime < 2.0f)
                 return;
 
-            if (m_runTime < 18.0f)
-                ::StepFadeIn(lights, lightValues, dt);
+            if (m_runTime < 10.0f)
+                ::StepFadeIn(lights, lightValues, dt + m_runTime * 0.015f);
             else
+            {
+                for (auto [light, value] : std::views::zip(lights, lightValues))
+                {
+                    light.SetAmbient(value.first);
+                    light.SetDiffuseColor(value.second);
+                }
                 m_world.Remove<nc::Entity>(self);
+            }
         }
 
     private:

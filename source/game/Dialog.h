@@ -8,7 +8,7 @@ namespace game::dialog
 using namespace std::string_view_literals;
 
 constexpr auto Intro = std::array{
-R"(Steve: Just another sunup, and another buckaroo in my pocket... I can't fathom why nobody else fancied ridin' out to the Moon Valley. It's the last patch of earth untouched by that darn Blight stench.
+R"(Steve: Just another sunup, and another buckaroo in my pocket... I can't fathom why nobody else fancied ridin' out to Moon Valley. Right here's the last patch of earth untouched by that dadgum Blight that's been spreadin' round these parts.
 
 [press space to continue])"sv
 };
