@@ -112,6 +112,7 @@ constexpr auto Vegetation01Texture = "vegetation01_base_color.nca";
 constexpr auto AspensTexture = "aspens_base_color.nca";
 constexpr auto PineTexture = "pine_base_color.nca";
 constexpr auto Tree01Texture = "tree01_base_color.nca";
+constexpr auto Tree01InfectedTexture = "tree01_infected_base_color.nca";
 constexpr auto DecorativeTree01TreeTexture = "decorative_tree01_base_color.nca";
 
 /** Textures - Particles */
@@ -127,7 +128,7 @@ inline auto BusFrontMaterial = nc::graphics::ToonMaterial
     .baseColor = BusFrontTexture,
     .overlay = nc::asset::DefaultBaseColor,
     .hatching = nc::asset::DefaultBaseColor,
-    .hatchingTiling = 6
+    .hatchingTiling = 36
 };
 
 inline auto BusCarMaterial = nc::graphics::ToonMaterial
@@ -135,7 +136,7 @@ inline auto BusCarMaterial = nc::graphics::ToonMaterial
     .baseColor = BusCarTexture,
     .overlay = nc::asset::DefaultBaseColor,
     .hatching = nc::asset::DefaultBaseColor,
-    .hatchingTiling = 6
+    .hatchingTiling = 36
 };
 
 inline auto HealthyTree01Material = nc::graphics::ToonMaterial
@@ -148,7 +149,7 @@ inline auto HealthyTree01Material = nc::graphics::ToonMaterial
 
 inline auto InfectedTree01Material = nc::graphics::ToonMaterial
 {
-    .baseColor = nc::asset::DefaultBaseColor,
+    .baseColor = Tree01InfectedTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
     .hatchingTiling = 6
@@ -186,6 +187,14 @@ inline auto FernMaterial = nc::graphics::ToonMaterial
     .hatchingTiling = 5
 };
 
+inline auto FloorMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = FloorTexture,
+    .overlay = OverlayTexture,
+    .hatching = nc::asset::DefaultBaseColor,
+    .hatchingTiling = 5
+};
+
 inline auto AloeMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = AloeTexture,
@@ -215,6 +224,6 @@ inline auto FireMaterial = nc::graphics::ToonMaterial
     .baseColor = FireTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
-    .hatchingTiling = 6
+    .hatchingTiling = 3
 };
 } // namespace game

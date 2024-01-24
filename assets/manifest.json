@@ -235,6 +235,10 @@
             "assetName": "texture/tree01_base_color"
         },
         {
+            "sourcePath": "raw/texture/tree01_infected_base_color.png",
+            "assetName": "texture/tree01_infected_base_color"
+        },
+        {
             "sourcePath": "raw/texture/decorative_tree01_base_color.png",
             "assetName": "texture/decorative_tree01_base_color"
         },
