@@ -184,6 +184,14 @@ inline auto FernMaterial = nc::graphics::ToonMaterial
     .hatchingTiling = 5
 };
 
+inline auto FloorMaterial = nc::graphics::ToonMaterial
+{
+    .baseColor = FloorTexture,
+    .overlay = OverlayTexture,
+    .hatching = nc::asset::DefaultBaseColor,
+    .hatchingTiling = 5
+};
+
 inline auto AloeMaterial = nc::graphics::ToonMaterial
 {
     .baseColor = AloeTexture,

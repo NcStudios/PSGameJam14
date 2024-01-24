@@ -87,6 +87,19 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::graphics::SkeletalAnimator>(fire, FireMesh, FireFlicker);
     world.Emplace<nc::graphics::PointLight>(fireLight, nc::Vector3{1.0f, 1.0f, 0.0f}, nc::Vector3{1.0f, 0.64f, 0.0f}, 10.0f);
 
+    const auto floor = world.Emplace<nc::Entity>(nc::EntityInfo
+    {
+        .position = nc::Vector3{56.0f, -1.2f, -71.0f},
+        .rotation = nc::Quaternion{},
+        .scale = nc::Vector3::One(),
+        .tag = tag::Ground,
+        .layer = layer::Default,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
+    });
+
+    world.Emplace<nc::graphics::ToonRenderer>(floor, FloorMesh, FloorMaterial);
+    world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{}, false);
+
     gfx->SetSkybox(Skybox);
 
     // Placeholder audio for now. If your audio is wonky, comment out these lines. (and lmk)
