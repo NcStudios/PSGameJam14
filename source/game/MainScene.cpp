@@ -73,7 +73,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     const auto fireLight = world.Emplace<nc::Entity>(nc::EntityInfo
     {
-        .position = nc::Vector3{5.0f, 1.0f, -87.0f},
+        .position = nc::Vector3{5.0f, 8.0f, -87.0f},
         .rotation = nc::Quaternion{},
         .scale = nc::Vector3::One(),
         .tag = tag::Light,

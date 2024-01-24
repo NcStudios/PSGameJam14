@@ -221,6 +221,6 @@ inline auto FireMaterial = nc::graphics::ToonMaterial
     .baseColor = FireTexture,
     .overlay = OverlayTexture,
     .hatching = HatchTexture,
-    .hatchingTiling = 6
+    .hatchingTiling = 3
 };
 } // namespace game
