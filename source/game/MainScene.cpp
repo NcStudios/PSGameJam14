@@ -106,8 +106,14 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     const auto globalAudio = world.Emplace<nc::Entity>({.tag = "GlobalAudio", .flags = nc::Entity::Flags::NoSerialize});
     const auto ambience = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::AmbienceSfx, .flags = nc::Entity::Flags::NoSerialize});
     const auto introTheme = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::IntroThemeMusic, .flags = nc::Entity::Flags::NoSerialize});
+    const auto blightClearedMusic = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::BlightClearedMusic, .flags = nc::Entity::Flags::NoSerialize});
+    const auto loseMusic = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::LoseMusic, .flags = nc::Entity::Flags::NoSerialize});
+    const auto endingMusic = world.Emplace<nc::Entity>({.parent = globalAudio, .tag = tag::EndingMusic, .flags = nc::Entity::Flags::NoSerialize});
     world.Emplace<nc::audio::AudioSource>(ambience, ForestAmbienceSfx, nc::audio::AudioSourceProperties{.gain = 0.3f, .loop = true})->Play();
     world.Emplace<nc::audio::AudioSource>(introTheme, IntroThemeMusic, nc::audio::AudioSourceProperties{.gain = 0.4f, .loop = false})->Play();
+    world.Emplace<nc::audio::AudioSource>(blightClearedMusic, BlightClearedMusic, nc::audio::AudioSourceProperties{.gain = 0.4f, .loop = false});
+    world.Emplace<nc::audio::AudioSource>(loseMusic, LoseMusic, nc::audio::AudioSourceProperties{.gain = 0.4f, .loop = false});
+    world.Emplace<nc::audio::AudioSource>(endingMusic, EndingMusic, nc::audio::AudioSourceProperties{.gain = 0.4f, .loop = false});
 
     //////////////////////////////////////////////////////
     // Debug environment - just to have stuff in the world

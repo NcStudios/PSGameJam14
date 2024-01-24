@@ -34,6 +34,18 @@
         {
             "sourcePath": "raw/audio_clip/spray1.wav",
             "assetName": "audio_clip/spray1"
+        },
+        {
+            "sourcePath": "raw/audio_clip/blight_cleared.wav",
+            "assetName": "audio_clip/blight_cleared"
+        },
+        {
+            "sourcePath": "raw/audio_clip/lose.wav",
+            "assetName": "audio_clip/lose"
+        },
+        {
+            "sourcePath": "raw/audio_clip/ending.wav",
+            "assetName": "audio_clip/ending"
         }
     ],
     "concave-collider": 

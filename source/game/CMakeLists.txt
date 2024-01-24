@@ -28,6 +28,11 @@ if(${GAME_PROD_BUILD})
         PRIVATE
             NcEngine
     )
+
+    target_compile_definitions(${GAME}
+        PRIVATE
+            -DGAME_PROD_BUILD
+    )
 else()
     target_link_libraries(${GAME}
         PRIVATE

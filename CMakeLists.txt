@@ -31,6 +31,11 @@ endif()
 
 include(FetchContent)
 set(NC_INSTALL_ENABLED OFF CACHE BOOL "" FORCE)
+
+if(${GAME_PROD_BUILD})
+    set(NC_PROD_BUILD ON CACHE BOOL "" FORCE)
+endif()
+
 FetchContent_Declare(NcEngine
                      GIT_REPOSITORY https://github.com/NcStudios/NcEngine.git
                      GIT_TAG        origin/dev/game-jam
