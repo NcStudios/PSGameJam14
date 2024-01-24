@@ -38,7 +38,7 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto collider = world.Get<nc::physics::Collider>(spreader);
     NC_ASSERT(collider, "expected a collider");
     auto props = ::ToSphereProperties(collider->GetInfo());
-    if (props.radius < map::Radius)
+    if (props.radius < MaxSpreadRadius)
     {
         props.radius += RadiusGrowthAmount;
         collider->SetProperties(props);
@@ -47,7 +47,7 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
     auto emitter = world.Get<nc::graphics::ParticleEmitter>(ParentEntity());
     NC_ASSERT(emitter, "expected a particle emitter");
     auto particleInfo = emitter->GetInfo();
-    if (particleInfo.kinematic.velocityMax.y < 5.0f)
+    if (particleInfo.kinematic.velocityMax.y < 10.0f)
     {
         particleInfo.kinematic.velocityMin -= nc::Vector3{0.1f, 0.0f, 0.1f};
         particleInfo.kinematic.velocityMax += nc::Vector3{0.1f, 0.1f, 0.1f};
@@ -109,7 +109,8 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, onTriggerExit);
 
     world.Emplace<nc::audio::AudioSource>(tree, MorphHealthySfx, nc::audio::AudioSourceProperties{
-        .outerRadius = 30.0f,
+        .gain = 2.0f,
+        .outerRadius = 60.0f,
         .spatialize = true
     })->Play();
 }
@@ -154,7 +155,8 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, nullptr);
 
     world.Emplace<nc::audio::AudioSource>(tree, MorphInfectedSfx, nc::audio::AudioSourceProperties{
-        .outerRadius = 30.0f,
+        .gain = 2.0f,
+        .outerRadius = 60.0f,
         .spatialize = true
     })->Play();
 
