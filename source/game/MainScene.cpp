@@ -98,7 +98,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(floor, FloorMesh, FloorMaterial);
-    world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{}, false);
+    world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{.center = nc::Vector3{0.0f, 0.2f, 0.0f}, .extents = nc::Vector3{200.0f, 1.0f, 200.0f}}, false);
 
     gfx->SetSkybox(Skybox);
 
