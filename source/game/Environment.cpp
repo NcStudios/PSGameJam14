@@ -88,126 +88,29 @@ auto GetLocalSpawnExtents(nc::ecs::Ecs world, nc::Entity entity)
 
 namespace game
 {
-// #define USE_CONCAVE 1
 void SetupTerrain1(nc::ecs::Ecs world, nc::Entity entity)
 {
-#ifdef USE_CONCAVE
-    world.Emplace<nc::physics::ConcaveCollider>(entity, Terrain01Collider);
-#else
     world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{.center = nc::Vector3{0.0f, 0.0f, 0.2f}, .extents = nc::Vector3{24.5f, 5.0f, 24.5f}});
-#endif
 }
 
 void SetupTerrain2(nc::ecs::Ecs world, nc::Entity entity)
 {
-#ifdef USE_CONCAVE
-    world.Emplace<nc::physics::ConcaveCollider>(entity, Terrain02Collider);
-#else
     world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{.extents = nc::Vector3{24.5f, 5.0f, 25.0f}});
-#endif
 }
 
 void SetupTerrainCurve1(nc::ecs::Ecs world, nc::Entity entity)
 {
-// #ifdef USE_CONCAVE
     world.Emplace<nc::physics::ConcaveCollider>(entity, TerrainCurve01Collider);
-// #else
-    // world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{});
-    // world.Emplace<nc::physics::Collider>(entity, nc::physics::HullProperties{"terrain_curve01_hull.nca"});
-// #endif
 }
 
 void SetupTerrainCurve2(nc::ecs::Ecs world, nc::Entity entity)
 {
-// #ifdef USE_CONCAVE
     world.Emplace<nc::physics::ConcaveCollider>(entity, TerrainCurve02Collider);
-// #else
-    // world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{});
-    // world.Emplace<nc::physics::Collider>(entity, nc::physics::HullProperties{"terrain_curve02_hull.nca"});
-
-    // auto c1 = world.Emplace<nc::Entity>({.parent = entity, .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize});
-    // auto c2 = world.Emplace<nc::Entity>({.parent = entity, .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize});
-    // auto c3 = world.Emplace<nc::Entity>({.parent = entity, .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize});
-    // auto c4 = world.Emplace<nc::Entity>({.parent = entity, .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize});
-    // auto c5 = world.Emplace<nc::Entity>({.parent = entity, .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize});
-    // world.Emplace<nc::physics::Collider>(c1, nc::physics::SphereProperties{.center = nc::Vector3{-2.0f, 0.0f, -1.0f}, .radius = 5.7f});
-    // world.Emplace<nc::physics::Collider>(c2, nc::physics::SphereProperties{.center = nc::Vector3{-4.0f, 0.0f, 3.0f}, .radius = 5.5f});
-    // world.Emplace<nc::physics::Collider>(c3, nc::physics::SphereProperties{.center = nc::Vector3{2.0f, 0.0f, -4.5f}, .radius = 5.8f});
-    // world.Emplace<nc::physics::Collider>(c4, nc::physics::BoxProperties{.center = nc::Vector3{8.0f, 0.0f, -7.0f}, .extents = nc::Vector3{12.0f, 5.0f, 3.0f}});
-    // world.Emplace<nc::physics::Collider>(c5, nc::physics::BoxProperties{.center = nc::Vector3{-5.5f, 0.0f, 8.7f}, .extents = nc::Vector3{9.5f, 5.0f, 4.0f}});
-
-
-// #endif
 }
 
 void SetupTerrainInlet(nc::ecs::Ecs world, nc::Entity entity)
 {
-// #ifdef USE_CONCAVE
     world.Emplace<nc::physics::ConcaveCollider>(entity, TerrainInletCollider);
-// #else
-    // world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{});
-
-    // auto parentTrans = world.Get<nc::Transform>(entity);
-
-    // const auto c1BaseOffset = nc::Vector3{12.5f, 0.0f, 8.0f};
-    // const auto c2BaseOffset = nc::Vector3{-11.0f, 0.0f, 8.0f};
-    // const auto c3BaseOffset = nc::Vector3{13.5f, 0.0f, -4.0f};
-    // const auto c4BaseOffset = nc::Vector3{-12.0f, 0.0f, -4.0f};
-    // const auto c5BaseOffset = nc::Vector3{0.0f, 0.0f, -11.5f};
-
-    // const auto c1Scale = nc::Vector3{9.5f, 5.0f, 12.5f};
-    // const auto c2Scale = nc::Vector3{9.0f, 5.0f, 12.5f};
-    // const auto c3Scale = nc::Vector3{16.0f, 5.0f, 11.0f};
-    // const auto c4Scale = nc::Vector3{16.0f, 5.0f, 11.0f};
-    // const auto c5Scale = nc::Vector3{1.5f, 5.0f, 37.0f};
-
-
-    // auto c1 = world.Emplace<nc::Entity>({
-    //     .position = parentTrans->Position() + c1BaseOffset,
-    //     .rotation = parentTrans->Rotation(),
-    //     .scale = c1Scale,
-    //     .tag = "Col",
-    //     .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize
-    // });
-
-    // auto c2 = world.Emplace<nc::Entity>({
-    //     .position = parentTrans->Position() + c2BaseOffset,
-    //     .rotation = parentTrans->Rotation(),
-    //     .scale = c2Scale,
-    //     .tag = "Col",
-    //     .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize
-    // });
-
-    // auto c3 = world.Emplace<nc::Entity>({
-    //     .position = parentTrans->Position() + c3BaseOffset,
-    //     .rotation = parentTrans->Rotation(),
-    //     .scale = c3Scale,
-    //     .tag = "Col",
-    //     .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize
-    // });
-
-    // auto c4 = world.Emplace<nc::Entity>({
-    //     .position = parentTrans->Position() + c4BaseOffset,
-    //     .rotation = parentTrans->Rotation(),
-    //     .scale = c4Scale,
-    //     .tag = "Col",
-    //     .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize
-    // });
-
-    // auto c5 = world.Emplace<nc::Entity>({
-    //     .position = parentTrans->Position() + c5BaseOffset,
-    //     .rotation = parentTrans->Rotation(),
-    //     .scale = c5Scale,
-    //     .tag = "Col",
-    //     .flags = nc::Entity::Flags::Static | nc::Entity::Flags::NoSerialize
-    // });
-
-    // world.Emplace<nc::physics::Collider>(c1, nc::physics::BoxProperties{});
-    // world.Emplace<nc::physics::Collider>(c2, nc::physics::BoxProperties{});
-    // world.Emplace<nc::physics::Collider>(c3, nc::physics::BoxProperties{});
-    // world.Emplace<nc::physics::Collider>(c4, nc::physics::BoxProperties{});
-    // world.Emplace<nc::physics::Collider>(c5, nc::physics::BoxProperties{});
-// #endif
 }
 
 void FinalizeTerrain(nc::ecs::Ecs world)
