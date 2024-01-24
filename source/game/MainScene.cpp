@@ -55,7 +55,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     {
         .position = nc::Vector3{4.0f, 0.0f, -86.0f},
         .rotation = nc::Quaternion(),
-        .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
+        .scale = nc::Vector3{1.5f, 1.5f, 1.5f},
         .tag = tag::Firepit,
         .layer = layer::Detail,
         .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
@@ -65,7 +65,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     {
         .position = nc::Vector3{4.0f, 0.0f, -86.0f},
         .rotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0, 0.0f),
-        .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
+        .scale = nc::Vector3{1.25f, 1.25f, 1.25f},
         .tag = tag::Fire,
         .layer = layer::Detail,
         .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static

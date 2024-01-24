@@ -74,7 +74,6 @@ constexpr auto DaveStandupGround = "dave_idle_sit_to_stand_ground.nca";
 constexpr auto DaveSittingStump = "dave_idle_sitting_stump.nca";
 constexpr auto DaveStandupStump = "dave_sit_to_stand_stump.nca";
 constexpr auto DaveCircleWalk = "dave_walk_in_circle.nca";
-constexpr auto DaveTinkering = "dave_tinkering.nca";
 
 /** Animations - Fire */
 constexpr auto FireFlicker = "fire_flicker.nca";

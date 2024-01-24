@@ -14,7 +14,7 @@ class FollowCamera : public nc::graphics::Camera
         static constexpr auto CameraProperties = nc::graphics::CameraProperties
         {
             .fov = 1.0472f,
-            .nearClip = 3.5f,
+            .nearClip = 3.0f,
             .farClip = 400.0f
         };
 
