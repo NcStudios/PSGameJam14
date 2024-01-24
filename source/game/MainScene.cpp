@@ -57,7 +57,8 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .rotation = nc::Quaternion(),
         .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
         .tag = tag::Firepit,
-        .layer = layer::Detail
+        .layer = layer::Detail,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     const auto fire = world.Emplace<nc::Entity>(nc::EntityInfo
@@ -66,16 +67,18 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
         .rotation = nc::Quaternion::FromEulerAngles(1.5708f, 0.0, 0.0f),
         .scale = nc::Vector3{2.0f, 2.0f, 2.0f},
         .tag = tag::Fire,
-        .layer = layer::Detail
+        .layer = layer::Detail,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     const auto fireLight = world.Emplace<nc::Entity>(nc::EntityInfo
     {
-        .position = nc::Vector3{5.0f, 1.0f, -87.0f},
+        .position = nc::Vector3{5.0f, 8.0f, -87.0f},
         .rotation = nc::Quaternion{},
         .scale = nc::Vector3::One(),
         .tag = tag::Light,
-        .layer = layer::Default
+        .layer = layer::Default,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(firepit, FirepitMesh, FirepitMaterial);
@@ -83,6 +86,19 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
     world.Emplace<nc::graphics::ToonRenderer>(fire, FireMesh, FireMaterial);
     world.Emplace<nc::graphics::SkeletalAnimator>(fire, FireMesh, FireFlicker);
     world.Emplace<nc::graphics::PointLight>(fireLight, nc::Vector3{1.0f, 1.0f, 0.0f}, nc::Vector3{1.0f, 0.64f, 0.0f}, 10.0f);
+
+    const auto floor = world.Emplace<nc::Entity>(nc::EntityInfo
+    {
+        .position = nc::Vector3{56.0f, -1.2f, -71.0f},
+        .rotation = nc::Quaternion{},
+        .scale = nc::Vector3::One(),
+        .tag = tag::Ground,
+        .layer = layer::Default,
+        .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
+    });
+
+    world.Emplace<nc::graphics::ToonRenderer>(floor, FloorMesh, FloorMaterial);
+    world.Emplace<nc::physics::Collider>(floor, nc::physics::BoxProperties{}, false);
 
     gfx->SetSkybox(Skybox);
 
