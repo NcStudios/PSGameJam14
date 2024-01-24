@@ -35,12 +35,14 @@ void FollowCamera::Run(nc::Entity entity, nc::Registry* registry, float dt)
     self->SetRotation(nc::Quaternion::FromAxisAngle(axis, angle));
 }
 
-auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, const nc::Vector3& initialPosition, nc::Entity initialTarget) -> nc::Entity
+auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, const nc::Vector3&, nc::Entity initialTarget) -> nc::Entity
 {
     const auto handle = world.Emplace<nc::Entity>(nc::EntityInfo
     {
-        .position = initialPosition + nc::Vector3{0.0f, 5.0f, -11.0f},
-        .rotation = nc::Quaternion::FromEulerAngles(0.35f, 0.0f, 0.0f),
+        // .position = initialPosition + nc::Vector3{0.0f, 5.0f, -11.0f},
+        // .rotation = nc::Quaternion::FromEulerAngles(0.35f, 0.0f, 0.0f),
+        .position = nc::Vector3{120.0f, 6.5f, -143.5},
+        .rotation = nc::Quaternion::FromEulerAngles(0.709f, 0.0f, 0.0f),
         .tag = tag::MainCamera,
         .flags = nc::Entity::Flags::NoSerialize
     });

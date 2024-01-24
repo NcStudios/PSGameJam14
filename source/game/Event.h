@@ -14,6 +14,7 @@ namespace game
 enum class Event
 {
     None, // for GameplayOrchestrator internal use
+    TitleScreen,
     Intro,
     Begin, // display controls
     DaveEncounter,
