@@ -11,6 +11,7 @@ namespace
 constexpr auto g_narrativeWindowHeight = 100.0f;
 constexpr auto g_dialogButtonSize = ImVec2{40.0f, g_narrativeWindowHeight - 20.0f};
 constexpr auto g_menuSize = ImVec2{300.0f, 145.0f};
+constexpr auto g_endGameMenuSize = ImVec2{300.0f, 100.0f};
 constexpr auto g_menuButtonSize = ImVec2{285.0f, 40.0f};
 constexpr auto g_windowFlags = ImGuiWindowFlags_NoCollapse |
                                ImGuiWindowFlags_NoTitleBar |
@@ -50,8 +51,17 @@ void GameUI::Draw()
     if (m_menuOpen)
     {
         ImGui::SetNextWindowPos({ windowDimensions.x / 2, windowDimensions.y / 2 }, ImGuiCond_Always, {0.5f, 0.5f});
-        ImGui::SetNextWindowSize(g_menuSize);
-        DrawMainMenu();
+
+        if (!m_enableEndGameMenu)
+        {
+            ImGui::SetNextWindowSize(g_menuSize);
+            DrawMainMenu();
+        }
+        else
+        {
+            ImGui::SetNextWindowSize(g_endGameMenuSize);
+            DrawEndGameMenu();
+        }
     }
 
     ImGui::SetNextWindowPos({ (windowDimensions.x - screenExtent.x) / 2, windowDimensions.y - g_narrativeWindowHeight });
@@ -77,6 +87,7 @@ void GameUI::Clear()
     m_currentDialogIndex = 0;
     SetDialogPosition(0);
     m_menuOpen = false;
+    m_enableEndGameMenu = false;
     m_counterOpen = false;
     m_healthyCount = 0;
     m_infectedCount = 0;
@@ -106,6 +117,24 @@ void GameUI::DrawMainMenu()
         {
             m_menuOpen = false;
         }
+        if (ImGui::Button("New Game", g_menuButtonSize))
+        {
+            m_menuOpen = false;
+            FireEvent(Event::NewGame);
+        }
+        if (ImGui::Button("Quit", g_menuButtonSize))
+        {
+            m_stopEngine();
+        }
+    }
+
+    ImGui::End();
+}
+
+void GameUI::DrawEndGameMenu()
+{
+    if (ImGui::Begin("GameMenu", nullptr, g_windowFlags))
+    {
         if (ImGui::Button("New Game", g_menuButtonSize))
         {
             m_menuOpen = false;

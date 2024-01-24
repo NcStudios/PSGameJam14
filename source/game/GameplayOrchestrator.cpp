@@ -384,6 +384,7 @@ void GameplayOrchestrator::Run(float dt)
             if (m_timeInCurrentEvent > 5.0f)
             {
                 SetEvent(Event::None);
+                m_ui->SetMenuToEndGameMenu();
                 m_ui->OpenMenu();
                 return;
             }
@@ -397,6 +398,7 @@ void GameplayOrchestrator::Run(float dt)
             if (m_timeInCurrentEvent > 5.0f)
             {
                 SetEvent(Event::None);
+                m_ui->SetMenuToEndGameMenu();
                 m_ui->OpenMenu();
                 return;
             }
