@@ -1,3 +1,12 @@
+# Fixes
+
+Fix Terrain Colliders
+Camera Clip plane
+Elder not sitting on anything
+Fix BoxCar positioning - still way too high up?
+Cut down config maxTransforms and maxPointLights to actual upper bound values (like 1000 and 5)
+Multiply-Add in shaders?
+
 # Must Do
 
 Infected tree texture
