@@ -90,12 +90,12 @@ namespace game
 {
 void SetupTerrain1(nc::ecs::Ecs world, nc::Entity entity)
 {
-    world.Emplace<nc::physics::ConcaveCollider>(entity, Terrain01Collider);
+    world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{.center = nc::Vector3{0.0f, 0.0f, 0.2f}, .extents = nc::Vector3{24.5f, 5.0f, 24.5f}});
 }
 
 void SetupTerrain2(nc::ecs::Ecs world, nc::Entity entity)
 {
-    world.Emplace<nc::physics::ConcaveCollider>(entity, Terrain02Collider);
+    world.Emplace<nc::physics::Collider>(entity, nc::physics::BoxProperties{.extents = nc::Vector3{24.5f, 5.0f, 25.0f}});
 }
 
 void SetupTerrainCurve1(nc::ecs::Ecs world, nc::Entity entity)

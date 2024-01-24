@@ -8,7 +8,7 @@ class FollowCamera : public nc::graphics::Camera
 {
     public:
         static constexpr auto DefaultFollowDistance = 10.0f;
-        static constexpr auto DefaultFollowHeight = 5.0f;
+        static constexpr auto DefaultFollowHeight = 4.0f;
         static constexpr auto DefaultFollowSpeed = 4.0f;
 
         static constexpr auto CameraProperties = nc::graphics::CameraProperties

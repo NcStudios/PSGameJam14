@@ -8,7 +8,7 @@ namespace game::dialog
 using namespace std::string_view_literals;
 
 constexpr auto Intro = std::array{
-R"(Steve: Just another sunup, and another buckaroo in my pocket... I can't fathom why nobody else fancied ridin' out to the Moon Valley. It's the last patch of earth untouched by that darn Blight stench.
+R"(Steve: Just another sunup, and another buckaroo in my pocket... I can't fathom why nobody else fancied ridin' out to Moon Valley. Right here's the last patch of earth untouched by that dadgum Blight that's been spreadin' round these parts.
 
 [press space to continue])"sv
 };
@@ -73,11 +73,11 @@ R"(Steve: That's the last of 'em. I better go tell the fellas.)";
 
 constexpr auto WinSequence = std::array{
 R"(Elder: Steve, you've restored the Lunar Plumfruit trees. We're eternally grateful for your help.)"sv,
-R"(Steve: Glad I could be of help. Unfortunately, it seems I've used up most of the Roundemup(TM). I reckon I might be out of a job.)"sv,
+R"(Steve: Glad I could be of service. Unfortunately, it seems I've used up most of the Roundemup(TM). I reckon I might be out of a job.)"sv,
 R"(Dave: Sounds like you're plum out of luck! But don't worry about it. You've earned your spurs with us, cowboy. You're welcome in Moon Valley anytime.)"sv,
 R"(Steve: What is this stuff, anyhow?)"sv,
-R"(broad-spectrum weed control... avoid breathing vapor, oops...)"sv,
-R"(do not apply near base of trees... That's probably just to cover the manufacturer's hide, right?)"sv,
+R"(Steve: Broad-spectrum weed control... avoid breathing vapor, oops...)"sv,
+R"(Steve: Do not apply near base of trees... That's probably just to cover the manufacturer's hide, right?)"sv,
 R"(...)"sv,
 R"(Steve: Fellas?)"sv,
 R"(Steve: Ah, heck.)"sv

@@ -24,7 +24,7 @@ void AttachSasquatchAnimators(nc::ecs::Ecs world)
 
     {
         const auto putter = world.GetEntityByTag(tag::Putter);
-        world.Emplace<nc::graphics::SkeletalAnimator>(putter, DaveMesh, DaveTinkering);
+        world.Emplace<nc::graphics::SkeletalAnimator>(putter, DaveMesh, DaveIdle);
     }
 
     {
@@ -68,9 +68,10 @@ void MoveSasquatchToCamp(nc::ecs::Ecs world)
     // Remove any pending quests? only matters if dave is optional
     // move others?
 
-    auto pos = GetComponentByEntityTag<nc::Transform>(world, tag::DaveEndingPosition)->Position();
+    auto finalPos = GetComponentByEntityTag<nc::Transform>(world, tag::DaveEndingPosition);
     auto daveTransform = GetComponentByEntityTag<nc::Transform>(world, tag::Dave);
-    daveTransform->SetPosition(pos);
+    daveTransform->SetPosition(finalPos->Position());
+    daveTransform->SetRotation(finalPos->Rotation());
 }
 
 void AttachCampQuestTrigger(nc::ecs::Ecs world)

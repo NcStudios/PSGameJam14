@@ -44,7 +44,7 @@ class InfectedTree : public nc::ComponentBase
 {
     public:
         static constexpr float RadiusGrowthAmount = 1.0f;
-        static constexpr float RadiusSpreadTime = 1.0f;
+        static constexpr float RadiusSpreadTime = 1.25f;
         static constexpr unsigned MaxEmissionCount = 100;
 
         InfectedTree(nc::Entity self)

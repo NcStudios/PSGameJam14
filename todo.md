@@ -1,11 +1,24 @@
 # Fixes
 
+Intro zoomed in on steve
+<!-- Fix dave's outro pos -->
+<!-- Fix Collider Pos -->
+<!-- Fix Putters pos -->
+<!-- Scale down Firepit -->
+
+Update dead sasquatch pos/model
+
+<!-- Check lights agains -->
+
 Fix Terrain Colliders
 Camera Clip plane
-Elder not sitting on anything
-Fix BoxCar positioning - still way too high up?
-Cut down config maxTransforms and maxPointLights to actual upper bound values (like 1000 and 5)
+<!-- Elder not sitting on anything -->
+Cut down config maxTransforms, PointLights, animations, and textures to actual upper bound values
 Multiply-Add in shaders?
+Remove 'resume' from end game menu
+
+<!-- X Fix BoxCar positioning - still way too high up? -->
+
 
 # Must Do
 

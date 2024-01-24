@@ -326,10 +326,6 @@
                 {
                     "subResourceName" : "Dave|Sitting",
                     "assetName" : "skeletal_animation\\dave_idle_sitting_stump"
-                },
-                {
-                    "subResourceName" : "Dave|Tinkering",
-                    "assetName" : "skeletal_animation\\dave_tinkering"
                 }
             ]
         },
