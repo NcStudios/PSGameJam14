@@ -71,7 +71,7 @@ void GameUI::Draw()
     if (m_counterOpen)
     {
         ImGui::SetNextWindowPos({ (windowDimensions.x - screenExtent.x) / 2, (windowDimensions.y - screenExtent.y) / 2});
-        ImGui::SetNextWindowSize({ 170, 50 });
+        ImGui::SetNextWindowSize({ 200, 56 });
         DrawTreeCounter();
     }
 }

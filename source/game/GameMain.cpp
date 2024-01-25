@@ -9,13 +9,57 @@
 
 #include <iostream>
 
+auto BuildConfig() -> nc::config::Config
+{
+    auto config = nc::config::Load("config.ini");
+
+    config.projectSettings = nc::config::ProjectSettings{
+        .projectName = "Scootin' Steve and Downy Dave: Origin",
+        .logFilePath = "game.log",
+        .logMaxFileSize = 100000
+    };
+
+    config.assetSettings = nc::config::AssetSettings{
+        .audioClipsPath = "assets/nca/audio_clip/",
+        .concaveCollidersPath = "assets/nca/concave_collider/",
+        .hullCollidersPath = "assets/nca/hull_collider/",
+        .meshesPath = "assets/nca/mesh/",
+        .shadersPath = "assets/shaders/",
+        .skeletalAnimationsPath = "assets/nca/skeletal_animation/",
+        .texturesPath = "assets/nca/texture/",
+        .cubeMapsPath = "assets/nca/cube_map/"
+    };
+
+    config.memorySettings = nc::config::MemorySettings{
+        .maxDynamicColliders = 50,
+        .maxStaticColliders = 500,
+        .maxNetworkDispatchers = 0,
+        .maxParticleEmitters = 100,
+        .maxRenderers = 500,
+        .maxTransforms = 1000,
+        .maxPointLights = 10,
+        .maxSkeletalAnimations = 1000,
+        .maxTextures = 100
+    };
+
+    config.physicsSettings = nc::config::PhysicsSettings{};
+
+    // allow some values in file
+    config.graphicsSettings.enabled = true;
+    config.graphicsSettings.useNativeResolution = false;
+    config.graphicsSettings.targetFPS = 60;
+    config.graphicsSettings.useShadows = false;
+
+    return config;
+}
+
 int main()
 {
     std::unique_ptr<nc::NcEngine> engine;
 
     try
     {
-        const auto config = nc::config::Load("config.ini");
+        const auto config = BuildConfig();
         engine = nc::InitializeNcEngine(config);
         game::LoadAssets(config.assetSettings);
         auto& world = engine->GetRegistry()->GetImpl();
