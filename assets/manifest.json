@@ -51,14 +51,6 @@
     "concave-collider": 
     [
         {
-            "sourcePath": "raw/mesh/terrain01_collider.fbx",
-            "assetName": "concave_collider/terrain01_collider"
-        },
-        {
-            "sourcePath": "raw/mesh/terrain02_collider.fbx",
-            "assetName": "concave_collider/terrain02_collider"
-        },
-        {
             "sourcePath": "raw/mesh/terrain_curve01_collider.fbx",
             "assetName": "concave_collider/terrain_curve01_collider"
         },

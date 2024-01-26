@@ -27,21 +27,22 @@ R"(Steve: Gotta admit, this place has got a certain charm. Clean air, nice skies
 
 constexpr auto DaveEncounterSequence = std::array{
 R"(Steve: Howdy, big bug. Steve's the name, Scootin' Steve that is, and I reckon I brought supplies for you fellas.)"sv,
-R"(Dave: We're down to letting worms run our supply chains? Our days really are numbered... Well, there's a camp to the west. You can drop off the goods there.)"sv,
-R"(Steve: Can do, partner. I'll have 'em there faster than a tumbleweed in a duststorm.)"sv
+R"(Downy Dave: We're down to letting worms run our supply chains? Our days really are numbered... Well, there's a camp to the west. You can drop off the goods there.)"sv,
+R"(Steve: Can do, partner. I'll have 'em there faster than a tumbleweed in a duststorm.)"sv,
+R"(Dave: Really, there's no rush. You might as well take in the sights while you're here; its beauty won't last forever.)"sv
 };
 
 constexpr auto CampEncounterSequence = std::array{
 R"(Steve: Slap me with a cactus! This place is turnin' into a bone orchard.)"sv,
-R"(Sasquatch: The Blight has made its way to the forest. Its poisoning the fruit of the Lunar Plumwood. We've all gathered here in the Moon Valley because its the only place the plums still grow, but it looks like our luck has run out.)"sv,
+R"(Bristled Bertha: The Blight has made its way to the forest. Its poisoning the fruit of the Lunar Plumwood. We've all gathered here in the Moon Valley because its the only place the plums still grow, but it looks like our luck has run out.)"sv,
 R"(Steve: Sounds like you got yerselves a real hoedown, but no need to worry. I've got your delivery here. Should set you right as rain.)"sv,
-R"(Sasquatch: We can't survive without the plums, so unless you happen to have some Roundemup(TM) in that shipment, we're done for. Its the only thing we know of that slows the spread, but since the rebellion, the Directorate has locked down all trade, making it impossible to find. This disease spreads like wildfire. We have very little time left.)"sv,
+R"(Bertha: We can't survive without the plums, so unless you happen to have some Roundemup(TM) in that shipment, we're done for. Its the only thing we know of that slows the spread, but since the rebellion, the Directorate has locked down all trade, making it impossible to find. This disease spreads like wildfire. We have very little time left.)"sv,
 R"(Steve: Well, hold yer horses. My next delivery just so happens to be to the Stewards. They get a shipment of Roundemup(TM) from the Federal Goods Reserve every other week. I could probably skim off a little and leave those bootlickers none the wiser.)"sv,
-R"(Sasquatch: Wh-what? Really? Hurry, talk to the elder. He'll tell you what to do.)"sv
+R"(Bertha: Wh-what? Really? Hurry, talk to the elder. He'll tell you what to do.)"sv
 };
 
 constexpr auto ElderEncounterSequence = std::array{
-R"(Elder: The sands of time are slipping away, my friend. Without the nectar of untainted fruit, the days of the sasquatch are numbered.)"sv,
+R"(Echinate Elder: The sands of time are slipping away, my friend. Without the nectar of untainted fruit, the days of the sasquatch are numbered.)"sv,
 R"(Steve: I might just have an ace in the hole, partner. I happen to have a shipment of Roundemup(TM) headin' to the Stewards. I reckon I could leave a little here with 'ya to lasso this bull.)"sv,
 R"(Elder: Surely, you jest. The Directorate has had all interstellar goods under an iron grip for months now.)"sv,
 R"(Steve: Mmhmm, but 'ya still need a trusty cowpolk like m'self to get it where it needs to go. I can't spare much, or my boss'll tan my hide, but I could leave enough to get the job done.)"sv,
@@ -51,7 +52,7 @@ R"(Elder: Please, the fate of the sasquatch rests on your shoulders. Seek Putter
 };
 
 constexpr auto PutterEncounterSequence = std::array{
-R"(Putter: Not a moment too soon, vaquero! Let's see what we can cook up here.)"sv,
+R"(Poofy Putter: Not a moment too soon, vaquero! Let's see what we can cook up here.)"sv,
 R"(...tinkering...)"sv,
 R"(Putter: Ah-ha! I can get a sprayer wired up in a jiffy. Just a minute...)"sv,
 R"(Steve: I know I might look the part, like I'd die standin' up 'n all...)"sv,

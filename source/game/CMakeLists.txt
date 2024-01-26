@@ -1,4 +1,12 @@
-add_executable(${GAME}
+
+if(${GAME_PROD_BUILD})
+    add_executable(${GAME} WIN32)
+else()
+    add_executable(${GAME})
+endif()
+
+target_sources(${GAME}
+    PRIVATE
         GameMain.cpp
         Assets.cpp
         Character.cpp
