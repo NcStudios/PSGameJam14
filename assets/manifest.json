@@ -167,6 +167,10 @@
         {
             "sourcePath": "raw/mesh/decorative_tree01.fbx",
             "assetName": "mesh/decorative_tree01"
+        },
+        {
+            "sourcePath": "raw/mesh/headstone.fbx",
+            "assetName": "mesh/headstone"
         }
     ],
     "texture": [
