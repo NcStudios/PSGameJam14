@@ -354,6 +354,7 @@ void GameplayOrchestrator::Run(float dt)
         case Event::CampEncounter:
         {
             // enable elder encounter after camp
+            SetAnimatorState(m_world, DaveSittingStump, tag::Elder);
             AttachElderQuestTrigger(m_world);
             SetEvent(Event::None);
             break;

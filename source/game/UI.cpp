@@ -8,7 +8,7 @@
 
 namespace
 {
-constexpr auto g_narrativeWindowHeight = 100.0f;
+constexpr auto g_narrativeWindowHeight = 120.0f;
 constexpr auto g_dialogButtonSize = ImVec2{40.0f, g_narrativeWindowHeight - 20.0f};
 constexpr auto g_menuSize = ImVec2{300.0f, 145.0f};
 constexpr auto g_endGameMenuSize = ImVec2{300.0f, 100.0f};
@@ -38,8 +38,8 @@ void GameUI::Draw()
     }
 
 #ifndef GAME_PROD_BUILD
-    ImGui::SetNextWindowPos({windowDimensions.x - 80, 0}, ImGuiCond_Always);
-    ImGui::SetNextWindowSize({80, 30});
+    ImGui::SetNextWindowPos({windowDimensions.x - 90, 0}, ImGuiCond_Always);
+    ImGui::SetNextWindowSize({90, 40});
     if (ImGui::Begin("DebugUI", nullptr, g_windowFlags))
     {
         ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
@@ -71,7 +71,7 @@ void GameUI::Draw()
     if (m_counterOpen)
     {
         ImGui::SetNextWindowPos({ (windowDimensions.x - screenExtent.x) / 2, (windowDimensions.y - screenExtent.y) / 2});
-        ImGui::SetNextWindowSize({ 200, 56 });
+        ImGui::SetNextWindowSize({ 225, 56 });
         DrawTreeCounter();
     }
 }

@@ -121,6 +121,10 @@
             "assetName": "mesh/grass"
         },
         {
+            "sourcePath": "raw/mesh/headstone.fbx",
+            "assetName": "mesh/headstone"
+        },
+        {
             "sourcePath": "raw/mesh/pine.fbx",
             "assetName": "mesh/pine"
         },
@@ -159,10 +163,6 @@
         {
             "sourcePath": "raw/mesh/tree01.fbx",
             "assetName": "mesh/tree01"
-        },
-        {
-            "sourcePath": "raw/mesh/vegetation01.fbx",
-            "assetName": "mesh/vegetation01"
         },
         {
             "sourcePath": "raw/mesh/decorative_tree01.fbx",
@@ -215,6 +215,14 @@
             "assetName": "texture/hatch"
         },
         {
+            "sourcePath": "raw/texture/headstone1_base_color.png",
+            "assetName": "texture/headstone1_base_color"
+        },
+        {
+            "sourcePath": "raw/texture/headstone2_base_color.png",
+            "assetName": "texture/headstone2_base_color"
+        },
+        {
             "sourcePath": "raw/texture/overlay.png",
             "assetName": "texture/overlay"
         },
@@ -265,10 +273,6 @@
         {
             "sourcePath": "raw/texture/terrain_inlet_base_color.png",
             "assetName": "texture/terrain_inlet_base_color"
-        },
-        {
-            "sourcePath": "raw/texture/vegetation01_base_color.png",
-            "assetName": "texture/vegetation01_base_color"
         },
         {
             "sourcePath": "raw/texture/quest_indicator_particle.png",
