@@ -53,7 +53,7 @@ auto BuildConfig() -> nc::config::Config
     return config;
 }
 
-int main()
+int GameMain()
 {
     std::unique_ptr<nc::NcEngine> engine;
 
@@ -80,3 +80,21 @@ int main()
 
     return 0;
 }
+
+// Just don't have time to wire up output for Win32 app, leave as console for dev builds
+#ifdef GAME_PROD_BUILD
+#include "ncengine/platform/win32/NcWin32.h"
+
+int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+{
+    return GameMain();
+}
+
+#else
+
+int main()
+{
+    return GameMain();
+}
+
+#endif
