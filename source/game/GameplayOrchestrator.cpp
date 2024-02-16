@@ -59,8 +59,8 @@ void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, f
 
 void StopMusic(nc::ecs::Ecs world)
 {
-    auto& introTheme = game::GetComponentByEntityTag<nc::audio::AudioSource>(world, game::tag::IntroThemeMusic);
-    if (introTheme.IsPlaying()) introTheme.Stop();
+    auto& music = game::GetComponentByEntityTag<nc::audio::AudioSource>(world, game::tag::Music);
+    if (music.IsPlaying()) music.Stop();
 }
 
 auto GetPointLightValues(std::span<nc::graphics::PointLight> lights) -> std::vector<std::pair<nc::Vector3, nc::Vector3>>
@@ -379,7 +379,7 @@ void GameplayOrchestrator::Run(float dt)
             {
                 ::DisableGameplayMechanics(m_world, 5.0f, 20.0f, 0.25f);
                 ::StopMusic(m_world);
-                GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::EndingMusic).Play();
+                GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::Music).Play(music::EndingIndex);
             }
 
             m_timeInCurrentEvent += dt;
@@ -531,7 +531,7 @@ void GameplayOrchestrator::HandleTreesCleared()
     m_ui->ToggleTreeCounter(false);
     m_ui->AddNewDialog(dialog::TreesCleared);
     ::StopMusic(m_world);
-    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::BlightClearedMusic).Play();
+    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::Music).Play(music::BlightClearedIndex);
 }
 
 void GameplayOrchestrator::HandleFlavorDialog()
@@ -564,7 +564,7 @@ void GameplayOrchestrator::HandleLose()
     ::DisableGameplayMechanics(m_world);
     m_spreadStarted = false;
     ::StopMusic(m_world);
-    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::LoseMusic).Play();
+    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::Music).Play(music::LoseIndex);
 }
 
 void GameplayOrchestrator::ProcessTrees(float dt)

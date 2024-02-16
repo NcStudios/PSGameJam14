@@ -91,6 +91,14 @@ constexpr auto HalfExtent = Extent * 0.5f;
 const auto Radius = std::sqrt(2.0f * (HalfExtent * HalfExtent));
 } // namespace map
 
+namespace music
+{
+constexpr auto IntroThemeIndex = 0u;
+constexpr auto BlightClearedIndex = 1u;
+constexpr auto LoseIndex = 2u;
+constexpr auto EndingIndex = 3u;
+} // namespace music
+
 // Always set main camera to this tag
 namespace tag
 {
@@ -100,10 +108,7 @@ const auto VehicleFront = std::string{"VehicleFront"};
 const auto VehicleCar = std::string{"BoxCar"};
 const auto VehicleAudio = std::string{"VehicleAudio"};
 const auto AmbienceSfx = std::string{"AmbienceSfx"};
-const auto IntroThemeMusic = std::string{"IntroThemeMusic"};
-const auto BlightClearedMusic = std::string{"BlightClearedMusic"};
-const auto LoseMusic = std::string{"LoseMusic"};
-const auto EndingMusic = std::string{"EndingMusic"};
+const auto Music = std::string{"Music"};
 const auto HealthyTree = std::string{"HealthyTree"};
 const auto InfectedTree = std::string{"InfectedTree"};
 const auto Spreader = std::string{"Spreader"};
