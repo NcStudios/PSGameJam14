@@ -44,5 +44,6 @@ void LoadAssets(const nc::config::AssetSettings& settings)
     ::LoadAssets(settings.concaveCollidersPath, nc::AssetFlags::None, &nc::LoadConcaveColliderAssets);
     ::LoadAssets(settings.cubeMapsPath, nc::AssetFlags::None, &nc::LoadCubeMapAssets);
     ::LoadAssets(settings.skeletalAnimationsPath, nc::AssetFlags::None, &nc::LoadSkeletalAnimationAssets);
+    nc::LoadFont(game::DialogFont);
 }
 } // namespace game

@@ -1,4 +1,5 @@
 #include "UI.h"
+#include "Assets.h"
 #include "Core.h"
 #include "Event.h"
 
@@ -21,7 +22,8 @@ constexpr auto g_windowFlags = ImGuiWindowFlags_NoCollapse |
 namespace game
 {
 GameUI::GameUI(nc::NcEngine* engine)
-    : m_stopEngine{[engine](){ engine->Stop(); }}
+    : m_stopEngine{[engine](){ engine->Stop(); }},
+      m_dialogFont{nc::AcquireFont(DialogFont)}
 {
     engine->GetModuleRegistry()->Get<nc::graphics::NcGraphics>()->SetUi(this);
     nc::ui::SetDefaultUIStyle();
@@ -48,6 +50,7 @@ void GameUI::Draw()
     ImGui::End();
 #endif
 
+    ImGui::PushFont(m_dialogFont.font);
     if (m_menuOpen)
     {
         ImGui::SetNextWindowPos({ windowDimensions.x / 2, windowDimensions.y / 2 }, ImGuiCond_Always, {0.5f, 0.5f});
@@ -74,6 +77,8 @@ void GameUI::Draw()
         ImGui::SetNextWindowSize({ 225, 56 });
         DrawTreeCounter();
     }
+
+    ImGui::PopFont();
 }
 
 bool GameUI::IsHovered()

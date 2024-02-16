@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ncengine/NcEngine.h"
+#include "ncengine/asset/Assets.h"
 #include "ncengine/type/StableAddress.h"
 #include "ncengine/ui/IUI.h"
 
@@ -33,6 +34,7 @@ class GameUI : public nc::ui::IUI,
         size_t m_currentDialogIndex = 0;
         size_t m_currentDialogNextCharacter = 0;
         std::string m_currentDialog = "";
+        nc::FontView m_dialogFont;
         bool m_menuOpen = false;
         bool m_enableEndGameMenu = false;
 

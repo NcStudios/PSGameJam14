@@ -226,4 +226,10 @@ inline auto FireMaterial = nc::graphics::ToonMaterial
     .hatching = HatchTexture,
     .hatchingTiling = 3
 };
+
+inline auto DialogFont = nc::FontInfo
+{
+    .path = "font.ttf",
+    .size = 20.0f
+};
 } // namespace game

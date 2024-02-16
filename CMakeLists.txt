@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project("Game"
-        VERSION   "1.0.0"
+        VERSION   "1.1.0"
         LANGUAGES CXX C
 )
 
@@ -38,7 +38,7 @@ endif()
 
 FetchContent_Declare(NcEngine
                      GIT_REPOSITORY https://github.com/NcStudios/NcEngine.git
-                     GIT_TAG        origin/dev/game-jam
+                     GIT_TAG        origin/vnext
                      GIT_SHALLOW    TRUE
 )
 
