@@ -12,11 +12,9 @@ inline auto AttachQuestTrigger(nc::ecs::Ecs world,
                                const nc::Vector3& center = nc::Vector3::Zero(),
                                const nc::Vector3& extents = nc::Vector3::One()) -> nc::Entity
 {
-    const auto rootTransform = world.Get<nc::Transform>(parent);
-    NC_ASSERT(rootTransform, "expected valid root transform");
-
+    const auto& rootTransform = world.Get<nc::Transform>(parent);
     auto triggerIndicator = world.Emplace<nc::Entity>({
-        .position = rootTransform->Position() + nc::Vector3::Up() * 5.0f,
+        .position = rootTransform.Position() + nc::Vector3::Up() * 5.0f,
         .tag = "QuestTriggerIndicator",
         .flags =nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });

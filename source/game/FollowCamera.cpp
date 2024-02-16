@@ -47,9 +47,9 @@ auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, const nc::V
         .flags = nc::Entity::Flags::NoSerialize
     });
 
-    const auto camera = world.Emplace<FollowCamera>(handle, initialTarget);
+    auto& camera = world.Emplace<FollowCamera>(handle, initialTarget);
     world.Emplace<nc::FrameLogic>(handle, nc::InvokeFreeComponent<FollowCamera>());
-    gfx->SetCamera(camera);
+    gfx->SetCamera(&camera);
     return handle;
 }
 } // namespace game

@@ -76,7 +76,7 @@ install(DIRECTORY   "${PROJECT_BINARY_DIR}/_deps/ncengine-src/resources/nca"
         DESTINATION "game/assets"
 )
 
-install(DIRECTORY   "${PROJECT_SOURCE_DIR}/assets/fonts"
+install(DIRECTORY   "${PROJECT_SOURCE_DIR}/assets/font"
         DESTINATION "game/assets"
 )
 

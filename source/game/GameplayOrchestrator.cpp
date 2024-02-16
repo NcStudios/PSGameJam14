@@ -10,6 +10,7 @@
 #include "UI.h"
 
 #include "ncengine/graphics/SkeletalAnimator.h"
+#include "ncengine/scene/NcScene.h"
 
 namespace
 {
@@ -28,20 +29,20 @@ void DisableCharacterMovement(nc::ecs::Ecs world)
 void SetCameraTargetToCharacter(nc::ecs::Ecs world)
 {
     const auto character = world.GetEntityByTag(game::tag::VehicleFront);
-    auto mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
-    mainCamera->SetTarget(character);
-    mainCamera->SetFollowDistance(game::FollowCamera::DefaultFollowDistance);
-    mainCamera->SetFollowHeight(game::FollowCamera::DefaultFollowHeight);
-    mainCamera->SetFollowSpeed(game::FollowCamera::DefaultFollowSpeed);
+    auto& mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
+    mainCamera.SetTarget(character);
+    mainCamera.SetFollowDistance(game::FollowCamera::DefaultFollowDistance);
+    mainCamera.SetFollowHeight(game::FollowCamera::DefaultFollowHeight);
+    mainCamera.SetFollowSpeed(game::FollowCamera::DefaultFollowSpeed);
 }
 
 void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float followDistance = 7.0f, float followHeight = 6.0f, float followSpeed = 2.0f)
 {
-    auto mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
-    mainCamera->SetTarget(world.GetEntityByTag(tag));
-    mainCamera->SetFollowDistance(followDistance);
-    mainCamera->SetFollowHeight(followHeight);
-    mainCamera->SetFollowSpeed(followSpeed);
+    auto& mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
+    mainCamera.SetTarget(world.GetEntityByTag(tag));
+    mainCamera.SetFollowDistance(followDistance);
+    mainCamera.SetFollowHeight(followHeight);
+    mainCamera.SetFollowSpeed(followSpeed);
 }
 
 void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, float followHeight = 40.0f, float followSpeed = 0.25f)
@@ -50,16 +51,16 @@ void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, f
     DisableCharacterMovement(world);
 
     // Redirect camera focus
-    auto mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
-    mainCamera->SetFollowDistance(followDistance);
-    mainCamera->SetFollowHeight(followHeight);
-    mainCamera->SetFollowSpeed(followSpeed);
+    auto& mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
+    mainCamera.SetFollowDistance(followDistance);
+    mainCamera.SetFollowHeight(followHeight);
+    mainCamera.SetFollowSpeed(followSpeed);
 }
 
 void StopMusic(nc::ecs::Ecs world)
 {
-    auto introTheme = game::GetComponentByEntityTag<nc::audio::AudioSource>(world, game::tag::IntroThemeMusic);
-    if (introTheme->IsPlaying()) introTheme->Stop();
+    auto& introTheme = game::GetComponentByEntityTag<nc::audio::AudioSource>(world, game::tag::IntroThemeMusic);
+    if (introTheme.IsPlaying()) introTheme.Stop();
 }
 
 auto GetPointLightValues(std::span<nc::graphics::PointLight> lights) -> std::vector<std::pair<nc::Vector3, nc::Vector3>>
@@ -242,9 +243,9 @@ void Cutscene::Update(nc::ecs::Ecs world, GameUI* ui)
 
 GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, GameUI* ui)
     : m_engine{engine},
-      m_world{m_engine->GetRegistry()->GetEcs()},
+      m_world{m_engine->GetComponentRegistry()},
       m_ui{ui},
-      m_treeTracker{std::make_unique<TreeTracker>(engine->GetRegistry()->GetImpl())}
+      m_treeTracker{std::make_unique<TreeTracker>(engine->GetComponentRegistry())}
 {
     NC_ASSERT(!GameplayOrchestrator::m_instance, "Already a GameplayOrchestrator instance");
     GameplayOrchestrator::m_instance = this;
@@ -378,7 +379,7 @@ void GameplayOrchestrator::Run(float dt)
             {
                 ::DisableGameplayMechanics(m_world, 5.0f, 20.0f, 0.25f);
                 ::StopMusic(m_world);
-                GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::EndingMusic)->Play();
+                GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::EndingMusic).Play();
             }
 
             m_timeInCurrentEvent += dt;
@@ -441,9 +442,9 @@ void GameplayOrchestrator::HandleTitleScreen()
     m_world.Emplace<LightFader>(fader, m_world);
     m_world.Emplace<nc::FrameLogic>(fader, nc::InvokeFreeComponent<LightFader>{});
 
-    auto camTrans = GetComponentByEntityTag<nc::Transform>(m_world, tag::MainCamera);
+    auto& camTrans = GetComponentByEntityTag<nc::Transform>(m_world, tag::MainCamera);
     auto title = m_world.Emplace<nc::Entity>({
-        .position = camTrans->Position() + camTrans->Forward() * 5.0f,
+        .position = camTrans.Position() + camTrans.Forward() * 5.0f,
         .flags = nc::Entity::Flags::NoSerialize
     });
 
@@ -514,7 +515,7 @@ void GameplayOrchestrator::HandlePutterEncounter()
 void GameplayOrchestrator::HandleStartSpread()
 {
     SetEvent(Event::None);
-    GetComponentByEntityTag<CharacterController>(m_world, tag::VehicleFront)->EquipSprayer();
+    GetComponentByEntityTag<CharacterController>(m_world, tag::VehicleFront).EquipSprayer();
     m_spreadStarted = true;
     FinalizeTrees(m_world);
     m_ui->AddNewDialog(dialog::StartSpread);
@@ -530,7 +531,7 @@ void GameplayOrchestrator::HandleTreesCleared()
     m_ui->ToggleTreeCounter(false);
     m_ui->AddNewDialog(dialog::TreesCleared);
     ::StopMusic(m_world);
-    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::BlightClearedMusic)->Play();
+    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::BlightClearedMusic).Play();
 }
 
 void GameplayOrchestrator::HandleFlavorDialog()
@@ -541,7 +542,9 @@ void GameplayOrchestrator::HandleNewGame()
 {
     SetEvent(Event::NewGame);
     Clear();
-    m_engine->QueueSceneChange(std::make_unique<MainScene>([this](float dt) { Run(dt); }));
+    auto ncScene = m_engine->GetModuleRegistry()->Get<nc::NcScene>();
+    ncScene->Queue(std::make_unique<MainScene>([this](float dt) { Run(dt); }));
+    ncScene->ScheduleTransition();
 }
 
 void GameplayOrchestrator::HandleWin()
@@ -557,21 +560,20 @@ void GameplayOrchestrator::HandleLose()
     // basically duplicate code with HandleWin(), but keep separate for easier future tweaking
     m_timeInCurrentEvent = 0.0f;
     SetEvent(Event::Lose);
-    auto world = m_engine->GetRegistry()->GetEcs();
     m_ui->AddNewDialog(dialog::Lose);
-    ::DisableGameplayMechanics(world);
+    ::DisableGameplayMechanics(m_world);
     m_spreadStarted = false;
     ::StopMusic(m_world);
-    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::LoseMusic)->Play();
+    GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::LoseMusic).Play();
 }
 
 void GameplayOrchestrator::ProcessTrees(float dt)
 {
     if constexpr (EnableGameplay)
     {
-        auto registry = m_engine->GetRegistry();
+        auto& registry = m_engine->GetComponentRegistry();
         auto infectedTrees = m_world.GetAll<InfectedTree>();
-        m_infectedCount = registry->StorageFor<InfectedTree>()->TotalSize();
+        m_infectedCount = registry.GetPool<InfectedTree>().TotalSize();
         if (m_infectedCount == 0)
         {
             FireEvent(Event::TreesCleared);
@@ -584,7 +586,7 @@ void GameplayOrchestrator::ProcessTrees(float dt)
         }
 
         auto healthyTrees = m_world.GetAll<HealthyTree>();
-        m_healthyCount = registry->StorageFor<HealthyTree>()->TotalSize();
+        m_healthyCount = registry.GetPool<HealthyTree>().TotalSize();
         if (m_healthyCount == 0)
         {
             FireEvent(Event::Lose);

@@ -27,7 +27,8 @@ auto BuildConfig() -> nc::config::Config
         .shadersPath = "assets/shaders/",
         .skeletalAnimationsPath = "assets/nca/skeletal_animation/",
         .texturesPath = "assets/nca/texture/",
-        .cubeMapsPath = "assets/nca/cube_map/"
+        .cubeMapsPath = "assets/nca/cube_map/",
+        .fontsPath = "assets/font/"
     };
 
     config.memorySettings = nc::config::MemorySettings{
@@ -62,7 +63,7 @@ int GameMain()
         const auto config = BuildConfig();
         engine = nc::InitializeNcEngine(config);
         game::LoadAssets(config.assetSettings);
-        auto& world = engine->GetRegistry()->GetImpl();
+        auto& world = engine->GetComponentRegistry();
         game::RegisterTreeComponents(world);
         auto ui = game::GameUI{engine.get()};
         auto orchestrator = game::GameplayOrchestrator{engine.get(), &ui};

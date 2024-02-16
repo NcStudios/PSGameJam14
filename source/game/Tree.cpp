@@ -16,11 +16,9 @@ auto ToSphereProperties(const nc::physics::VolumeInfo& in) noexcept -> nc::physi
 
 auto GetSpreaderFromParent(nc::ecs::Ecs world, nc::Entity parent)
 {
-    auto transform = world.Get<nc::Transform>(parent);
-    NC_ASSERT(transform, "expected a transform");
-    auto children = transform->Children();
-    auto pos = std::ranges::find_if(children, [](auto entity) { return entity.Layer() == game::layer::Spreader; });
-    NC_ASSERT(pos != std::end(children), "expected a spreader");
+    auto& hierarchy = world.Get<nc::Hierarchy>(parent);
+    auto pos = std::ranges::find_if(hierarchy.children, [](auto entity) { return entity.Layer() == game::layer::Spreader; });
+    NC_ASSERT(pos != std::end(hierarchy.children), "expected a spreader");
     return *pos;
 }
 } // anonymous namespace
@@ -35,18 +33,16 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
 
     m_timeSinceLastSpread = 0.0f;
     const auto spreader = ::GetSpreaderFromParent(world, ParentEntity());
-    auto collider = world.Get<nc::physics::Collider>(spreader);
-    NC_ASSERT(collider, "expected a collider");
-    auto props = ::ToSphereProperties(collider->GetInfo());
+    auto& collider = world.Get<nc::physics::Collider>(spreader);
+    auto props = ::ToSphereProperties(collider.GetInfo());
     if (props.radius < MaxSpreadRadius)
     {
         props.radius += RadiusGrowthAmount;
-        collider->SetProperties(props);
+        collider.SetProperties(props);
     }
 
-    auto emitter = world.Get<nc::graphics::ParticleEmitter>(ParentEntity());
-    NC_ASSERT(emitter, "expected a particle emitter");
-    auto particleInfo = emitter->GetInfo();
+    auto& emitter = world.Get<nc::graphics::ParticleEmitter>(ParentEntity());
+    auto particleInfo = emitter.GetInfo();
     if (particleInfo.kinematic.velocityMax.y < 10.0f)
     {
         particleInfo.kinematic.velocityMin -= nc::Vector3{0.1f, 0.0f, 0.1f};
@@ -57,7 +53,7 @@ void InfectedTree::Update(nc::ecs::Ecs world, float dt)
         particleInfo.emission.periodicEmissionCount += 1;
     }
 
-    emitter->SetInfo(particleInfo);
+    emitter.SetInfo(particleInfo);
 }
 
 auto CreateTreeBase(nc::ecs::Ecs world,
@@ -108,11 +104,11 @@ void AttachHealthyTree(nc::ecs::Ecs world, nc::Entity tree)
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, onTriggerExit);
 
-    world.Emplace<nc::audio::AudioSource>(tree, MorphHealthySfx, nc::audio::AudioSourceProperties{
+    world.Emplace<nc::audio::AudioSource>(tree, std::vector<std::string>{MorphHealthySfx}, nc::audio::AudioSourceProperties{
         .gain = 2.0f,
         .outerRadius = 60.0f,
-        .spatialize = true
-    })->Play();
+        .flags = nc::audio::AudioSourceFlags::Spatial
+    }).Play();
 }
 
 void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
@@ -154,11 +150,11 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
 
     world.Emplace<nc::CollisionLogic>(tree, nullptr, nullptr, onTriggerEnter, nullptr);
 
-    world.Emplace<nc::audio::AudioSource>(tree, MorphInfectedSfx, nc::audio::AudioSourceProperties{
+    world.Emplace<nc::audio::AudioSource>(tree, std::vector<std::string>{MorphInfectedSfx}, nc::audio::AudioSourceProperties{
         .gain = 2.0f,
         .outerRadius = 60.0f,
-        .spatialize = true
-    })->Play();
+        .flags = nc::audio::AudioSourceFlags::Spatial
+    }).Play();
 
     const auto spreader = world.Emplace<nc::Entity>(nc::EntityInfo
     {
@@ -215,10 +211,10 @@ void AttachMorphParticles(nc::ecs::Ecs world, nc::Entity parent, std::string_vie
 
 void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target)
 {
-    const auto transform = world.Get<nc::Transform>(target);
-    const auto pos = transform->Position();
-    const auto rot = transform->Rotation();
-    const auto scl = transform->Scale();
+    const auto& transform = world.Get<nc::Transform>(target);
+    const auto pos = transform.Position();
+    const auto rot = transform.Rotation();
+    const auto scl = transform.Scale();
     world.Remove<nc::Entity>(target);
     auto tree = CreateTreeBase(world, pos, rot, scl, tag::HealthyTree, layer::HealthyTree, Tree01Mesh, HealthyTree01Material);
     AttachHealthyTree(world, tree);
@@ -227,11 +223,10 @@ void MorphTreeToHealthy(nc::ecs::Ecs world, nc::Entity target)
 
 void MorphTreeToInfected(nc::ecs::Ecs world, nc::Entity target)
 {
-    const auto transform = world.Get<nc::Transform>(target);
-    NC_ASSERT(transform, "expected transform");
-    const auto pos = transform->Position();
-    const auto rot = transform->Rotation();
-    const auto scl = transform->Scale();
+    const auto& transform = world.Get<nc::Transform>(target);
+    const auto pos = transform.Position();
+    const auto rot = transform.Rotation();
+    const auto scl = transform.Scale();
     world.Remove<nc::Entity>(target);
     auto tree = CreateTreeBase(world, pos, rot, scl, tag::InfectedTree, layer::InfectedTree, Tree01Mesh, InfectedTree01Material);
     AttachInfectedTree(world, tree);

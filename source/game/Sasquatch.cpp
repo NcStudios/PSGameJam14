@@ -41,25 +41,22 @@ void AttachSasquatchAnimators(nc::ecs::Ecs world)
 void SetAnimatorState(nc::ecs::Ecs world, std::string_view animation, std::string_view tag)
 {
     const auto entity = world.GetEntityByTag(tag);
-    auto animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
-    NC_ASSERT(animator, "expected entity to have an animator");
-    animator->LoopImmediate(std::string{animation}, [](){ return false; });
+    auto& animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
+    animator.LoopImmediate(std::string{animation}, [](){ return false; });
 }
 
 void SetPlayOnceAnimation(nc::ecs::Ecs world, std::string_view animation, std::string_view tag)
 {
     const auto entity = world.GetEntityByTag(tag);
-    auto animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
-    NC_ASSERT(animator, "expected entity to have an animator");
-    animator->PlayOnceImmediate(std::string{animation});
+    auto& animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
+    animator.PlayOnceImmediate(std::string{animation});
 }
 
 void ReturnAnimatorToRootState(nc::ecs::Ecs world, std::string_view tag)
 {
     const auto entity = world.GetEntityByTag(tag);
-    auto animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
-    NC_ASSERT(animator, "expected entity to have an animator");
-    animator->StopImmediate([](){ return true; });
+    auto& animator = world.Get<nc::graphics::SkeletalAnimator>(entity);
+    animator.StopImmediate([](){ return true; });
 }
 
 void MoveSasquatchToCamp(nc::ecs::Ecs world)
@@ -67,10 +64,10 @@ void MoveSasquatchToCamp(nc::ecs::Ecs world)
     // Remove any pending quests? only matters if dave is optional
     // move others?
 
-    auto finalPos = GetComponentByEntityTag<nc::Transform>(world, tag::DaveEndingPosition);
-    auto daveTransform = GetComponentByEntityTag<nc::Transform>(world, tag::Dave);
-    daveTransform->SetPosition(finalPos->Position());
-    daveTransform->SetRotation(finalPos->Rotation());
+    auto& finalPos = GetComponentByEntityTag<nc::Transform>(world, tag::DaveEndingPosition);
+    auto& daveTransform = GetComponentByEntityTag<nc::Transform>(world, tag::Dave);
+    daveTransform.SetPosition(finalPos.Position());
+    daveTransform.SetRotation(finalPos.Rotation());
 }
 
 void AttachCampQuestTrigger(nc::ecs::Ecs world)

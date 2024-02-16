@@ -142,17 +142,14 @@ inline auto IsTerrain(nc::Entity entity) -> bool
 }
 
 template<class T>
-auto GetComponentByEntityTag(nc::ecs::Ecs world, const std::string& tag) -> T*
+auto GetComponentByEntityTag(nc::ecs::Ecs world, const std::string& tag) -> T&
 {
     auto entity = world.GetEntityByTag(tag);
-    NC_ASSERT(entity.Valid(), fmt::format("Entity with tag '{}' not found", tag));
-    auto component = world.Get<T>(entity);
-    NC_ASSERT(component, fmt::format("No component found for Entity with tag '{}'", tag));
-    return component;
+    return world.Get<T>(entity);
 }
 
 template<class T>
-auto GetComponentByEntityTag(nc::Registry* registry, const std::string& tag) -> T*
+auto GetComponentByEntityTag(nc::Registry* registry, const std::string& tag) -> T&
 {
     return GetComponentByEntityTag<T>(registry->GetEcs(), tag);
 }

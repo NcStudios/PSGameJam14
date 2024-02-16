@@ -71,8 +71,8 @@ auto GetLocalSpawnExtents(nc::ecs::Ecs world, nc::Entity entity)
 {
     auto maxExtent = ::GetSpawnExtent(entity.Layer());
     auto minExtent = nc::Vector3{-maxExtent.x, maxExtent.y, -maxExtent.z};
-    const auto transform = world.Get<nc::Transform>(entity);
-    const auto& m = transform->TransformationMatrix();
+    const auto& transform = world.Get<nc::Transform>(entity);
+    const auto& m = transform.TransformationMatrix();
 
     auto v = DirectX::XMLoadVector3(&maxExtent);
     v = DirectX::XMVector3Transform(v, m);
