@@ -2,7 +2,6 @@
 #include "Assets.h"
 #include "Character.h"
 #include "Core.h"
-#include "DebugCamera.h"
 #include "Environment.h"
 #include "Event.h"
 #include "FollowCamera.h"
@@ -136,9 +135,7 @@ void MainScene::Load(nc::Registry* registry, nc::ModuleProvider modules)
 
     //////////////////////////////////////////////////////
     // Debug environment - just to have stuff in the world
-#ifndef GAME_PROD_BUILD
-    CreateDebugCamera(world, gfx); // MAKE SURE NOT IN FINAL BUILD
-#endif
+
     // Spawning ops
 #if 0
     RandomlyPopulateTerrain(world, ncRandom);
