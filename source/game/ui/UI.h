@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DialogUI.h"
+
 #include "ncengine/NcEngine.h"
 #include "ncengine/asset/Assets.h"
 #include "ncengine/type/StableAddress.h"
@@ -7,7 +9,6 @@
 
 #include <functional>
 #include <string>
-#include <vector>
 
 namespace game::ui
 {
@@ -15,13 +16,12 @@ class GameUI : public nc::ui::IUI,
                public nc::StableAddress
 {
     public:
-        GameUI(nc::NcEngine* engine);
+        GameUI(nc::NcEngine* engine, nc::Signal<DialogEvent>& onDialog);
 
         void Draw() override;
         bool IsHovered() override;
 
         void Clear();
-        void AddNewDialog(std::string dialog);
 
         void OpenMenu() { m_menuOpen = true; }
         void ToggleTreeCounter(bool isOpen) { m_counterOpen = isOpen; }
@@ -30,10 +30,7 @@ class GameUI : public nc::ui::IUI,
 
     private:
         std::function<void()> m_stopEngine; // could add event instead
-        std::vector<std::string> m_dialog;
-        size_t m_currentDialogIndex = 0;
-        size_t m_currentDialogNextCharacter = 0;
-        std::string m_currentDialog = "";
+        DialogUI m_dialogUI;
         nc::FontView m_dialogFont;
         bool m_menuOpen = false;
         bool m_enableEndGameMenu = false;
@@ -46,6 +43,5 @@ class GameUI : public nc::ui::IUI,
         void DrawEndGameMenu();
         void DrawDialogWindow();
         void DrawTreeCounter();
-        void SetDialogPosition(size_t pos);
 };
 } // namespace game::ui

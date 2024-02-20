@@ -219,7 +219,7 @@ auto Cutscene::IsRunning() -> bool
     return m_running;
 }
 
-void Cutscene::Update(nc::ecs::Ecs world, ui::GameUI* ui)
+void Cutscene::Update(nc::ecs::Ecs world, nc::Signal<DialogEvent>& onDialog)
 {
     if (m_currentDialog > m_dialogSequence.size())
     {
@@ -229,21 +229,24 @@ void Cutscene::Update(nc::ecs::Ecs world, ui::GameUI* ui)
     else if (!m_initialDialogPlayed)
     {
         m_initialDialogPlayed = true;
-        ui->AddNewDialog(m_dialogSequence[m_currentDialog++].data());
+        onDialog.Emit(StartDialogEvent{m_dialogSequence[m_currentDialog++]});
     }
     else if (KeyDown(nc::input::KeyCode::Space))
     {
         if (m_currentDialog < m_dialogSequence.size())
-            ui->AddNewDialog(m_dialogSequence[m_currentDialog].data());
+            onDialog.Emit(NextDialogEvent{m_dialogSequence[m_currentDialog]});
+        else
+            onDialog.Emit(EndDialogEvent{});
 
         // Do this separe from above, so we hang out on the last dialog until space pressed again
         ++m_currentDialog;
     }
 }
 
-GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, ui::GameUI* ui)
+GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, GameEvents events, ui::GameUI* ui)
     : m_engine{engine},
       m_world{m_engine->GetComponentRegistry()},
+      m_events{std::move(events)},
       m_ui{ui},
       m_treeTracker{std::make_unique<TreeTracker>(engine->GetComponentRegistry())}
 {
@@ -300,7 +303,7 @@ void GameplayOrchestrator::Run(float dt)
 
     if (m_currentCutscene.IsRunning())
     {
-        m_currentCutscene.Update(m_world, m_ui);
+        m_currentCutscene.Update(m_world, m_events.onDialog);
         return;
     }
 
@@ -347,7 +350,7 @@ void GameplayOrchestrator::Run(float dt)
                 if (m_currentFlavorDialogIndex >= dialog::ExploringMoonValleyFlavor.size())
                     SetEvent(Event::None);
                 else
-                    m_ui->AddNewDialog(std::string{dialog::ExploringMoonValleyFlavor.at(m_currentFlavorDialogIndex++)});
+                    m_events.onDialog.Emit(OneShotDialogEvent{dialog::ExploringMoonValleyFlavor.at(m_currentFlavorDialogIndex++)});
             }
 
             break;
@@ -476,7 +479,7 @@ void GameplayOrchestrator::HandleIntro()
 void GameplayOrchestrator::HandleBegin()
 {
     SetEvent(Event::None);
-    m_ui->AddNewDialog(dialog::Controls);
+    m_events.onDialog.Emit(OneShotDialogEvent{dialog::Controls});
 }
 
 void GameplayOrchestrator::HandleDaveEncounter()
@@ -518,7 +521,7 @@ void GameplayOrchestrator::HandleStartSpread()
     GetComponentByEntityTag<CharacterController>(m_world, tag::VehicleFront).EquipSprayer();
     m_spreadStarted = true;
     FinalizeTrees(m_world);
-    m_ui->AddNewDialog(dialog::StartSpread);
+    m_events.onDialog.Emit(OneShotDialogEvent{dialog::StartSpread});
     m_ui->ToggleTreeCounter(true);
     // StopMusic
 }
@@ -529,7 +532,7 @@ void GameplayOrchestrator::HandleTreesCleared()
     m_spreadStarted = false;
     AttachFinalQuestTrigger(m_world);
     m_ui->ToggleTreeCounter(false);
-    m_ui->AddNewDialog(dialog::TreesCleared);
+    m_events.onDialog.Emit(OneShotDialogEvent{dialog::TreesCleared});
     ::StopMusic(m_world);
     GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::Music).Play(music::BlightClearedIndex);
 }
@@ -560,7 +563,7 @@ void GameplayOrchestrator::HandleLose()
     // basically duplicate code with HandleWin(), but keep separate for easier future tweaking
     m_timeInCurrentEvent = 0.0f;
     SetEvent(Event::Lose);
-    m_ui->AddNewDialog(dialog::Lose);
+    m_events.onDialog.Emit(OneShotDialogEvent{dialog::Lose});
     ::DisableGameplayMechanics(m_world);
     m_spreadStarted = false;
     ::StopMusic(m_world);

@@ -1,16 +1,12 @@
 #pragma once
 
+#include "ncengine/utility/Signal.h"
+
+#include <string_view>
+#include <variant>
+
 namespace game
 {
-//  Loosely thinking the events just handle sequencing of larger things like:
-//    Intro (have camera follow poison impact thing and display intro dialog)
-//    Begin (setup controller and switch camera, display controls)
-//    DaveEncounter (could be fun to have some flavor text on first encounter or something)
-//    Win/Lose (lose is probably just a NewGame/Quit menu, maybe win is a new scene, if time allows)
-//    etc.
-//
-// We may also want an enum to indicate where we are at, in addition to the events.
-
 enum class Event
 {
     None, // for GameplayOrchestrator internal use
@@ -32,4 +28,33 @@ enum class Event
 
 // Raise an event to be handled by GameplayOrchestrator
 void FireEvent(Event event);
+
+// Dialog Events
+struct OneShotDialogEvent
+{
+    std::string_view dialog;
+    float openDuration = 8.0f;
+};
+
+struct StartDialogEvent
+{
+    std::string_view dialog;
+};
+
+struct NextDialogEvent
+{
+    std::string_view dialog;
+};
+
+struct EndDialogEvent {};
+
+using DialogEvent = std::variant<OneShotDialogEvent,
+                                 StartDialogEvent,
+                                 NextDialogEvent,
+                                 EndDialogEvent>;
+
+struct GameEvents
+{
+    nc::Signal<DialogEvent> onDialog;
+};
 } // namespace game
