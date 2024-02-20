@@ -2,8 +2,8 @@
 #include "Assets.h"
 #include "Core.h"
 #include "Event.h"
+#include "UIStyle.h"
 
-#include "ncengine/ui/ImGuiStyle.h"
 #include "ncengine/ui/ImGuiUtility.h"
 #include "ncengine/window/Window.h"
 
@@ -26,7 +26,7 @@ GameUI::GameUI(nc::NcEngine* engine)
       m_dialogFont{nc::AcquireFont(DialogFont)}
 {
     engine->GetModuleRegistry()->Get<nc::graphics::NcGraphics>()->SetUi(this);
-    nc::ui::SetDefaultUIStyle();
+    SetUIStyle();
 }
 
 void GameUI::Draw()
@@ -38,17 +38,6 @@ void GameUI::Draw()
     {
         m_menuOpen = !m_menuOpen;
     }
-
-#ifndef GAME_PROD_BUILD
-    ImGui::SetNextWindowPos({windowDimensions.x - 90, 0}, ImGuiCond_Always);
-    ImGui::SetNextWindowSize({90, 40});
-    if (ImGui::Begin("DebugUI", nullptr, g_windowFlags))
-    {
-        ImGui::Text("fps: %.1f", ImGui::GetIO().Framerate);
-    }
-
-    ImGui::End();
-#endif
 
     ImGui::PushFont(m_dialogFont.font);
     if (m_menuOpen)

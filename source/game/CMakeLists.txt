@@ -19,6 +19,7 @@ target_sources(${GAME}
         Sasquatch.cpp
         Tree.cpp
         UI.cpp
+        UIStyle.cpp
 )
 
 target_compile_options(${GAME}
