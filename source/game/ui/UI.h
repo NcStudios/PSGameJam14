@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace game
+namespace game::ui
 {
 class GameUI : public nc::ui::IUI,
                public nc::StableAddress
@@ -48,4 +48,4 @@ class GameUI : public nc::ui::IUI,
         void DrawTreeCounter();
         void SetDialogPosition(size_t pos);
 };
-} // namespace game
+} // namespace game::ui

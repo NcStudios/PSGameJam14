@@ -19,7 +19,7 @@ constexpr auto g_windowFlags = ImGuiWindowFlags_NoCollapse |
                                ImGuiWindowFlags_NoResize;
 } // anonymous namespace
 
-namespace game
+namespace game::ui
 {
 GameUI::GameUI(nc::NcEngine* engine)
     : m_stopEngine{[engine](){ engine->Stop(); }},
@@ -201,4 +201,4 @@ void GameUI::DrawTreeCounter()
 
     ImGui::End();
 }
-} // namespace game
+} // namespace game::ui

@@ -219,7 +219,7 @@ auto Cutscene::IsRunning() -> bool
     return m_running;
 }
 
-void Cutscene::Update(nc::ecs::Ecs world, GameUI* ui)
+void Cutscene::Update(nc::ecs::Ecs world, ui::GameUI* ui)
 {
     if (m_currentDialog > m_dialogSequence.size())
     {
@@ -241,7 +241,7 @@ void Cutscene::Update(nc::ecs::Ecs world, GameUI* ui)
     }
 }
 
-GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, GameUI* ui)
+GameplayOrchestrator::GameplayOrchestrator(nc::NcEngine* engine, ui::GameUI* ui)
     : m_engine{engine},
       m_world{m_engine->GetComponentRegistry()},
       m_ui{ui},

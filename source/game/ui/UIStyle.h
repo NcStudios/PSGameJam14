@@ -1,6 +1,6 @@
 #pragma once
 
-namespace game
+namespace game::ui
 {
 void SetUIStyle();
-} // namespace game
+} // namespace game::ui

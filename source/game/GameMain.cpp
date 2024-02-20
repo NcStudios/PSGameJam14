@@ -65,7 +65,7 @@ int GameMain()
         game::LoadAssets(config.assetSettings);
         auto& world = engine->GetComponentRegistry();
         game::RegisterTreeComponents(world);
-        auto ui = game::GameUI{engine.get()};
+        auto ui = game::ui::GameUI{engine.get()};
         auto orchestrator = game::GameplayOrchestrator{engine.get(), &ui};
         engine->Start(std::make_unique<game::MainScene>([&orchestrator](float dt) { orchestrator.Run(dt); }));
     }

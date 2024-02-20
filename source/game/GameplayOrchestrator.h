@@ -8,8 +8,12 @@
 
 namespace game
 {
-class GameUI;
 class TreeTracker;
+
+namespace ui
+{
+class GameUI;
+} // namespace ui
 
 class Cutscene
 {
@@ -17,7 +21,7 @@ class Cutscene
         void Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const std::string_view> dialogSequence);
         void Exit(nc::ecs::Ecs world);
         auto IsRunning() -> bool;
-        void Update(nc::ecs::Ecs world, GameUI* ui);
+        void Update(nc::ecs::Ecs world, ui::GameUI* ui);
 
     private:
         std::span<const std::string_view> m_dialogSequence;
@@ -30,7 +34,7 @@ class Cutscene
 class GameplayOrchestrator : public nc::StableAddress
 {
     public:
-        GameplayOrchestrator(nc::NcEngine* engine, GameUI* ui);
+        GameplayOrchestrator(nc::NcEngine* engine, ui::GameUI* ui);
         ~GameplayOrchestrator() noexcept;
 
         static auto Instance() -> GameplayOrchestrator&;
@@ -43,7 +47,7 @@ class GameplayOrchestrator : public nc::StableAddress
         inline static GameplayOrchestrator* m_instance = nullptr;
         nc::NcEngine* m_engine;
         nc::ecs::Ecs m_world;
-        GameUI* m_ui;
+        ui::GameUI* m_ui;
         std::unique_ptr<TreeTracker> m_treeTracker;
         Event m_currentEvent = Event::Intro;
         Cutscene m_currentCutscene;

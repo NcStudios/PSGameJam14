@@ -5,7 +5,7 @@
 
 #include "imgui/imgui.h"
 
-namespace game
+namespace game::ui
 {
 void SetUIStyle()
 {
@@ -75,4 +75,4 @@ void SetUIStyle()
     colors[ImGuiCol_PlotHistogram]         = nc::ui::default_scheme::AccentDim;
     colors[ImGuiCol_PlotHistogramHovered]  = nc::ui::default_scheme::Accent;
 }
-} // namespace game
+} // namespace game::ui
