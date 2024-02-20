@@ -7,7 +7,7 @@
 #include "MainScene.h"
 #include "Sasquatch.h"
 #include "Tree.h"
-#include "UI.h"
+#include "ui/UI.h"
 
 #include "ncengine/graphics/SkeletalAnimator.h"
 #include "ncengine/scene/NcScene.h"
@@ -36,7 +36,7 @@ void SetCameraTargetToCharacter(nc::ecs::Ecs world)
     mainCamera.SetFollowSpeed(game::FollowCamera::DefaultFollowSpeed);
 }
 
-void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float followDistance = 7.0f, float followHeight = 6.0f, float followSpeed = 2.0f)
+void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float followDistance = 7.0f, float followHeight = 6.0f, float followSpeed = 64.0f)
 {
     auto& mainCamera = game::GetComponentByEntityTag<game::FollowCamera>(world, game::tag::MainCamera);
     mainCamera.SetTarget(world.GetEntityByTag(tag));
@@ -45,7 +45,7 @@ void SetCameraTargetToFocusPoint(nc::ecs::Ecs world, std::string_view tag, float
     mainCamera.SetFollowSpeed(followSpeed);
 }
 
-void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, float followHeight = 40.0f, float followSpeed = 0.25f)
+void DisableGameplayMechanics(nc::ecs::Ecs world, float followDistance = 5.0f, float followHeight = 40.0f, float followSpeed = 8.0f)
 {
     // Stop character controller
     DisableCharacterMovement(world);
@@ -377,7 +377,7 @@ void GameplayOrchestrator::Run(float dt)
         {
             if (m_timeInCurrentEvent == 0.0f)
             {
-                ::DisableGameplayMechanics(m_world, 5.0f, 20.0f, 0.25f);
+                ::DisableGameplayMechanics(m_world, 5.0f, 20.0f);
                 ::StopMusic(m_world);
                 GetComponentByEntityTag<nc::audio::AudioSource>(m_world, tag::Music).Play(music::EndingIndex);
             }

@@ -18,8 +18,6 @@ target_sources(${GAME}
         MainScene.cpp
         Sasquatch.cpp
         Tree.cpp
-        UI.cpp
-        UIStyle.cpp
 )
 
 target_compile_options(${GAME}
@@ -30,6 +28,11 @@ target_compile_options(${GAME}
 target_compile_definitions(${GAME}
     PRIVATE
         ${NC_COMPILE_DEFINITIONS}
+)
+
+target_include_directories(${GAME}
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/source/game
 )
 
 if(${GAME_PROD_BUILD})
@@ -48,6 +51,8 @@ else()
             NcEngine-dev
     )
 endif()
+
+add_subdirectory(ui)
 
 install(TARGETS     ${GAME}
         DESTINATION "game"

@@ -2,7 +2,7 @@
 #include "Assets.h"
 #include "GameplayOrchestrator.h"
 #include "Tree.h"
-#include "UI.h"
+#include "ui/UI.h"
 
 #include "ncengine/NcEngine.h"
 #include "ncengine/utility/Log.h"
