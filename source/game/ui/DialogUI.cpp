@@ -60,7 +60,9 @@ void DialogUI::Draw(const nc::Vector2& windowDimensions, const nc::Vector2& scre
 
         if (m_state != DialogState::Opening && m_currentDialogIndex < m_dialog.size())
         {
-            const auto& fullDialog = m_dialog.at(m_currentDialogIndex);
+            ImGui::Button(m_dialog.at(m_currentDialogIndex).first.c_str());
+            ImGui::SameLine();
+            const auto& fullDialog = m_dialog.at(m_currentDialogIndex).second;
             if (m_currentDialogNextCharacter < fullDialog.size())
             {
                 m_currentDialog.push_back(fullDialog.at(m_currentDialogNextCharacter++));
@@ -92,18 +94,18 @@ void DialogUI::HandleDialogEvent(DialogEvent event)
         if constexpr (std::same_as<event_t, OneShotDialogEvent>)
         {
             SetState(DialogState::Opening);
-            AddNewDialog(unpackedEvent.dialog.data());
+            AddNewDialog(unpackedEvent.dialog);
             m_totalOneShotOpenTime = unpackedEvent.openDuration;
             m_inOneShot = true;
         }
         else if constexpr (std::same_as<event_t, StartDialogEvent>)
         {
             SetState(DialogState::Opening);
-            AddNewDialog(unpackedEvent.dialog.data());
+            AddNewDialog(unpackedEvent.dialog);
         }
         else if constexpr (std::same_as<event_t, NextDialogEvent>)
         {
-            AddNewDialog(unpackedEvent.dialog.data());
+            AddNewDialog(unpackedEvent.dialog);
         }
         else if constexpr (std::same_as<event_t, EndDialogEvent>)
         {
@@ -112,9 +114,9 @@ void DialogUI::HandleDialogEvent(DialogEvent event)
     }, event);
 }
 
-void DialogUI::AddNewDialog(std::string dialog)
+void DialogUI::AddNewDialog(dialog::DialogEntry dialog)
 {
-    m_dialog.push_back(std::move(dialog));
+    m_dialog.emplace_back(std::string{dialog.speaker}, std::string(dialog.dialog));
     SetDialogPosition(m_dialog.size() - 1);
 }
 

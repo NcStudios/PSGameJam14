@@ -5,6 +5,13 @@
 
 #include "imgui/imgui.h"
 
+namespace
+{
+constexpr auto DarkBlue = nc::Vector4{0.004f, 0.043f, 0.071f, 0.85f};
+constexpr auto Orange = nc::Vector4{1.0f, .427f, 0.04f, 1.0f};
+constexpr auto Red = nc::Vector4{0.733f, .251f, 0.251f, 1.0f};
+}
+
 namespace game::ui
 {
 void SetUIStyle()
@@ -14,7 +21,7 @@ void SetUIStyle()
     auto [xScale, yScale] = nc::window::GetContentScale();
     style.ScaleAllSizes(std::floor(std::max(xScale, yScale)));
 
-    constexpr auto rounding = 4.0f;
+    constexpr auto rounding = 8.0f;
     style.WindowRounding = rounding;
     style.ChildRounding = rounding;
     style.FrameRounding = rounding;
@@ -28,12 +35,12 @@ void SetUIStyle()
 
     style.WindowMenuButtonPosition = ImGuiDir_None;
     ImVec4* colors = style.Colors;
-    colors[ImGuiCol_Text]                  = nc::ui::default_scheme::Text;
+    colors[ImGuiCol_Text]                  = Orange;
     colors[ImGuiCol_TextDisabled]          = nc::ui::default_scheme::Disabled;
-    colors[ImGuiCol_WindowBg]              = nc::ui::default_scheme::WindowBG;
+    colors[ImGuiCol_WindowBg]              = DarkBlue;
     colors[ImGuiCol_ChildBg]               = nc::ui::default_scheme::ChildBG;
     colors[ImGuiCol_PopupBg]               = nc::ui::default_scheme::PopupBG;
-    colors[ImGuiCol_Border]                = nc::ui::default_scheme::Border;
+    colors[ImGuiCol_Border]                = Orange;
     colors[ImGuiCol_BorderShadow]          = nc::ui::default_scheme::ScrollBarBG;
     colors[ImGuiCol_FrameBg]               = nc::ui::default_scheme::Title;
     colors[ImGuiCol_FrameBgHovered]        = nc::ui::default_scheme::Hovered;

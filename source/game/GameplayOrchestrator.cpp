@@ -194,7 +194,7 @@ class TreeTracker
         nc::Connection<nc::Entity> m_onRemoveInfectedConnection;
 };
 
-void Cutscene::Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const std::string_view> dialogSequence)
+void Cutscene::Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const dialog::DialogEntry> dialogSequence)
 {
     ::DisableCharacterMovement(world);
     ::SetCameraTargetToFocusPoint(world, focusPointTag);

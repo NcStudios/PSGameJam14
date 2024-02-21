@@ -27,7 +27,7 @@ class DialogUI
         void Clear();
 
     private:
-        std::vector<std::string> m_dialog;
+        std::vector<std::pair<std::string, std::string>> m_dialog;
         size_t m_currentDialogIndex = 0;
         size_t m_currentDialogNextCharacter = 0;
         std::string m_currentDialog = "";
@@ -40,7 +40,7 @@ class DialogUI
         bool m_inOneShot = false;
 
         void HandleDialogEvent(DialogEvent event);
-        void AddNewDialog(std::string dialog);
+        void AddNewDialog(dialog::DialogEntry dialog);
         void SetState(DialogState state);
         auto ProcessTransition(float dt) -> float;
         void SetDialogPosition(size_t pos);

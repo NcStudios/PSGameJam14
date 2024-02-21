@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Dialog.h"
+
 #include "ncengine/utility/Signal.h"
 
 #include <string_view>
@@ -32,18 +34,18 @@ void FireEvent(Event event);
 // Dialog Events
 struct OneShotDialogEvent
 {
-    std::string_view dialog;
+    dialog::DialogEntry dialog;
     float openDuration = 8.0f;
 };
 
 struct StartDialogEvent
 {
-    std::string_view dialog;
+    dialog::DialogEntry dialog;
 };
 
 struct NextDialogEvent
 {
-    std::string_view dialog;
+    dialog::DialogEntry dialog;
 };
 
 struct EndDialogEvent {};

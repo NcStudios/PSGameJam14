@@ -18,13 +18,13 @@ class GameUI;
 class Cutscene
 {
     public:
-        void Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const std::string_view> dialogSequence);
+        void Enter(nc::ecs::Ecs world, std::string_view focusPointTag, std::span<const dialog::DialogEntry> dialogSequence);
         void Exit(nc::ecs::Ecs world);
         auto IsRunning() -> bool;
         void Update(nc::ecs::Ecs world, nc::Signal<DialogEvent>& onDialog);
 
     private:
-        std::span<const std::string_view> m_dialogSequence;
+        std::span<const dialog::DialogEntry> m_dialogSequence;
         size_t m_currentDialog = 0ull;
         bool m_running = false;
         bool m_initialDialogPlayed = false;
