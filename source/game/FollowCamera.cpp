@@ -25,14 +25,16 @@ void FollowCamera::Run(nc::Entity entity, nc::Registry* registry, float dt)
     }();
 
     const auto desiredPos = targetPos + offset + nc::Vector3::Up() * m_followHeight;
-    self->Translate((desiredPos - selfPos) * dt * m_followSpeed);
+    self->Translate((desiredPos - selfPos) * (dt * dt) * m_followSpeed);
 
     const auto camToTarget = targetPos - selfPos;
     const auto forward = nc::Normalize(camToTarget);
     const auto cosTheta = nc::Dot(nc::Vector3::Front(), forward);
     const auto angle = std::acos(cosTheta);
     const auto axis = nc::Normalize(nc::CrossProduct(nc::Vector3::Front(), forward));
-    self->SetRotation(nc::Quaternion::FromAxisAngle(axis, angle));
+    const auto desiredRot = nc::Quaternion::FromAxisAngle(axis, angle);
+    const auto curRot = self->Rotation();
+    self->SetRotation(nc::Slerp(curRot, desiredRot, 0.7f));
 }
 
 auto CreateCamera(nc::ecs::Ecs world, nc::graphics::NcGraphics* gfx, const nc::Vector3&, nc::Entity initialTarget) -> nc::Entity
