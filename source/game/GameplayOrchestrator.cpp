@@ -69,7 +69,7 @@ auto GetPointLightValues(std::span<nc::graphics::PointLight> lights) -> std::vec
     out.reserve(lights.size());
     for (auto& light : lights)
     {
-        out.emplace_back(light.GetAmbient(), light.GetDiffuseColor());
+        out.emplace_back(light.ambientColor, light.diffuseColor);
     }
 
     return out;
@@ -79,8 +79,8 @@ void SetPointLightsToBlack(std::span<nc::graphics::PointLight> lights)
 {
     for (auto& light : lights)
     {
-        light.SetAmbient(nc::Vector3{});
-        light.SetDiffuseColor(nc::Vector3{});
+        light.ambientColor = nc::Vector3{};
+        light.diffuseColor = nc::Vector3{};
     }
 }
 
@@ -100,8 +100,8 @@ void StepFadeIn(std::span<nc::graphics::PointLight> lights, const std::vector<st
 
     for (auto [light, value] : std::views::zip(lights, initialValues))
     {
-        light.SetAmbient(fade(light.GetAmbient(), value.first, factor));
-        light.SetDiffuseColor(fade(light.GetDiffuseColor(), value.second, factor));
+        light.ambientColor = fade(light.ambientColor, value.first, factor);
+        light.diffuseColor = fade(light.diffuseColor, value.second, factor);
     }
 }
 
@@ -121,8 +121,8 @@ void StepFadeToBlack(nc::ecs::Ecs world, float dt)
 
     for (auto& light : world.GetAll<nc::graphics::PointLight>())
     {
-        light.SetAmbient(fade(light.GetAmbient(), factor));
-        light.SetDiffuseColor(fade(light.GetDiffuseColor(), factor));
+        light.ambientColor = fade(light.ambientColor, factor);
+        light.diffuseColor = fade(light.diffuseColor, factor);
     }
 }
 
@@ -151,8 +151,8 @@ class LightFader : public nc::FreeComponent
             {
                 for (auto [light, value] : std::views::zip(lights, lightValues))
                 {
-                    light.SetAmbient(value.first);
-                    light.SetDiffuseColor(value.second);
+                    light.ambientColor = value.first;
+                    light.diffuseColor = value.second;
                 }
                 m_world.Remove<nc::Entity>(self);
             }
