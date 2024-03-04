@@ -24,18 +24,21 @@ auto CreateVehicleNode(nc::ecs::Ecs world,
     });
 
     world.Emplace<nc::graphics::ToonRenderer>(node, mesh, material);
-    world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{.center = nc::Vector3{}, .extents = nc::Vector3{2.0f, 2.0f, 4.0f}});
+    auto& collider = world.Emplace<nc::physics::Collider>(node, nc::physics::BoxProperties{.center = nc::Vector3{}, .extents = nc::Vector3{2.0f, 2.0f, 4.0f}});
+    auto& transform = world.Get<nc::Transform>(node);
     world.Emplace<nc::physics::PhysicsBody>(
         node,
+        transform,
+        collider,
         nc::physics::PhysicsProperties{
             .mass = mass,
             .drag = 0.9f, // ?
-            .angularDrag = 0.9f, // ?
-            .friction = friction
+            .angularDrag = 0.9f // ?
         },
         nc::Vector3::One(),
         nc::Vector3{0.5f, 0.7f, 0.5f} // TODO: play with these values
     );
+    world.Emplace<nc::physics::PhysicsMaterial>(node, friction);
 
     return node;
 }
@@ -300,8 +303,8 @@ void CharacterController::CreatePurifier(nc::Registry* registry, float moveVeloc
         .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static // absolutely should not have to make static, but is interacting with concaves...
     });
 
-    registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{.radius = 2.5f}, true);
-    registry->Add<nc::physics::PhysicsBody>(m_purifier, nc::physics::PhysicsProperties{.isKinematic = true});
+    auto collider = registry->Add<nc::physics::Collider>(m_purifier, nc::physics::SphereProperties{.radius = 2.5f}, true);
+    registry->Add<nc::physics::PhysicsBody>(m_purifier, *transform, *collider, nc::physics::PhysicsProperties{.isKinematic = true});
 
     // add for debug visibility, could maybe add something?
     // registry->Add<nc::graphics::ToonRenderer>(m_purifier, nc::asset::SphereMesh);

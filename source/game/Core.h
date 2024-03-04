@@ -23,6 +23,7 @@
 #include "ncengine/physics/ConcaveCollider.h"
 #include "ncengine/physics/NcPhysics.h"
 #include "ncengine/physics/PhysicsBody.h"
+#include "ncengine/physics/PhysicsMaterial.h"
 #include "ncengine/scene/Scene.h"
 
 #include <string_view>

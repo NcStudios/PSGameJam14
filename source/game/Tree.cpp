@@ -164,8 +164,9 @@ void AttachInfectedTree(nc::ecs::Ecs world, nc::Entity tree)
         .flags = nc::Entity::Flags::NoSerialize | nc::Entity::Flags::Static
     });
 
-    world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
-    world.Emplace<nc::physics::PhysicsBody>(spreader, nc::physics::PhysicsProperties{.isKinematic = true});
+    auto& collider = world.Emplace<nc::physics::Collider>(spreader, nc::physics::SphereProperties{}, true);
+    auto& transform = world.Get<nc::Transform>(spreader);
+    world.Emplace<nc::physics::PhysicsBody>(spreader, transform, collider, nc::physics::PhysicsProperties{.isKinematic = true});
 }
 
 void FinalizeTrees(nc::ecs::Ecs world)
